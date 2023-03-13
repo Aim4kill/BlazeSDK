@@ -1,0 +1,14 @@
+﻿namespace Blaze3SDK.Blaze.Authentication
+{
+    public enum ExternalRefType
+    {
+        BLAZE_EXTERNAL_REF_TYPE_UNKNOWN = 0x0,
+        BLAZE_EXTERNAL_REF_TYPE_XBOX = 0x1,
+        BLAZE_EXTERNAL_REF_TYPE_PS3 = 0x2,
+        BLAZE_EXTERNAL_REF_TYPE_WII = 0x3,
+        BLAZE_EXTERNAL_REF_TYPE_MOBILE = 0x4,
+        BLAZE_EXTERNAL_REF_TYPE_LEGACYPROFILEID = 0x5,
+        BLAZE_EXTERNAL_REF_TYPE_TWITTER = 0x6,
+        BLAZE_EXTERNAL_REF_TYPE_FACEBOOK = 0x7,
+    }
+}
