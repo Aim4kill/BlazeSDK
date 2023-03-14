@@ -15,6 +15,8 @@ namespace Blaze3SDK
                 { Component.AuthenticationComponent,    new AuthenticationComponent() },
                 { Component.ExampleComponent,           new ExampleComponent()},
                 { Component.GameManager,                new GameManager() },
+                { Component.RedirectorComponent,        new RedirectorComponent() },
+                
                 { Component.StatsComponent,             new StatsComponent() },
                 { Component.UtilComponent,              new UtilComponent()},
                 { Component.RspComponent,               new RspComponent() },
