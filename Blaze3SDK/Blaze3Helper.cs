@@ -12,13 +12,13 @@ namespace Blaze3SDK
         {
             _componentDataMap = new Dictionary<Component, IComponentData>()
             {
-                { Component.UtilComponent,              new UtilComponent()},
                 { Component.AuthenticationComponent,    new AuthenticationComponent() },
+                { Component.ExampleComponent,           new ExampleComponent()},
                 { Component.GameManager,                new GameManager() },
-                { Component.UserSessions,               new UserSessions() },
+                { Component.StatsComponent,             new StatsComponent() },
+                { Component.UtilComponent,              new UtilComponent()},
                 { Component.RspComponent,               new RspComponent() },
-                { Component.StatsComponent,             new StatsComponent() }
-
+                { Component.UserSessions,               new UserSessions() }
             };
         }
 
