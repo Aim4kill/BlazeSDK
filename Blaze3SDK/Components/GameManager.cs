@@ -27,6 +27,7 @@ namespace Blaze3SDK.Components
             GameManagerCommand.updateMeshConnection => typeof(UpdateMeshConnectionRequest),
             GameManagerCommand.destroyGame => typeof(DestroyGameRequest),
             GameManagerCommand.setGameAttributes => typeof(SetGameAttributesRequest),
+            GameManagerCommand.startMatchmaking => typeof(StartMatchmakingRequest),
             _ => throw new NotImplementedException()
         };
 
@@ -43,7 +44,7 @@ namespace Blaze3SDK.Components
             GameManagerCommand.setPlayerAttributes => throw new NotImplementedException(),
             GameManagerCommand.joinGame => typeof(JoinGameResponse),
             GameManagerCommand.removePlayer => throw new NotImplementedException(),
-            GameManagerCommand.startMatchmaking => throw new NotImplementedException(),
+            GameManagerCommand.startMatchmaking => typeof(StartMatchmakingResponse),
             GameManagerCommand.cancelMatchmaking => throw new NotImplementedException(),
             GameManagerCommand.finalizeGameCreation => typeof(NullStruct),
             GameManagerCommand.listGames => throw new NotImplementedException(),
