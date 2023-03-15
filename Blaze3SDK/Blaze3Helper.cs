@@ -17,8 +17,8 @@ namespace Blaze3SDK
                 { Component.GameManager,                new GameManager() },
                 { Component.RedirectorComponent,        new RedirectorComponent() },
                 { Component.PlaygroupsComponent,        new PlaygroupsComponent() },
-                
                 { Component.StatsComponent,             new StatsComponent() },
+
                 { Component.UtilComponent,              new UtilComponent()},
                 { Component.RspComponent,               new RspComponent() },
                 { Component.UserSessions,               new UserSessions() }

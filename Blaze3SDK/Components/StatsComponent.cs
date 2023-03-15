@@ -12,10 +12,32 @@ namespace Blaze3SDK.Components
 
         }
 
-        public override Type GetCommandErrorResponseType(StatsComponentCommand command)
+        public override Type GetCommandErrorResponseType(StatsComponentCommand command) => command switch
         {
-            throw new NotImplementedException();
-        }
+            StatsComponentCommand.getStatDescs => throw new NotImplementedException(),
+            StatsComponentCommand.getStats => throw new NotImplementedException(),
+            StatsComponentCommand.getStatGroupList => throw new NotImplementedException(),
+            StatsComponentCommand.getStatGroup => throw new NotImplementedException(),
+            StatsComponentCommand.getStatsByGroup => throw new NotImplementedException(),
+            StatsComponentCommand.getDateRange => throw new NotImplementedException(),
+            StatsComponentCommand.getEntityCount => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboardGroup => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboardFolderGroup => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboard => throw new NotImplementedException(),
+            StatsComponentCommand.getCenteredLeaderboard => throw new NotImplementedException(),
+            StatsComponentCommand.getFilteredLeaderboard => throw new NotImplementedException(),
+            StatsComponentCommand.getKeyScopesMap => throw new NotImplementedException(),
+            StatsComponentCommand.getStatsByGroupAsync => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboardTreeAsync => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboardEntityCount => throw new NotImplementedException(),
+            StatsComponentCommand.getStatCategoryList => throw new NotImplementedException(),
+            StatsComponentCommand.getPeriodIds => throw new NotImplementedException(),
+            StatsComponentCommand.getLeaderboardRaw => throw new NotImplementedException(),
+            StatsComponentCommand.getCenteredLeaderboardRaw => throw new NotImplementedException(),
+            StatsComponentCommand.getFilteredLeaderboardRaw => throw new NotImplementedException(),
+            StatsComponentCommand.changeKeyscopeValue => throw new NotImplementedException(),
+            _ => typeof(NullStruct),
+        };
 
         public override Type GetCommandRequestType(StatsComponentCommand command) => command switch
         {
@@ -41,7 +63,7 @@ namespace Blaze3SDK.Components
             StatsComponentCommand.getCenteredLeaderboardRaw => throw new NotImplementedException(),
             StatsComponentCommand.getFilteredLeaderboardRaw => throw new NotImplementedException(),
             StatsComponentCommand.changeKeyscopeValue => throw new NotImplementedException(),
-            _ => throw new NotImplementedException()
+            _ => typeof(NullStruct),
         };
         
 
@@ -69,16 +91,17 @@ namespace Blaze3SDK.Components
             StatsComponentCommand.getCenteredLeaderboardRaw => throw new NotImplementedException(),
             StatsComponentCommand.getFilteredLeaderboardRaw => throw new NotImplementedException(),
             StatsComponentCommand.changeKeyscopeValue => throw new NotImplementedException(),
-            _ => throw new NotImplementedException(),
+            _ => typeof(NullStruct),
         };
 
         public override Type GetNotificationType(StatsComponentNotification notification) => notification switch
         {
             StatsComponentNotification.GetStatsAsyncNotification => typeof(KeyScopedStatValues),
             StatsComponentNotification.GetLeaderboardTreeNotification => throw new NotImplementedException(),
-            _ => throw new NotImplementedException(),
+            _ => typeof(NullStruct),
         };
 
+        //commands dumped from latest bf3 server files
         public enum StatsComponentCommand : ushort
         {
             getStatDescs = 1,
@@ -105,13 +128,15 @@ namespace Blaze3SDK.Components
             changeKeyscopeValue = 24
         }
 
+        //notifications dumped from latest bf3 server files
         public enum StatsComponentNotification : ushort
         {
             GetStatsAsyncNotification = 50,
             GetLeaderboardTreeNotification = 51
         }
 
-        public enum StatsComponentError : int
+        //errors dumped from latest bf3 server files
+        public enum StatsComponentError
         {
             STATS_ERR_CONFIG_NOTAVAILABLE = 65543,
             STATS_ERR_INVALID_LEADERBOARD_ID = 131079,
@@ -134,5 +159,6 @@ namespace Blaze3SDK.Components
             STATS_ERR_INVALID_OBJECT_ID = 1376263,
             STATS_ERR_BAD_PERIOD_COUNTER = 1441799
         }
+
     }
 }
