@@ -22,7 +22,7 @@ namespace Blaze3SDK
                 { Component.CensusDataComponent,            new CensusDataComponent() },
                 { Component.ClubsComponent,                 new ClubsComponent() },
                 { Component.GameReportingLegacyComponent,   new GameReportingLegacyComponent() },
-                
+                { Component.LeagueComponent,                new LeagueComponent() },
                 
                 { Component.RspComponent,               new RspComponent() },
                 { Component.UserSessions,               new UserSessions() }
