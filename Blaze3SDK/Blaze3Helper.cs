@@ -19,6 +19,8 @@ namespace Blaze3SDK
                 { Component.PlaygroupsComponent,        new PlaygroupsComponent() },
                 { Component.StatsComponent,             new StatsComponent() },
                 { Component.UtilComponent,              new UtilComponent() },
+                { Component.CensusDataComponent,        new CensusDataComponent() },
+                
                 
                 { Component.RspComponent,               new RspComponent() },
                 { Component.UserSessions,               new UserSessions() }
