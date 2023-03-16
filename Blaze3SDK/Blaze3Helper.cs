@@ -20,6 +20,7 @@ namespace Blaze3SDK
                 { Component.StatsComponent,             new StatsComponent() },
                 { Component.UtilComponent,              new UtilComponent() },
                 { Component.CensusDataComponent,        new CensusDataComponent() },
+                { Component.ClubsComponent,             new ClubsComponent() },
                 
                 
                 { Component.RspComponent,               new RspComponent() },
