@@ -25,6 +25,8 @@ namespace Blaze3SDK
                 { Component.LeagueComponent,                new LeagueComponent() },
                 { Component.MailComponent,                  new MailComponent() },
                 { Component.MessagingComponent,             new MessagingComponent() },
+                { Component.LockerComponent,                new LockerComponent() },
+                
                 
                 
                 { Component.RspComponent,               new RspComponent() },
