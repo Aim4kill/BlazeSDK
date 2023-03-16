@@ -33,10 +33,8 @@ namespace Blaze3SDK
                 { Component.GpsContentControllerComponent,  new GpsContentControllerComponent() },
                 { Component.GameReportingComponent,         new GameReportingComponent() },
                 { Component.DynamicInetFilterComponent,     new DynamicInetFilterComponent() },
-
-
-                { Component.RspComponent,               new RspComponent() },
-                { Component.UserSessions,               new UserSessions() }
+                { Component.RspComponent,                   new RspComponent() },
+                { Component.UserSessions,                   new UserSessions() }
             };
         }
 

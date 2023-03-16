@@ -4,24 +4,76 @@ using static Blaze3SDK.Components.RspComponent;
 
 namespace Blaze3SDK.Components
 {
-    internal class RspComponent : ComponentData<RspComponentCommand, RspComponentNotification, RspComponentError>
+    public class RspComponent : ComponentData<RspComponentCommand, RspComponentNotification, RspComponentError>
     {
         public RspComponent() : base((ushort)Component.RspComponent)
         {
 
         }
 
-        public override Type GetCommandErrorResponseType(RspComponentCommand command)
+        public override Type GetCommandErrorResponseType(RspComponentCommand command) => command switch
         {
-            throw new NotImplementedException();
-        }
+            RspComponentCommand.startPurchase => throw new NotImplementedException(),
+            RspComponentCommand.updatePurchase => throw new NotImplementedException(),
+            RspComponentCommand.finishPurchase => throw new NotImplementedException(),
+            RspComponentCommand.listPurchases => throw new NotImplementedException(),
+            RspComponentCommand.listServers => throw new NotImplementedException(),
+            RspComponentCommand.getServerDetails => throw new NotImplementedException(),
+            RspComponentCommand.restartServer => throw new NotImplementedException(),
+            RspComponentCommand.updateServerBanner => throw new NotImplementedException(),
+            RspComponentCommand.updateServerSettings => throw new NotImplementedException(),
+            RspComponentCommand.updateServerPreset => throw new NotImplementedException(),
+            RspComponentCommand.updateServerMapRotation => throw new NotImplementedException(),
+            RspComponentCommand.addServerAdmin => throw new NotImplementedException(),
+            RspComponentCommand.removeServerAdmin => throw new NotImplementedException(),
+            RspComponentCommand.addServerBan => throw new NotImplementedException(),
+            RspComponentCommand.removeServerBan => throw new NotImplementedException(),
+            RspComponentCommand.addServerVip => throw new NotImplementedException(),
+            RspComponentCommand.removeServerVip => throw new NotImplementedException(),
+            RspComponentCommand.getConfig => throw new NotImplementedException(),
+            RspComponentCommand.getPingSites => throw new NotImplementedException(),
+            RspComponentCommand.getGameData => throw new NotImplementedException(),
+            RspComponentCommand.addGameBan => throw new NotImplementedException(),
+            RspComponentCommand.createServer => throw new NotImplementedException(),
+            RspComponentCommand.updateServer => throw new NotImplementedException(),
+            RspComponentCommand.listAllServers => throw new NotImplementedException(),
+            RspComponentCommand.startMatch => throw new NotImplementedException(),
+            RspComponentCommand.abortMatch => throw new NotImplementedException(),
+            RspComponentCommand.endMatch => throw new NotImplementedException(),
+            _ => typeof(NullStruct)
+        };
 
         public override Type GetCommandRequestType(RspComponentCommand command) => command switch
         {
-            RspComponentCommand.getConfig => typeof(NullStruct),
-            _ => throw new NotImplementedException()
+            RspComponentCommand.startPurchase => throw new NotImplementedException(),
+            RspComponentCommand.updatePurchase => throw new NotImplementedException(),
+            RspComponentCommand.finishPurchase => throw new NotImplementedException(),
+            RspComponentCommand.listPurchases => throw new NotImplementedException(),
+            RspComponentCommand.listServers => throw new NotImplementedException(),
+            RspComponentCommand.getServerDetails => throw new NotImplementedException(),
+            RspComponentCommand.restartServer => throw new NotImplementedException(),
+            RspComponentCommand.updateServerBanner => throw new NotImplementedException(),
+            RspComponentCommand.updateServerSettings => throw new NotImplementedException(),
+            RspComponentCommand.updateServerPreset => throw new NotImplementedException(),
+            RspComponentCommand.updateServerMapRotation => throw new NotImplementedException(),
+            RspComponentCommand.addServerAdmin => throw new NotImplementedException(),
+            RspComponentCommand.removeServerAdmin => throw new NotImplementedException(),
+            RspComponentCommand.addServerBan => throw new NotImplementedException(),
+            RspComponentCommand.removeServerBan => throw new NotImplementedException(),
+            RspComponentCommand.addServerVip => throw new NotImplementedException(),
+            RspComponentCommand.removeServerVip => throw new NotImplementedException(),
+            RspComponentCommand.getConfig => throw new NotImplementedException(),
+            RspComponentCommand.getPingSites => throw new NotImplementedException(),
+            RspComponentCommand.getGameData => throw new NotImplementedException(),
+            RspComponentCommand.addGameBan => throw new NotImplementedException(),
+            RspComponentCommand.createServer => throw new NotImplementedException(),
+            RspComponentCommand.updateServer => throw new NotImplementedException(),
+            RspComponentCommand.listAllServers => throw new NotImplementedException(),
+            RspComponentCommand.startMatch => throw new NotImplementedException(),
+            RspComponentCommand.abortMatch => throw new NotImplementedException(),
+            RspComponentCommand.endMatch => throw new NotImplementedException(),
+            _ => typeof(NullStruct)
         };
-        
 
         public override Type GetCommandResponseType(RspComponentCommand command) => command switch
         {
@@ -48,12 +100,16 @@ namespace Blaze3SDK.Components
             RspComponentCommand.addGameBan => throw new NotImplementedException(),
             RspComponentCommand.createServer => throw new NotImplementedException(),
             RspComponentCommand.updateServer => throw new NotImplementedException(),
-            _ => throw new NotImplementedException(),
+            RspComponentCommand.listAllServers => throw new NotImplementedException(),
+            RspComponentCommand.startMatch => throw new NotImplementedException(),
+            RspComponentCommand.abortMatch => throw new NotImplementedException(),
+            RspComponentCommand.endMatch => throw new NotImplementedException(),
+            _ => typeof(NullStruct)
         };
 
         public override Type GetNotificationType(RspComponentNotification notification) => notification switch
         {
-            _ => throw new NotImplementedException(),
+            _ => typeof(NullStruct)
         };
 
         public enum RspComponentCommand : ushort
@@ -80,15 +136,18 @@ namespace Blaze3SDK.Components
             getGameData = 60,
             addGameBan = 61,
             createServer = 70,
-            updateServer = 71
+            updateServer = 71,
+            listAllServers = 72,
+            startMatch = 80,
+            abortMatch = 81,
+            endMatch = 82,
         }
 
         public enum RspComponentNotification : ushort
         {
-
         }
 
-        public enum RspComponentError : int
+        public enum RspComponentError
         {
             RSP_ERR_NO_GAMEMANAGER = 67585,
             RSP_ERR_INVALID_USER_ID = 133121,
@@ -136,7 +195,22 @@ namespace Blaze3SDK.Components
             RSP_ERR_USER_OWNER_MAX = 2885633,
             RSP_ERR_INVALID_SERVER_NAME = 2951169,
             RSP_ERR_INVALID_PRESET_FOR_RANKED_SERVER = 3016705,
-            RSP_ERR_NO_PASSWORD_FOR_PRIVATE_SERVER = 3082241
+            RSP_ERR_NO_PASSWORD_FOR_PRIVATE_SERVER = 3082241,
+            RSP_ERR_MATCH_ALREADY_RUNNING = 3147777,
+            RSP_ERR_MATCH_NOT_RUNNING = 3213313,
+            RSP_ERR_MATCH_EXPIRATION_DATE_PASSED = 3278849,
+            RSP_ERR_MATCH_EMPTY_ROSTER = 3344385,
+            RSP_ERR_MATCH_ROSTER_TOO_BIG = 3409921,
+            RSP_ERR_INVALID_MATCH_ID = 3475457,
+            RSP_ERR_WRONG_MATCH_ID = 3540993,
+            RSP_ERR_INVALID_SERVER_PRESET_NAME_PROFANITY = 3606529,
+            RSP_ERR_INVALID_MAP_ROTATION_NAME_PROFANITY = 3672065,
+            RSP_ERR_INVALID_GAME_STATE_ACTION = 3737601,
+            RSP_ERR_GAME_PERMISSION_DENIED = 3803137,
+            RSP_ERR_INVALID_ACTIVE_PRESET_FOR_RANKED_SERVER = 3868673,
+            RSP_ERR_SERVER_RANKED = 3934209,
+            RSP_ERR_MATCH_RUNNING = 3999745,
         }
+
     }
 }
