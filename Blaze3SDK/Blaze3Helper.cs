@@ -23,6 +23,8 @@ namespace Blaze3SDK
                 { Component.ClubsComponent,                 new ClubsComponent() },
                 { Component.GameReportingLegacyComponent,   new GameReportingLegacyComponent() },
                 { Component.LeagueComponent,                new LeagueComponent() },
+                { Component.MailComponent,                  new MailComponent() },
+                
                 
                 { Component.RspComponent,               new RspComponent() },
                 { Component.UserSessions,               new UserSessions() }
