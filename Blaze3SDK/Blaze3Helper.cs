@@ -18,8 +18,8 @@ namespace Blaze3SDK
                 { Component.RedirectorComponent,        new RedirectorComponent() },
                 { Component.PlaygroupsComponent,        new PlaygroupsComponent() },
                 { Component.StatsComponent,             new StatsComponent() },
-
-                { Component.UtilComponent,              new UtilComponent()},
+                { Component.UtilComponent,              new UtilComponent() },
+                
                 { Component.RspComponent,               new RspComponent() },
                 { Component.UserSessions,               new UserSessions() }
             };
