@@ -31,7 +31,7 @@ namespace Blaze3SDK
                 { Component.CommerceInfoComponent,          new CommerceInfoComponent() },
                 { Component.AssociationListsComponent,      new AssociationListsComponent() },
                 { Component.GpsContentControllerComponent,  new GpsContentControllerComponent() },
-                
+                { Component.GameReportingComponent,         new GameReportingComponent() },
                 
                 
                 { Component.RspComponent,               new RspComponent() },
