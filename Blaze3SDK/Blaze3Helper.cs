@@ -27,6 +27,7 @@ namespace Blaze3SDK
                 { Component.MessagingComponent,             new MessagingComponent() },
                 { Component.LockerComponent,                new LockerComponent() },
                 { Component.RoomsComponent,                 new RoomsComponent() },
+                { Component.TournamentsComponent,           new TournamentsComponent() },
                 
                 
                 
