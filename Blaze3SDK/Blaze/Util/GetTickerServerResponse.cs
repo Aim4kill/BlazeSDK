@@ -1,32 +1,19 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct GetTickerServerResponse
-    {
-        /*
-        	TdfString ADRS = (const char*)37007354
-	        TdfInt(unsigned int) PORT = 0
-	        TdfString SKEY = (const char*)37007354
+	[TdfStruct]
+	public struct GetTickerServerResponse
+	{
 
-          Blaze::TdfString mAddress;
-          unsigned int mPort;
-          Blaze::TdfString mKey;
+		[TdfMember("ADRS")]
+		public string mAddress;
 
-          Blaze::TdfMemberInfoString mAddressDef;
-          Blaze::TdfMemberInfoInt mPortDef;
-          Blaze::TdfMemberInfoString mKeyDef;
-        
-        */
+		[TdfMember("SKEY")]
+		public string mKey;
 
-        [TdfMember("ADRS")]
-        public string mAddress;
+		[TdfMember("PORT")]
+		public uint mPort;
 
-        [TdfMember("PORT")]
-        public uint mPort;
-
-        [TdfMember("SKEY")]
-        public string mKey;
-    }
+	}
 }

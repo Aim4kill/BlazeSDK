@@ -1,31 +1,19 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct XboxServerAddress
-    {
-        /*
-                  TdfInt(unsigned __int16) PORT = 0
-                  TdfString SITE = (const char*)37007354
-                  TdfInt(unsigned int) SVID = 0
+	[TdfStruct]
+	public struct XboxServerAddress
+	{
 
-                  unsigned int mSid;
-                  Blaze::TdfString mSiteName;
-                  unsigned __int16 mPort;
+		[TdfMember("PORT")]
+		public ushort mPort;
 
-                  Blaze::TdfMemberInfoInt mPortDef;
-                  Blaze::TdfMemberInfoString mSiteNameDef;
-                  Blaze::TdfMemberInfoInt mSidDef;
-         */
+		[TdfMember("SVID")]
+		public uint mSid;
 
-        [TdfMember("PORT")]
-        public ushort mPort;
+		[TdfMember("SITE")]
+		public string mSiteName;
 
-        [TdfMember("SITE")]
-        public string mSiteName;
-
-        [TdfMember("SVID")]
-        public uint mSid;
-    }
+	}
 }

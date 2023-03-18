@@ -1,13 +1,13 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct PingResponse
-    {
-        //[tag="stim"] uint32_t mServerTime;
+	[TdfStruct]
+	public struct PingResponse
+	{
 
-        [TdfMember("STIM")]
-        public uint mServerTime;
-    }
+		[TdfMember("STIM")]
+		public uint mServerTime;
+
+	}
 }

@@ -1,39 +1,24 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct RankedGameRulePrefs
-    {
-        /*
-         
-        Blaze::GameManager::RankedGameRulePrefs {
-	        TdfString THLD = (const char*)37007354
-	        TdfEnum VALU = 16777216 from (Blaze::TdfEnumMap*)44651596
-        }
+	[TdfStruct]
+	public struct RankedGameRulePrefs
+	{
 
-        struct __cppobj Blaze::GameManager::RankedGameRulePrefs : Blaze::Tdf
-        {
-          Blaze::TdfString mMinFitThresholdName;
-          Blaze::GameManager::RankedGameRulePrefs::RankedGameDesiredValue mDesiredRankedGameValue;
-        };
+		[TdfMember("VALU")]
+		public RankedGameDesiredValue mDesiredRankedGameValue;
 
-         */
+		[TdfMember("THLD")]
+		public string mMinFitThresholdName;
 
-        [TdfMember("THLD")]
-        public string mMinFitThresholdName;
+		public enum RankedGameDesiredValue : int
+		{
+			UNRANKED = 1,
+			RANKED = 2,
+			RANDOM = 4,
+			ABSTAIN = 8,
+		}
 
-        [TdfMember("VALU")]
-        public RankedGameDesiredValue mDesiredRankedGameValue;
-
-        [Flags]
-        public enum RankedGameDesiredValue
-        {
-            UNKNOWN = 0,
-            UNRANKED = 1,
-            RANKED = 2,
-            RANDOM = 4,
-            ABSTAIN = 8,
-        }
-    }
+	}
 }

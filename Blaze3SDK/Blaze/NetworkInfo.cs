@@ -1,34 +1,19 @@
-﻿using Blaze3SDK.Blaze.Util;
 using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct NetworkInfo
-    {
-        /*
-        TdfUnion ADDR
-	    TdfMap NLMP
-	    TdfClass NQOS
+	[TdfStruct]
+	public struct NetworkInfo
+	{
 
-          Blaze::TdfMemberInfo mAddressDef;
-          Blaze::TdfMemberInfo mPingSiteLatencyByAliasMapDef;
-          Blaze::TdfMemberInfoClass mQosDataDef;
+		[TdfMember("ADDR")]
+		public NetworkAddress mAddress;
 
-          Blaze::TdfPrimitiveMap<Blaze::TdfString,int,1,0,0,0,Blaze::TdfStringCompareIgnoreCase> mPingSiteLatencyByAliasMap;
-          Blaze::Util::NetworkQosData mQosData;
-          Blaze::NetworkAddress mAddress;
+		[TdfMember("NLMP")]
+		public SortedDictionary<string, int> mPingSiteLatencyByAliasMap;
 
+		[TdfMember("NQOS")]
+		public Util.NetworkQosData mQosData;
 
-         */
-
-        [TdfMember("ADDR")]
-        public NetworkAddress mAddress;
-
-        [TdfMember("NLMP")]
-        public Dictionary<string, int> mPingSiteLatencyByAliasMap;
-
-        [TdfMember("NQOS")]
-        public NetworkQosData mQosData;
-    }
+	}
 }

@@ -1,14 +1,13 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct DatalessSetupContext
-    {
-        //Blaze::GameManager::DatalessContext mSetupContext;
-        //	TdfEnum DCTX = 0 from (Blaze::TdfEnumMap*)44650260
+	[TdfStruct]
+	public struct DatalessSetupContext
+	{
 
-        [TdfMember("DCTX")]
-        public DatalessContext mSetupContext;
-    }
+		[TdfMember("DCTX")]
+		public DatalessContext mSetupContext;
+
+	}
 }

@@ -3,9 +3,9 @@
     [Flags]
     public enum BlazeUpnpFlags
     {
-        None = 0x00,
-        NatPromoted = 0x01,
-        DoubleNat = 0x02,
-        PortOverride = 0x04,
+        None = 0,
+        NatPromoted = 1,
+        DoubleNat = 2,
+        PortOverride = 4,
     }
 }

@@ -1,38 +1,40 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct ClientInfo
-    {
-        [TdfMember("BSDK")]
-        public string mBlazeSDKVersion;
+	[TdfStruct]
+	public struct ClientInfo
+	{
 
-        [TdfMember("BTIM")]
-        public string mBlazeSDKBuildDate;
+		[TdfMember("BTIM")]
+		public string mBlazeSDKBuildDate;
 
-        [TdfMember("CLNT")]
-        public string mClientName;
+		[TdfMember("BSDK")]
+		public string mBlazeSDKVersion;
 
-        [TdfMember("CSKU")]
-        public string mClientSkuId;
+		[TdfMember("LOC")]
+		public uint mClientLocale;
 
-        [TdfMember("CVER")]
-        public string mClientVersion;
+		[TdfMember("CLNT")]
+		public string mClientName;
 
-        [TdfMember("DSDK")]
-        public string mDirtySDKVersion;
+		[TdfMember("CSKU")]
+		public string mClientSkuId;
 
-        [TdfMember("ENV")]
-        public string mEnvironment;
+		[TdfMember("CVER")]
+		public string mClientVersion;
 
-        [TdfMember("LOC")]
-        public uint mClientLocale;
+		[TdfMember("DSDK")]
+		public string mDirtySDKVersion;
 
-        [TdfMember("MAC")]
-        public string mMacAddress;
+		[TdfMember("ENV")]
+		public string mEnvironment;
 
-        [TdfMember("PLAT")]
-        public string mPlatform;
-    }
+		[TdfMember("MAC")]
+		public string mMacAddress;
+
+		[TdfMember("PLAT")]
+		public string mPlatform;
+
+	}
 }

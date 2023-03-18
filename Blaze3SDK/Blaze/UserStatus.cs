@@ -1,24 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct UserStatus
-    {
-        /*
-        	TdfBitSet FLGS
-	        TdfInt(__int64) ID = 0
+	[TdfStruct]
+	public struct UserStatus
+	{
 
-            __int64 mBlazeId;
-            Blaze::UserDataFlags mStatusFlags;
-        
-        */
+		[TdfMember("ID")]
+		public long mBlazeId;
 
-        [TdfMember("FLGS")]
-        public UserDataFlags mStatusFlags;
+		[TdfMember("FLGS")]
+		public UserDataFlags mStatusFlags;
 
-        [TdfMember("ID")]
-        public long mBlazeId;
-
-    }
+	}
 }

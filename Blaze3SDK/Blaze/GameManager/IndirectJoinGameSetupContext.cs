@@ -1,22 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct IndirectJoinGameSetupContext
-    {
-        /*
-          Blaze::BlazeObjectId mUserGroupId;
-          bool mRequiresClientVersionCheck;
+	[TdfStruct]
+	public struct IndirectJoinGameSetupContext
+	{
 
-        	TdfVector3 GRID
-	        TdfBool RPVC = 0
-         */
+		[TdfMember("RPVC")]
+		public bool mRequiresClientVersionCheck;
 
-        [TdfMember("GRID")]
-        public BlazeObjectId mUserGroupId;
+		[TdfMember("GRID")]
+		public BlazeObjectId mUserGroupId;
 
-        [TdfMember("RPVC")]
-        public bool mRequiresClientVersionCheck;
-    }
+	}
 }

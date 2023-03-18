@@ -1,17 +1,19 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct PreAuthRequest
-    {
-        [TdfMember("CDAT")]
-        public ClientData mClientData;
+	[TdfStruct]
+	public struct PreAuthRequest
+	{
 
-        [TdfMember("CINF")]
-        public ClientInfo mClientInfo;
+		[TdfMember("CDAT")]
+		public ClientData mClientData;
 
-        [TdfMember("FCCR")]
-        public FetchClientConfigRequest mFetchClientConfig;
-    }
+		[TdfMember("CINF")]
+		public ClientInfo mClientInfo;
+
+		[TdfMember("FCCR")]
+		public FetchClientConfigRequest mFetchClientConfig;
+
+	}
 }

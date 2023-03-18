@@ -1,23 +1,25 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Redirector
 {
-    [TdfStruct]
-    public struct AddressRemapEntry
-    {
-        [TdfMember("DPRT")]
-        public ushort mDstPort;
+	[TdfStruct]
+	public struct AddressRemapEntry
+	{
 
-        [TdfMember("MASK")]
-        public uint mNetMask;
+		[TdfMember("DPRT")]
+		public ushort mDstPort;
 
-        [TdfMember("SID")]
-        public uint mServiceId;
+		[TdfMember("MASK")]
+		public uint mNetMask;
 
-        [TdfMember("SIP")]
-        public uint mSrcIp;
+		[TdfMember("SID")]
+		public uint mServiceId;
 
-        [TdfMember("SPRT")]
-        public ushort mSrcPort;
-    }
+		[TdfMember("SIP")]
+		public uint mSrcIp;
+
+		[TdfMember("SPRT")]
+		public ushort mSrcPort;
+
+	}
 }

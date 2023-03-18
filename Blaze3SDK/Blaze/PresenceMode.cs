@@ -1,9 +1,9 @@
-﻿namespace Blaze3SDK.Blaze
+namespace Blaze3SDK.Blaze
 {
-    public enum PresenceMode
-    {
-        PRESENCE_MODE_NONE = 0x0,
-        PRESENCE_MODE_STANDARD = 0x1,
-        PRESENCE_MODE_PRIVATE = 0x2,
-    }
+	public enum PresenceMode : int
+	{
+		PRESENCE_MODE_NONE = 0,
+		PRESENCE_MODE_STANDARD = 1,
+		PRESENCE_MODE_PRIVATE = 2,
+	}
 }

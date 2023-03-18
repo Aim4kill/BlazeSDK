@@ -1,36 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Stats
 {
-    [TdfStruct]
-    public struct EntityStatAggregates
-    {
+	[TdfStruct]
+	public struct EntityStatAggregates
+	{
 
-        /*
-        Blaze::Stats::EntityStatAggregates {
-	        TdfList AGGR
-	        TdfEnum TYPE = 0 from (Blaze::TdfEnumMap*)44654468
-        }
+		[TdfMember("AGGR")]
+		public List<string> mAggrValues;
 
-        struct Blaze::Stats::EntityStatAggregates::TdfMemberInfoDefinition
-        {
-          Blaze::TdfMemberInfo mAggrValuesDef;
-          Blaze::TdfMemberInfoEnum mTypeDef;
-        };
+		[TdfMember("TYPE")]
+		public AggregateType mType;
 
-        struct __cppobj Blaze::Stats::EntityStatAggregates : Blaze::Tdf
-        {
-          Blaze::Stats::AggregateType mType;
-          Blaze::TdfPrimitiveVector<Blaze::TdfString,1,0> mAggrValues;
-        };
-
-
-         */
-
-        [TdfMember("AGGR")]
-        public List<string> mAggrValues;
-
-        [TdfMember("TYPE")]
-        public AggregateType mType;
-    }
+	}
 }

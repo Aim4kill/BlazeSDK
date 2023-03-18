@@ -1,17 +1,19 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct QosPingSiteInfo
-    {
-        [TdfMember("PSA")]
-        public string mAddress;
+	[TdfStruct]
+	public struct QosPingSiteInfo
+	{
 
-        [TdfMember("PSP")]
-        public ushort mPort;
+		[TdfMember("PSA")]
+		public string mAddress;
 
-        [TdfMember("SNA")]
-        public string mSiteName;
-    }
+		[TdfMember("PSP")]
+		public ushort mPort;
+
+		[TdfMember("SNA")]
+		public string mSiteName;
+
+	}
 }

@@ -1,20 +1,22 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct ClientData
-    {
-        [TdfMember("IITO")]
-        public bool mIgnoreInactivityTimeout;
+	[TdfStruct]
+	public struct ClientData
+	{
 
-        [TdfMember("LANG")]
-        public uint mLocale;
+		[TdfMember("TYPE")]
+		public ClientType mClientType;
 
-        [TdfMember("SVCN")]
-        public string mServiceName;
+		[TdfMember("IITO")]
+		public bool mIgnoreInactivityTimeout;
 
-        [TdfMember("TYPE")]
-        public ClientType mClientType;
-    }
+		[TdfMember("LANG")]
+		public uint mLocale;
+
+		[TdfMember("SVCN")]
+		public string mServiceName;
+
+	}
 }

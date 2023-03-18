@@ -1,25 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct XboxClientAddress
-    {
-        /*
-            unsigned __int64 mXuid;
-            Blaze::TdfBlob mXnAddr;
+	[TdfStruct]
+	public struct XboxClientAddress
+	{
 
-            Blaze::TdfMemberInfo mXnAddrDef;
-            Blaze::TdfMemberInfoInt64 mXuidDef;
+		[TdfMember("XDDR")]
+		public byte[] mXnAddr;
 
-        	TdfBlob XDDR
-	        TdfInt(unsigned __int64) XUID = 0
-         */
+		[TdfMember("XUID")]
+		public ulong mXuid;
 
-        [TdfMember("XDDR")]
-        public byte[] mXnAddr;
-
-        [TdfMember("XUID")]
-        public ulong mXuid;
-    }
+	}
 }

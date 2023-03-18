@@ -1,25 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze
 {
-    [TdfStruct]
-    public struct NotifyUserAdded
-    {
-        /*
-         * 	TdfClass DATA
-	        TdfClass USER
+	[TdfStruct]
+	public struct NotifyUserAdded
+	{
 
-            Blaze::TdfMemberInfoClass mExtendedDataDef;
-            Blaze::TdfMemberInfoClass mUserInfoDef;
+		[TdfMember("DATA")]
+		public UserSessionExtendedData mExtendedData;
 
-            Blaze::UserIdentification mUserInfo;
-            Blaze::UserSessionExtendedData mExtendedData;
-         */
+		[TdfMember("USER")]
+		public UserIdentification mUserInfo;
 
-        [TdfMember("DATA")]
-        public UserSessionExtendedData mExtendedData;
-
-        [TdfMember("USER")]
-        public UserIdentification mUserInfo;
-    }
+	}
 }

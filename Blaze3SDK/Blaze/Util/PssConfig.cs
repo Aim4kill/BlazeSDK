@@ -1,55 +1,31 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct PssConfig
-    {
-        //TdfString ADRS = (const char*)37007354
-        //TdfBlob CSIG
-        //TdfList OIDS
-        //TdfString PJID = (const char*)37007354
-        //TdfInt(unsigned int) PORT = 0
-        //TdfBitSet RPRT
-        //TdfInt(unsigned int) TIID = 0
+	[TdfStruct]
+	public struct PssConfig
+	{
 
-        //Blaze::TdfMemberInfoString mAddressDef;
-        //Blaze::TdfMemberInfo mNpCommSignatureDef;
-        //Blaze::TdfMemberInfo mOfferIdsDef;
-        //Blaze::TdfMemberInfoString mProjectIdDef;
-        //Blaze::TdfMemberInfoInt mPortDef;
-        //Blaze::TdfMemberInfo mInitialReportTypesDef;
-        //Blaze::TdfMemberInfoInt mTitleIdDef;
+		[TdfMember("ADRS")]
+		public string mAddress;
 
+		[TdfMember("RPRT")]
+		public PssReportTypes mInitialReportTypes;
 
-        //Blaze::TdfString mAddress;
-        //unsigned int mPort;
-        //unsigned int mTitleId;
-        //Blaze::TdfString mProjectId;
-        //Blaze::Util::PssReportTypes mInitialReportTypes;
-        //Blaze::TdfPrimitiveVector<Blaze::TdfString,1,0> mOfferIds;
-        //Blaze::TdfBlob mNpCommSignature;
+		[TdfMember("CSIG")]
+		public byte[] mNpCommSignature;
 
+		[TdfMember("OIDS")]
+		public List<string> mOfferIds;
 
-        [TdfMember("ADRS")]
-        public string mAddress;
+		[TdfMember("PORT")]
+		public uint mPort;
 
-        [TdfMember("CSIG")]
-        public byte[] mNpCommSignature;
+		[TdfMember("PJID")]
+		public string mProjectId;
 
-        [TdfMember("OIDS")]
-        public List<string> mOfferIds;
+		[TdfMember("TIID")]
+		public uint mTitleId;
 
-        [TdfMember("PJID")]
-        public string mProjectId;
-
-        [TdfMember("PORT")]
-        public uint mPort;
-
-        [TdfMember("RPRT")]
-        public PssReportTypes mInitialReportTypes;
-
-        [TdfMember("TIID")]
-        public uint mTitleId;
-    }
+	}
 }

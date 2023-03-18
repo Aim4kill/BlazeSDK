@@ -1,14 +1,13 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct ResetDedicatedServerSetupContext
-    {
-        //  unsigned int mJoinErr;
-        //  TdfInt(unsigned int) ERR = 0
+	[TdfStruct]
+	public struct ResetDedicatedServerSetupContext
+	{
 
-        [TdfMember("ERR")]
-        public uint mJoinErr;
-    }
+		[TdfMember("ERR")]
+		public uint mJoinErr;
+
+	}
 }

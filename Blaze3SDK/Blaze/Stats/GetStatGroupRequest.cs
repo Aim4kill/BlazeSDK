@@ -1,24 +1,13 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Stats
 {
-    [TdfStruct]
-    public struct GetStatGroupRequest
-    {
-        /*
-        Blaze::Stats::GetStatGroupRequest {
-	        TdfString NAME = (const char*)37007354
-        }
-        
-        struct __cppobj Blaze::Stats::GetStatGroupRequest : Blaze::Tdf
-        {
-          Blaze::TdfString mName;
-        };
+	[TdfStruct]
+	public struct GetStatGroupRequest
+	{
 
+		[TdfMember("NAME")]
+		public string mName;
 
-         */
-
-        [TdfMember("NAME")]
-        public string mName;
-    }
+	}
 }

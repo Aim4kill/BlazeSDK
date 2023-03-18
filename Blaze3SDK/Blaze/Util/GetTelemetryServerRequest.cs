@@ -1,25 +1,16 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct GetTelemetryServerRequest
-    {
-        /*
-          	TdfString CMAC = (const char*)37007354
-	        TdfString SNAM = (const char*)37007354
+	[TdfStruct]
+	public struct GetTelemetryServerRequest
+	{
 
-            Blaze::TdfString mMacAddress;
-            Blaze::TdfString mServiceName;
+		[TdfMember("CMAC")]
+		public string mMacAddress;
 
-            Blaze::TdfMemberInfoString mMacAddressDef;
-            Blaze::TdfMemberInfoString mServiceNameDef;
-         */
+		[TdfMember("SNAM")]
+		public string mServiceName;
 
-        [TdfMember("CMAC")]
-        public string mMacAddress;
-
-        [TdfMember("SNAM")]
-        public string mServiceName;
-    }
+	}
 }

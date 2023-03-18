@@ -1,43 +1,23 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct VirtualGameRulePrefs
-    {
-        /*
-        
-        Blaze::GameManager::VirtualGameRulePrefs {
-	        TdfString THLD = (const char*)37007354
-	        TdfEnum VALU = 16777216 from (Blaze::TdfEnumMap*)44651408
-        }
+	[TdfStruct]
+	public struct VirtualGameRulePrefs
+	{
 
-        struct Blaze::GameManager::VirtualGameRulePrefs::TdfMemberInfoDefinition
-        {
-          Blaze::TdfMemberInfoString mMinFitThresholdNameDef;
-          Blaze::TdfMemberInfoEnum mDesiredVirtualGameValueDef;
-        };
+		[TdfMember("VALU")]
+		public VirtualGameDesiredValue mDesiredVirtualGameValue;
 
-        struct __cppobj Blaze::GameManager::VirtualGameRulePrefs : Blaze::Tdf
-        {
-          Blaze::TdfString mMinFitThresholdName;
-          Blaze::GameManager::VirtualGameRulePrefs::VirtualGameDesiredValue mDesiredVirtualGameValue;
-        };
+		[TdfMember("THLD")]
+		public string mMinFitThresholdName;
 
-         */
+		public enum VirtualGameDesiredValue : int
+		{
+			STANDARD = 1,
+			VIRTUALIZED = 2,
+			ABSTAIN = 8,
+		}
 
-        [TdfMember("THLD")]
-        public string mMinFitThresholdName;
-
-        [TdfMember("VALU")]
-        public VirtualGameDesiredValue mDesiredVirtualGameValue;
-
-        [Flags]
-        public enum VirtualGameDesiredValue
-        {
-            STANDARD = 0x1,
-            VIRTUALIZED = 0x2,
-            ABSTAIN = 0x8,
-        }
-    }
+	}
 }

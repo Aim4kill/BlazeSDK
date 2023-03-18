@@ -1,48 +1,49 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Redirector
 {
-    [TdfStruct]
-    public struct ServerInstanceRequest
-    {
-        [TdfMember("BSDK")]
-        public string mBlazeSDKVersion;
+	[TdfStruct]
+	public struct ServerInstanceRequest
+	{
 
-        [TdfMember("BTIM")]
-        public string mBlazeSDKBuildDate;
+		[TdfMember("BTIM")]
+		public string mBlazeSDKBuildDate;
 
-        [TdfMember("CLNT")]
-        public string mClientName;
+		[TdfMember("BSDK")]
+		public string mBlazeSDKVersion;
 
-        [TdfMember("CLTP")]
-        public ClientType mClientType;
+		[TdfMember("LOC")]
+		public uint mClientLocale;
 
-        [TdfMember("CSKU")]
-        public string mClientSkuId;
+		[TdfMember("CLNT")]
+		public string mClientName;
 
-        [TdfMember("CVER")]
-        public string mClientVersion;
+		[TdfMember("CSKU")]
+		public string mClientSkuId;
 
-        [TdfMember("DSDK")]
-        public string mDirtySDKVersion;
+		[TdfMember("CLTP")]
+		public ClientType mClientType;
 
-        [TdfMember("ENV")]
-        public string mEnvironment;
+		[TdfMember("CVER")]
+		public string mClientVersion;
 
-        [TdfMember("FPID")]
-        public FirstPartyId mFirstPartyId;
+		[TdfMember("PROF")]
+		public string mConnectionProfile;
 
-        [TdfMember("LOC")]
-        public uint mClientLocale;
+		[TdfMember("DSDK")]
+		public string mDirtySDKVersion;
 
-        [TdfMember("NAME")]
-        public string mName;
+		[TdfMember("ENV")]
+		public string mEnvironment;
 
-        [TdfMember("PLAT")]
-        public string mPlatform;
+		[TdfMember("FPID")]
+		public FirstPartyId mFirstPartyId;
 
-        [TdfMember("PROF")]
-        public string mConnectionProfile;
+		[TdfMember("NAME")]
+		public string mName;
 
-    }
+		[TdfMember("PLAT")]
+		public string mPlatform;
+
+	}
 }

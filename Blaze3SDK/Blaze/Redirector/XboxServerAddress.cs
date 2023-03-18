@@ -1,40 +1,19 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Redirector
 {
-    [TdfStruct]
-    public struct XboxServerAddress
-    {
-        /*
-            Blaze::Redirector::XboxServerAddress {
-	            TdfInt(unsigned __int16) PORT = 0
-	            TdfInt(unsigned int) SID = 0
-	            TdfString SITE = (const char*)37007354
-            }
+	[TdfStruct]
+	public struct XboxServerAddress
+	{
 
-            unsigned int mServiceId;
-            Blaze::TdfString mSiteName;
-            unsigned __int16 mPort;
+		[TdfMember("PORT")]
+		public ushort mPort;
 
-            Blaze::TdfMemberInfoInt mPortDef;
-            Blaze::TdfMemberInfoString mSiteNameDef;
-            Blaze::TdfMemberInfoInt mSidDef;
-        
-        */
+		[TdfMember("SID")]
+		public uint mServiceId;
 
-        [TdfMember("PORT")]
-        public ushort mPort;
+		[TdfMember("SITE")]
+		public string mSiteName;
 
-        [TdfMember("SID")]
-        public uint mServiceId;
-
-        [TdfMember("SITE")]
-        public string mSiteName;
-
-
-        public static implicit operator XboxServerAddress?(ServerAddress serverAddress)
-        {
-            return serverAddress.XboxServerAddress;
-        }
-    }
+	}
 }

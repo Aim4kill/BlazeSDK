@@ -1,81 +1,43 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Authentication
 {
-    [TdfStruct]
-    public struct LoginResponse
-    {
-        /*
-              Blaze::TdfMemberInfoString mLegalDocHostDef;
-              Blaze::TdfMemberInfoInt mNeedsLegalDocDef;
-              Blaze::TdfMemberInfoString mPCLoginTokenDef;
-              Blaze::TdfMemberInfo mPersonaDetailsListDef;
-              Blaze::TdfMemberInfoString mPrivacyPolicyUriDef;
-              Blaze::TdfMemberInfoString mSessionKeyDef;
-              Blaze::TdfMemberInfoInt mIsOfLegalContactAgeDef;
-              Blaze::TdfMemberInfoString mTosHostDef;
-              Blaze::TdfMemberInfoString mTermsOfServiceUriDef;
-              Blaze::TdfMemberInfoString mTosUriDef;
-              Blaze::TdfMemberInfoInt64 mUserIdDef;
+	[TdfStruct]
+	public struct LoginResponse
+	{
 
+		[TdfMember("SPAM")]
+		public bool mIsOfLegalContactAge;
 
-        	TdfString LDHT = (const char*)37007354
-	        TdfBool NTOS = 0
-	        TdfString PCTK = (const char*)37007354
-	        TdfList PLST
-	        TdfString PRIV = (const char*)37007354
-	        TdfString SKEY = (const char*)37007354
-	        TdfBool SPAM = 0
-	        TdfString THST = (const char*)37007354
-	        TdfString TSUI = (const char*)37007354
-	        TdfString TURI = (const char*)37007354
-	        TdfInt(__int64) UID = 0
+		[TdfMember("LDHT")]
+		public string mLegalDocHost;
 
-          __int64 mUserId;
-          Blaze::TdfString mPCLoginToken;
-          Blaze::TdfStructVector<Blaze::Authentication::PersonaDetails,Blaze::TdfTdfVectorBase> mPersonaDetailsList;
-          Blaze::TdfString mTosUri;
-          Blaze::TdfString mTermsOfServiceUri;
-          Blaze::TdfString mPrivacyPolicyUri;
-          Blaze::TdfString mLegalDocHost;
-          Blaze::TdfString mTosHost;
-          Blaze::TdfString mSessionKey;
-          bool mIsOfLegalContactAge;
-          bool mNeedsLegalDoc;
-         */
+		[TdfMember("NTOS")]
+		public bool mNeedsLegalDoc;
 
-        [TdfMember("LDHT")]
-        public string mLegalDocHost;
+		[TdfMember("PCTK")]
+		public string mPCLoginToken;
 
-        [TdfMember("NTOS")]
-        public bool mNeedsLegalDoc;
+		[TdfMember("PLST")]
+		public List<PersonaDetails> mPersonaDetailsList;
 
-        [TdfMember("PCTK")]
-        public string mPCLoginToken;
+		[TdfMember("PRIV")]
+		public string mPrivacyPolicyUri;
 
-        [TdfMember("PLST")]
-        public List<PersonaDetails> mPersonaDetailsList;
+		[TdfMember("SKEY")]
+		public string mSessionKey;
 
-        [TdfMember("PRIV")]
-        public string mPrivacyPolicyUri;
+		[TdfMember("TSUI")]
+		public string mTermsOfServiceUri;
 
-        [TdfMember("SKEY")]
-        public string mSessionKey;
+		[TdfMember("THST")]
+		public string mTosHost;
 
-        [TdfMember("SPAM")]
-        public bool mIsOfLegalContactAge;
+		[TdfMember("TURI")]
+		public string mTosUri;
 
-        [TdfMember("THST")]
-        public string mTosHost;
+		[TdfMember("UID")]
+		public long mUserId;
 
-        [TdfMember("TSUI")]
-        public string mTermsOfServiceUri;
-
-        [TdfMember("TURI")]
-        public string mTosUri;
-
-        [TdfMember("UID")]
-        public long mUserId;
-
-    }
+	}
 }

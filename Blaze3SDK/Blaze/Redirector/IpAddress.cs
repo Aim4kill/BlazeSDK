@@ -1,56 +1,19 @@
-﻿using Tdf;
-using System.Net;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Redirector
 {
-    [TdfStruct]
-    public struct IpAddress
-    {
-        [TdfMember("HOST")]
-        public string mHostname;
+	[TdfStruct]
+	public struct IpAddress
+	{
 
-        [TdfMember("IP")]
-        public uint mIp;
+		[TdfMember("HOST")]
+		public string mHostname;
 
-        [TdfMember("PORT")]
-        public ushort mPort;
+		[TdfMember("IP")]
+		public uint mIp;
 
-        public IpAddress()
-        {
-            mHostname = string.Empty;
-            mIp = 0;
-            mPort = 0;
-        }
+		[TdfMember("PORT")]
+		public ushort mPort;
 
-        public static implicit operator IpAddress?(ServerAddress serverAddress)
-        {
-            return serverAddress.IpAddress;
-        }
-
-        public IpAddress(string hostname, uint ipAddress, ushort port)
-        {
-            mHostname = hostname;
-            mIp = ipAddress;
-            mPort = port;
-        }
-
-        public IpAddress(string hostname, string ipAddress, ushort port)
-        {
-            mHostname = hostname;
-            mIp = GetIPAddressAsUInt(ipAddress);
-            mPort = port;
-        }
-
-        public static uint GetIPAddressAsUInt(string ipAddress)
-        {
-            if (ipAddress == null)
-                throw new ArgumentNullException(nameof(ipAddress));
-
-            IPAddress address = IPAddress.Parse(ipAddress);
-            byte[] bytes = address.GetAddressBytes();
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(bytes);
-            return BitConverter.ToUInt32(bytes, 0);
-        }
-    }
+	}
 }

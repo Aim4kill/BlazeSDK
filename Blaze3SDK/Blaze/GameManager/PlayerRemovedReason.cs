@@ -1,19 +1,19 @@
-﻿namespace Blaze3SDK.Blaze.GameManager
+namespace Blaze3SDK.Blaze.GameManager
 {
-    public enum PlayerRemovedReason
-    {
-        PLAYER_JOIN_TIMEOUT = 0x0,
-        PLAYER_CONN_LOST = 0x1,
-        BLAZESERVER_CONN_LOST = 0x2,
-        MIGRATION_FAILED = 0x3,
-        GAME_DESTROYED = 0x4,
-        GAME_ENDED = 0x5,
-        PLAYER_LEFT = 0x6,
-        GROUP_LEFT = 0x7,
-        PLAYER_KICKED = 0x8,
-        PLAYER_KICKED_WITH_BAN = 0x9,
-        PLAYER_JOIN_FROM_QUEUE_FAILED = 0xA,
-        PLAYER_RESERVATION_TIMEOUT = 0xB,
-        HOST_EJECTED = 0xC,
-    }
+	public enum PlayerRemovedReason : int
+	{
+		PLAYER_JOIN_TIMEOUT = 0,
+		PLAYER_CONN_LOST = 1,
+		BLAZESERVER_CONN_LOST = 2,
+		MIGRATION_FAILED = 3,
+		GAME_DESTROYED = 4,
+		GAME_ENDED = 5,
+		PLAYER_LEFT = 6,
+		GROUP_LEFT = 7,
+		PLAYER_KICKED = 8,
+		PLAYER_KICKED_WITH_BAN = 9,
+		PLAYER_JOIN_FROM_QUEUE_FAILED = 10,
+		PLAYER_RESERVATION_TIMEOUT = 11,
+		HOST_EJECTED = 12,
+	}
 }

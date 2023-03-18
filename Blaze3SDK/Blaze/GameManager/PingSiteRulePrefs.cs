@@ -1,26 +1,13 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-    [TdfStruct]
-    public struct PingSiteRulePrefs
-    {
-        /*
-        
-        Blaze::GameManager::PingSiteRulePrefs {
-	        TdfString THLD = (const char*)37007354
-        }
+	[TdfStruct]
+	public struct PingSiteRulePrefs
+	{
 
-        struct __cppobj Blaze::GameManager::PingSiteRulePrefs : Blaze::Tdf
-        {
-          Blaze::TdfString mMinFitThresholdName;
-        };
+		[TdfMember("THLD")]
+		public string mMinFitThresholdName;
 
-
-         */
-
-        [TdfMember("THLD")]
-        public string mMinFitThresholdName;
-        
-    }
+	}
 }

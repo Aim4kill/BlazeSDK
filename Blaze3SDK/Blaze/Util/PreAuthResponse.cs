@@ -1,50 +1,52 @@
-﻿using Tdf;
+using Tdf;
 
 namespace Blaze3SDK.Blaze.Util
 {
-    [TdfStruct]
-    public struct PreAuthResponse
-    {
-        [TdfMember("ANON")]
-        public bool mAnonymousChildAccountsEnabled;
+	[TdfStruct]
+	public struct PreAuthResponse
+	{
 
-        [TdfMember("ASRC")]
-        public string mAuthenticationSource;
+		[TdfMember("ANON")]
+		public bool mAnonymousChildAccountsEnabled;
 
-        [TdfMember("CIDS")]
-        public List<ushort> mComponentIds;
+		[TdfMember("ASRC")]
+		public string mAuthenticationSource;
 
-        [TdfMember("CNGN")]
-        public string mParentalConsentEntitlementGroupName;
+		[TdfMember("CIDS")]
+		public List<ushort> mComponentIds;
 
-        [TdfMember("CONF")]
-        public FetchConfigResponse mConfig;
+		[TdfMember("CONF")]
+		public FetchConfigResponse mConfig;
 
-        [TdfMember("INST")]
-        public string mInstanceName;
+		[TdfMember("INST")]
+		public string mInstanceName;
 
-        [TdfMember("MINR")]
-        public bool mUnderageSupported;
+		[TdfMember("PILD")]
+		public string mLegalDocGameIdentifier;
 
-        [TdfMember("NASP")]
-        public string mPersonaNamespace;
+		[TdfMember("CNGN")]
+		public string mParentalConsentEntitlementGroupName;
 
-        [TdfMember("PILD")]
-        public string mLegalDocGameIdentifier;
+		[TdfMember("PTAG")]
+		public string mParentalConsentEntitlementTag;
 
-        [TdfMember("PLAT")]
-        public string mPlatform;
+		[TdfMember("NASP")]
+		public string mPersonaNamespace;
 
-        [TdfMember("PTAG")]
-        public string mParentalConsentEntitlementTag;
+		[TdfMember("PLAT")]
+		public string mPlatform;
 
-        [TdfMember("QOSS")]
-        public QosConfigInfo mQosSettings;
+		[TdfMember("QOSS")]
+		public QosConfigInfo mQosSettings;
 
-        [TdfMember("RSRC")]
-        public string mRegistrationSource;
+		[TdfMember("RSRC")]
+		public string mRegistrationSource;
 
-        [TdfMember("SVER")]
-        public string mServerVersion;
-    }
+		[TdfMember("SVER")]
+		public string mServerVersion;
+
+		[TdfMember("MINR")]
+		public bool mUnderageSupported;
+
+	}
 }

@@ -1,13 +1,12 @@
-﻿namespace Blaze3SDK.Blaze.GameManager
+namespace Blaze3SDK.Blaze.GameManager
 {
-    public enum PlayerState : int
-    {
-        RESERVED = 0x0,
-        QUEUED = 0x1,
-        ACTIVE_CONNECTING = 0x2,
-        ACTIVE_MIGRATING = 0x3,
-        ACTIVE_CONNECTED = 0x4,
-        ACTIVE_KICK_PENDING = 0x5
-    }
-
+	public enum PlayerState : int
+	{
+		RESERVED = 0,
+		QUEUED = 1,
+		ACTIVE_CONNECTING = 2,
+		ACTIVE_MIGRATING = 3,
+		ACTIVE_CONNECTED = 4,
+		ACTIVE_KICK_PENDING = 5,
+	}
 }
