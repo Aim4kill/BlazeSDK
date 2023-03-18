@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Example;
 using BlazeCommon;
 using static Blaze3SDK.Components.ExampleComponent;
 
@@ -13,19 +14,19 @@ namespace Blaze3SDK.Components
 
         public override Type GetCommandErrorResponseType(ExampleComponentCommand command) => command switch
         {
-            ExampleComponentCommand.poke => throw new NotImplementedException(),
+            ExampleComponentCommand.poke => typeof(ExampleError),
             _ => typeof(NullStruct),
         };
         
         public override Type GetCommandRequestType(ExampleComponentCommand command) => command switch
         {
-            ExampleComponentCommand.poke => throw new NotImplementedException(),
+            ExampleComponentCommand.poke => typeof(ExampleRequest),
             _ => typeof(NullStruct),
         };
 
         public override Type GetCommandResponseType(ExampleComponentCommand command) => command switch
         {
-            ExampleComponentCommand.poke => throw new NotImplementedException(),
+            ExampleComponentCommand.poke => typeof(ExampleResponse),
             _ => typeof(NullStruct),
         };
 
