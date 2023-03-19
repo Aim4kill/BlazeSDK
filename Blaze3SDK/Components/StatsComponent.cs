@@ -97,7 +97,7 @@ namespace Blaze3SDK.Components
         public override Type GetNotificationType(StatsComponentNotification notification) => notification switch
         {
             StatsComponentNotification.GetStatsAsyncNotification => typeof(KeyScopedStatValues),
-            StatsComponentNotification.GetLeaderboardTreeNotification => throw new NotImplementedException(),
+            StatsComponentNotification.GetLeaderboardTreeNotification => typeof(LeaderboardTreeNode),
             _ => typeof(NullStruct),
         };
 

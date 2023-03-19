@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Messaging;
 using BlazeCommon;
 using static Blaze3SDK.Components.MessagingComponent;
 
@@ -43,7 +44,7 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(MessagingComponentNotification notification) => notification switch
         {
-            MessagingComponentNotification.NotifyMessage => throw new NotImplementedException(),
+            MessagingComponentNotification.NotifyMessage => typeof(ServerMessage),
             _ => typeof(NullStruct)
         };
 

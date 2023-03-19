@@ -35,19 +35,16 @@ namespace Blaze3SDK.Components
             _ => typeof(NullStruct),
         };
 
-        //commands dumped from latest bf3 server files
         public enum RedirectorComponentCommand : ushort
         {
             getServerInstance = 1
         }
         
-        //looks like there is no notifications for this component
         public enum RedirectorComponentNotification : ushort
         {
 
         }
 
-        //errors dumped from latest bf3 server files
         public enum RedirectorComponentError : int
         {
             REDIRECTOR_SERVER_NOT_FOUND = 65541,

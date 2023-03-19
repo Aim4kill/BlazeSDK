@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.League;
 using BlazeCommon;
 using static Blaze3SDK.Components.LeagueComponent;
 
@@ -118,7 +119,7 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(LeagueComponentNotification notification) => notification switch
         {
-            LeagueComponentNotification.FindLeaguesAsyncNotification => throw new NotImplementedException(),
+            LeagueComponentNotification.FindLeaguesAsyncNotification => typeof(FindLeaguesAsyncNotification),
             _ => typeof(NullStruct)
         };
 

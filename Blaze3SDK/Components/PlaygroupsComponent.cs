@@ -1,10 +1,6 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Playgroups;
 using BlazeCommon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Blaze3SDK.Components.PlaygroupsComponent;
 
 namespace Blaze3SDK.Components
@@ -66,21 +62,20 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(PlaygroupsComponentNotification notification) => notification switch
         {
-            PlaygroupsComponentNotification.NotifyDestroyPlaygroup => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyJoinPlaygroup => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyMemberAttributesSet => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyLeaderChange => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyMemberPermissionsChange => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyJoinControlsChange => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyXboxSessionInfo => throw new NotImplementedException(),
-            PlaygroupsComponentNotification.NotifyXboxSessionChange => throw new NotImplementedException(),
+            PlaygroupsComponentNotification.NotifyDestroyPlaygroup => typeof(NotifyDestroyPlaygroup),
+            PlaygroupsComponentNotification.NotifyJoinPlaygroup => typeof(NotifyJoinPlaygroup),
+            PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup => typeof(NotifyMemberJoinedPlaygroup),
+            PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup => typeof(NotifyMemberRemoveFromPlaygroup),
+            PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet => typeof(NotifyPlaygroupAttributesSet),
+            PlaygroupsComponentNotification.NotifyMemberAttributesSet => typeof(NotifyMemberAttributesSet),
+            PlaygroupsComponentNotification.NotifyLeaderChange => typeof(NotifyLeaderChange),
+            PlaygroupsComponentNotification.NotifyMemberPermissionsChange => typeof(NotifyMemberPermissionsChange),
+            PlaygroupsComponentNotification.NotifyJoinControlsChange => typeof(NotifyJoinControlsChange),
+            PlaygroupsComponentNotification.NotifyXboxSessionInfo => typeof(NotifyXboxSessionInfo),
+            PlaygroupsComponentNotification.NotifyXboxSessionChange => typeof(NotifyXboxSessionInfo),
             _ => typeof(NullStruct),
         };
 
-        //errors dumped from latest bf3 server files
         public enum PlaygroupsComponentError
         {
             PLAYGROUPS_ERR_NOT_IN_GROUP = 65542,
@@ -94,7 +89,6 @@ namespace Blaze3SDK.Components
             PLAYGROUPS_ERR_ALREADY_IN_GROUP = 589830
         }
 
-        //commands dumped from latest bf3 server files
         public enum PlaygroupsComponentCommand : ushort
         {
             createPlaygroup = 1,
@@ -110,7 +104,6 @@ namespace Blaze3SDK.Components
             resetPlaygroupSession = 11
         }
 
-        //notifications dumped from latest bf3 server files
         public enum PlaygroupsComponentNotification : ushort
         {
             NotifyDestroyPlaygroup = 50,

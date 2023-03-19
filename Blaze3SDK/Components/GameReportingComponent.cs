@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.GameReporting;
 using BlazeCommon;
 using static Blaze3SDK.Components.GameReportingComponent;
 
@@ -73,7 +74,7 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(GameReportingComponentNotification notification) => notification switch
         {
-            GameReportingComponentNotification.ResultNotification => throw new NotImplementedException(),
+            GameReportingComponentNotification.ResultNotification => typeof(ResultNotification),
             _ => typeof(NullStruct)
         };
 

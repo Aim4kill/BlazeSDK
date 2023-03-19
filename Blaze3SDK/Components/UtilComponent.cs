@@ -40,9 +40,6 @@ namespace Blaze3SDK.Components
 
         public override Type GetCommandRequestType(UtilComponentCommand command) => command switch
         {
-            //UtilComponentCommand.userSettingsLoad =>    typeof(UserSettingsLoadRequest),
-            //UtilComponentCommand.userSettingsSave =>    typeof(UserSettingsSaveRequest),
-            //UtilComponentCommand.filterForProfanity =>  typeof(FilterUserTextResponse),
             UtilComponentCommand.fetchClientConfig => typeof(FetchClientConfigRequest),
             UtilComponentCommand.ping => typeof(NullStruct),
             UtilComponentCommand.setClientData => throw new NotImplementedException(),
@@ -51,11 +48,11 @@ namespace Blaze3SDK.Components
             UtilComponentCommand.getTickerServer => throw new NotImplementedException(),
             UtilComponentCommand.preAuth => typeof(PreAuthRequest),
             UtilComponentCommand.postAuth => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoad => throw new NotImplementedException(),
-            UtilComponentCommand.userSettingsSave => throw new NotImplementedException(),
+            UtilComponentCommand.userSettingsLoad => typeof(UserSettingsLoadRequest),
+            UtilComponentCommand.userSettingsSave => typeof(UserSettingsSaveRequest),
             UtilComponentCommand.userSettingsLoadAll => typeof(UserSettingsLoadAllRequest),
             UtilComponentCommand.deleteUserSettings => throw new NotImplementedException(),
-            UtilComponentCommand.filterForProfanity => throw new NotImplementedException(),
+            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
             UtilComponentCommand.fetchQosConfig => throw new NotImplementedException(),
             UtilComponentCommand.setClientMetrics => typeof(ClientMetrics),
             UtilComponentCommand.setConnectionState => throw new NotImplementedException(),
@@ -98,7 +95,6 @@ namespace Blaze3SDK.Components
             _ => typeof(NullStruct),
         };
 
-        //errors dumped from latest bf3 server files
         public enum UtilComponentError
         {
             UTIL_CONFIG_NOT_FOUND = 6553609,
@@ -118,7 +114,6 @@ namespace Blaze3SDK.Components
             UTIL_PING_SUSPENDED = 19791881
         }
 
-        //commands dumped from latest bf3 server files
         public enum UtilComponentCommand : ushort
         {
             fetchClientConfig = 1,
@@ -143,7 +138,6 @@ namespace Blaze3SDK.Components
             suspendUserPing = 27
         }
 
-        //no notifications for this component
         public enum UtilComponentNotification : ushort
         {
 

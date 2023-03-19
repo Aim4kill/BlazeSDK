@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Rooms;
 using BlazeCommon;
 using static Blaze3SDK.Components.RoomsComponent;
 
@@ -97,23 +98,23 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(RoomsComponentNotification notification) => notification switch
         {
-            RoomsComponentNotification.RoomViewUpdatedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomViewAddedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomViewRemovedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomCategoryUpdatedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomCategoryAddedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomCategoryRemovedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomUpdatedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomAddedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomRemovedNotification => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomPopulationUpdated => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomMemberJoined => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomMemberLeft => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomMemberUpdated => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomKick => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomHostTransfer => throw new NotImplementedException(),
-            RoomsComponentNotification.RoomAttributesSet => throw new NotImplementedException(),
-            RoomsComponentNotification.MemberAttributesSet => throw new NotImplementedException(),
+            RoomsComponentNotification.RoomViewUpdatedNotification => typeof(RoomViewData),
+            RoomsComponentNotification.RoomViewAddedNotification => typeof(RoomViewData),
+            RoomsComponentNotification.RoomViewRemovedNotification => typeof(RoomViewRemoved),
+            RoomsComponentNotification.RoomCategoryUpdatedNotification => typeof(RoomCategoryData),
+            RoomsComponentNotification.RoomCategoryAddedNotification => typeof(RoomCategoryData),
+            RoomsComponentNotification.RoomCategoryRemovedNotification => typeof(RoomCategoryRemoved),
+            RoomsComponentNotification.RoomUpdatedNotification => typeof(RoomData),
+            RoomsComponentNotification.RoomAddedNotification => typeof(RoomData),
+            RoomsComponentNotification.RoomRemovedNotification => typeof(RoomRemoved),
+            RoomsComponentNotification.RoomPopulationUpdated => typeof(RoomsPopulationUpdate),
+            RoomsComponentNotification.RoomMemberJoined => typeof(RoomMemberData),
+            RoomsComponentNotification.RoomMemberLeft => typeof(RoomMemberRemoved),
+            RoomsComponentNotification.RoomMemberUpdated => typeof(RoomMemberData),
+            RoomsComponentNotification.RoomKick => typeof(RoomMemberKicked),
+            RoomsComponentNotification.RoomHostTransfer => typeof(RoomHostTransfered),
+            RoomsComponentNotification.RoomAttributesSet => typeof(RoomAttributesSet),
+            RoomsComponentNotification.MemberAttributesSet => typeof(MemberAttributesSet),
             _ => typeof(NullStruct)
         };
 

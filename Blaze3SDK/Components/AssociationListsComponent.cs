@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Association;
 using BlazeCommon;
 using static Blaze3SDK.Components.AssociationListsComponent;
 
@@ -55,7 +56,7 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(AssociationListsComponentNotification notification) => notification switch
         {
-            AssociationListsComponentNotification.NotifyUpdateListMembership => throw new NotImplementedException(),
+            AssociationListsComponentNotification.NotifyUpdateListMembership => typeof(UpdateListWithMembersRequest),
             _ => typeof(NullStruct)
         };
 

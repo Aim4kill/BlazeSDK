@@ -174,10 +174,10 @@ namespace Blaze3SDK.Components
             GameManagerNotification.NotifyGameRemoved => typeof(NotifyGameRemoved),
             GameManagerNotification.NotifyGameSetup => typeof(NotifyGameSetup),
             GameManagerNotification.NotifyPlayerJoining => typeof(NotifyPlayerJoining),
-            GameManagerNotification.NotifyJoiningPlayerInitiateConnections => throw new NotImplementedException(),
-            GameManagerNotification.NotifyPlayerJoiningQueue => throw new NotImplementedException(),
-            GameManagerNotification.NotifyPlayerPromotedFromQueue => throw new NotImplementedException(),
-            GameManagerNotification.NotifyPlayerClaimingReservation => throw new NotImplementedException(),
+            GameManagerNotification.NotifyJoiningPlayerInitiateConnections => typeof(NotifyGameSetup),
+            GameManagerNotification.NotifyPlayerJoiningQueue => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyPlayerPromotedFromQueue => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyPlayerClaimingReservation => typeof(NotifyPlayerJoining),
             GameManagerNotification.NotifyPlayerJoinCompleted => typeof(NotifyPlayerJoinCompleted),
             GameManagerNotification.NotifyPlayerRemoved => typeof(NotifyPlayerRemoved),
             GameManagerNotification.NotifyHostMigrationFinished => typeof(NotifyHostMigrationFinished),
@@ -191,7 +191,7 @@ namespace Blaze3SDK.Components
             GameManagerNotification.NotifyGameCapacityChange => typeof(NotifyGameCapacityChange),
             GameManagerNotification.NotifyGameReset => typeof(NotifyGameReset),
             GameManagerNotification.NotifyGameReportingIdChange => typeof(NotifyGameReportingIdChange),
-            GameManagerNotification.NotifyGameSessionUpdated => throw new NotImplementedException(),
+            GameManagerNotification.NotifyGameSessionUpdated => typeof(GameSessionUpdatedNotification),
             GameManagerNotification.NotifyGamePlayerStateChange => typeof(NotifyGamePlayerStateChange),
             GameManagerNotification.NotifyGamePlayerTeamChange => typeof(NotifyGamePlayerTeamChange),
             GameManagerNotification.NotifyGameTeamIdChange => typeof(NotifyGameTeamIdChange),
@@ -205,7 +205,6 @@ namespace Blaze3SDK.Components
             _ => typeof(NullStruct)
         };
 
-        //commands dumped from latest bf3 server files
         public enum GameManagerCommand : ushort
         {
             createGame = 1,
@@ -256,7 +255,6 @@ namespace Blaze3SDK.Components
             unregisterDynamicDedicatedServerCreator = 151
         }
 
-        //notifications dumped from latest bf3 server files
         public enum GameManagerNotification : ushort
         {
             NotifyMatchmakingFailed = 10,
@@ -295,7 +293,6 @@ namespace Blaze3SDK.Components
             NotifyGameNameChange = 230
         }
 
-        //errors dumped from latest bf3 server files
         public enum GameManagerError
         {
             GAMEMANAGER_ERR_INVALID_GAME_SETTINGS = 65540,

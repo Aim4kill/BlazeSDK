@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.Clubs;
 using BlazeCommon;
 using static Blaze3SDK.Components.ClubsComponent;
 
@@ -175,9 +176,9 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(ClubsComponentNotification notification) => notification switch
         {
-            ClubsComponentNotification.FindClubsAsyncNotification => throw new NotImplementedException(),
-            ClubsComponentNotification.NewClubTickerMessageNotification => throw new NotImplementedException(),
-            ClubsComponentNotification.GetMembersAsyncNotification => throw new NotImplementedException(),
+            ClubsComponentNotification.FindClubsAsyncNotification => typeof(FindClubsAsyncResult),
+            ClubsComponentNotification.NewClubTickerMessageNotification => typeof(ClubTickerMessage),
+            ClubsComponentNotification.GetMembersAsyncNotification => typeof(GetMembersAsyncResult),
             _ => typeof(NullStruct)
         };
 

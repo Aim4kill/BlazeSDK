@@ -35,19 +35,16 @@ namespace Blaze3SDK.Components
             _ => typeof(NullStruct),
         };
 
-        //commands dumped from latest bf3 server files
         public enum ExampleComponentCommand : ushort
         {
             poke = 1
         }
 
-        //looks like there is no notifications for this component
         public enum ExampleComponentNotification : ushort
         {
 
         }
 
-        //errors dumped from latest bf3 server files
         public enum ExampleComponentError
         {
             EXAMPLE_ERR_UNKNOWN = 65539

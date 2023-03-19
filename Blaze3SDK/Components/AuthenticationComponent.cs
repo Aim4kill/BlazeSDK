@@ -173,7 +173,7 @@ namespace Blaze3SDK.Components
             AuthenticationComponentCommand.xboxLogin => throw new NotImplementedException(),
             AuthenticationComponentCommand.ps3CreateAccount => throw new NotImplementedException(),
             AuthenticationComponentCommand.ps3AssociateAccount => throw new NotImplementedException(),
-            AuthenticationComponentCommand.ps3Login => typeof(FullLoginResponse),
+            AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),
             AuthenticationComponentCommand.validateSessionKey => throw new NotImplementedException(),
             AuthenticationComponentCommand.createWalUserSession => throw new NotImplementedException(),
             AuthenticationComponentCommand.acceptLegalDocs => throw new NotImplementedException(),

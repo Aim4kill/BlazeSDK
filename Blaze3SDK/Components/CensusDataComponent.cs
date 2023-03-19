@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK.Blaze;
+using Blaze3SDK.Blaze.CensusData;
 using BlazeCommon;
 using static Blaze3SDK.Components.CensusDataComponent;
 
@@ -40,7 +41,7 @@ namespace Blaze3SDK.Components
 
         public override Type GetNotificationType(CensusDataComponentNotification notification) => notification switch
         {
-            CensusDataComponentNotification.NotifyServerCensusData => throw new NotImplementedException(),
+            CensusDataComponentNotification.NotifyServerCensusData => typeof(NotifyServerCensusData),
             _ => typeof(NullStruct)
         };
 

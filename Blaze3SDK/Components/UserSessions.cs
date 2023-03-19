@@ -79,7 +79,7 @@ namespace Blaze3SDK.Components
             UserSessionsNotification.UserSessionExtendedDataUpdate => typeof(UserSessionExtendedDataUpdate),
             UserSessionsNotification.UserAdded => typeof(NotifyUserAdded),
             UserSessionsNotification.UserRemoved => typeof(NotifyUserRemoved),
-            UserSessionsNotification.UserSessionDisconnected => throw new NotImplementedException(),
+            UserSessionsNotification.UserSessionDisconnected => typeof(UserSessionDisconnectReason),
             UserSessionsNotification.UserUpdated => typeof(UserStatus),
             _ => throw new NotImplementedException(),
         };
