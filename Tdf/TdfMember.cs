@@ -8,35 +8,35 @@ namespace Tdf
     {
         private const byte TAG_LENGTH = 3;
 
-        private string tag;
+        public string Tag { get; private set; }
         public byte[] Bytes { get; private set; }
         
         //public bool EncodeIfEmpty { get; set; } = false;
 
         public TdfMember(string tagString)
         {
-            tag = tagString;
+            Tag = tagString;
            
             if (!IsASCII(tagString))
                 throw new Exception($"Tag can only consist of ASCII characters from 32 to 95 ({tagString})");
 
-            tag = tagString.ToUpper();
+            Tag = tagString.ToUpper();
 
-            int len = tag.Length;
+            int len = Tag.Length;
 
             if (len > 4 || len <= 0)
                 throw new Exception($"Tag length can be [1;4] ({tagString})");
 
-            for (int i = 0; i < tag.Length; i++)
-                if (tag[i] < ' ' || tag[i] > '_') //' ' - 32 (0x20) //'_' - 95 (0x5F)
+            for (int i = 0; i < Tag.Length; i++)
+                if (Tag[i] < ' ' || Tag[i] > '_') //' ' - 32 (0x20) //'_' - 95 (0x5F)
                     throw new Exception($"Tag can only consist of ASCII characters from 32 to 95 ({tagString})");
 
-            if ((tag[0] - 'A') > 25)
+            if ((Tag[0] - 'A') > 25)
                 throw new Exception("Tag must begin with letter [A-Z] (tag: " + tagString + ")");
 
             //the part where we convert string to tag bytes
 
-            byte[] asciiBytes = Encoding.ASCII.GetBytes(tag);
+            byte[] asciiBytes = Encoding.ASCII.GetBytes(Tag);
             int result = (asciiBytes[0] - 32) << 26;
             if (len > 1)
             {
@@ -117,7 +117,7 @@ namespace Tdf
                 len = 0;
             }
 
-            tag = Encoding.ASCII.GetString(buf, 0, len);
+            Tag = Encoding.ASCII.GetString(buf, 0, len);
         }
         
         public static TdfMember FromString(string tagString)
@@ -148,7 +148,7 @@ namespace Tdf
 
         public override string ToString()
         {
-            return tag;
+            return Tag;
         }
 
         public static implicit operator TdfMember(string tagString)
@@ -168,7 +168,7 @@ namespace Tdf
 
         public override int GetHashCode()
         {
-            return tag.GetHashCode();
+            return Tag.GetHashCode();
         }
 
     }

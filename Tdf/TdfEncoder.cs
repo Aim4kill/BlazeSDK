@@ -30,11 +30,24 @@ namespace Tdf
         internal void WriteTo(Stream stream, object obj)
         {
             Type objectType = obj.GetType();
+
+            
+            Dictionary<TdfMember, FieldInfo> keyValuePairs = new Dictionary<TdfMember, FieldInfo>();
+
             foreach (FieldInfo field in objectType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
             {
                 TdfMember? tag = field.GetCustomAttribute<TdfMember>();
                 if (tag == null) //no tag, skip it
                     continue;
+
+                keyValuePairs.Add(tag, field);
+            }
+
+            //need to encode it alphabetically
+            foreach (KeyValuePair<TdfMember, FieldInfo> kvp in keyValuePairs.OrderBy(x => x.Key.Tag))
+            {
+                TdfMember? tag = kvp.Key;
+                FieldInfo field = kvp.Value;
 
                 object? fieldValue = field.GetValue(obj);
                 if (fieldValue == null) //no value, we skip encoding it
@@ -43,7 +56,7 @@ namespace Tdf
                 TdfBaseType baseType = GetTdfBaseType(field.FieldType);
                 TdfWriter? writer = GetTdfWriter(field.FieldType, baseType, false);
 
-                if(writer != null)
+                if (writer != null)
                 {
                     stream.WriteTdfTag(tag);
                     stream.WriteTdfBaseType(baseType);
