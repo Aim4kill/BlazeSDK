@@ -14,43 +14,43 @@ namespace Blaze3SDK.Components
 
         public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => command switch
         {
-            AssociationListsComponentCommand.addUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.removeUsersFromList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.clearLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.setUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getListForUser => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.subscribeToLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.unsubscribeFromLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getConfigListsInfo => throw new NotImplementedException(),
+            AssociationListsComponentCommand.addUsersToList => typeof(NullStruct),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(NullStruct),
+            AssociationListsComponentCommand.clearLists => typeof(NullStruct),
+            AssociationListsComponentCommand.setUsersToList => typeof(NullStruct),
+            AssociationListsComponentCommand.getListForUser => typeof(NullStruct),
+            AssociationListsComponentCommand.getLists => typeof(NullStruct),
+            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(NullStruct),
             _ => typeof(NullStruct)
         };
 
         public override Type GetCommandRequestType(AssociationListsComponentCommand command) => command switch
         {
-            AssociationListsComponentCommand.addUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.removeUsersFromList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.clearLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.setUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getListForUser => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.subscribeToLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.unsubscribeFromLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getConfigListsInfo => throw new NotImplementedException(),
+            AssociationListsComponentCommand.addUsersToList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.clearLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.setUsersToList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.getListForUser => typeof(GetListForUserRequest),
+            AssociationListsComponentCommand.getLists => typeof(GetListsRequest),
+            AssociationListsComponentCommand.subscribeToLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(NullStruct),
             _ => typeof(NullStruct)
         };
 
         public override Type GetCommandResponseType(AssociationListsComponentCommand command) => command switch
         {
-            AssociationListsComponentCommand.addUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.removeUsersFromList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.clearLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.setUsersToList => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getListForUser => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.subscribeToLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.unsubscribeFromLists => throw new NotImplementedException(),
-            AssociationListsComponentCommand.getConfigListsInfo => throw new NotImplementedException(),
+            AssociationListsComponentCommand.addUsersToList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.clearLists => typeof(NullStruct),
+            AssociationListsComponentCommand.setUsersToList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.getListForUser => typeof(ListMembers),
+            AssociationListsComponentCommand.getLists => typeof(Lists),
+            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(ConfigLists),
             _ => typeof(NullStruct)
         };
 

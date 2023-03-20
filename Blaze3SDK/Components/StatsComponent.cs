@@ -101,7 +101,6 @@ namespace Blaze3SDK.Components
             _ => typeof(NullStruct),
         };
 
-        //commands dumped from latest bf3 server files
         public enum StatsComponentCommand : ushort
         {
             getStatDescs = 1,
@@ -128,14 +127,12 @@ namespace Blaze3SDK.Components
             changeKeyscopeValue = 24
         }
 
-        //notifications dumped from latest bf3 server files
         public enum StatsComponentNotification : ushort
         {
             GetStatsAsyncNotification = 50,
             GetLeaderboardTreeNotification = 51
         }
 
-        //errors dumped from latest bf3 server files
         public enum StatsComponentError
         {
             STATS_ERR_CONFIG_NOTAVAILABLE = 65543,
