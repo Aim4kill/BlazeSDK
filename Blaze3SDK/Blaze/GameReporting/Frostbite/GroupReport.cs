@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.GameReporting.Frostbite
 {
-	[TdfStruct]
+	[TdfStruct(0x71F381B1)]
 	public struct GroupReport
 	{
 

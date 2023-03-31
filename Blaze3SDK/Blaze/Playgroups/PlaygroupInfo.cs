@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Playgroups
 {
-	[TdfStruct]
+	[TdfStruct(0xAADA08AF)]
 	public struct PlaygroupInfo
 	{
 

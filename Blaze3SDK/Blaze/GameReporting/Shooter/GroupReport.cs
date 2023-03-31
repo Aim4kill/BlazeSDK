@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.GameReporting.Shooter
 {
-	[TdfStruct]
+	[TdfStruct(0x422A46E1)]
 	public struct GroupReport
 	{
 

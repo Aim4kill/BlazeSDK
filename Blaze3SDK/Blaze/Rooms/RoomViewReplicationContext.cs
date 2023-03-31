@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Rooms
 {
-	[TdfStruct]
+	[TdfStruct(0x5A3762D9)]
 	public struct RoomViewReplicationContext
 	{
 

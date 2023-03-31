@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.DynamicInetFilter
 {
-	[TdfStruct]
+	[TdfStruct(0xDC68BBC0)]
 	public struct ReplicatedInetFilterReplicationReason
 	{
 

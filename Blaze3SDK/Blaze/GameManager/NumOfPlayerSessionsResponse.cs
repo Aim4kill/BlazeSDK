@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-	[TdfStruct]
+	[TdfStruct(0xC943ECC3)]
 	public struct NumOfPlayerSessionsResponse
 	{
 

@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-	[TdfStruct]
+	[TdfStruct(0x95EBFC4D)]
 	public struct NumOfMatchmakingResponse
 	{
 

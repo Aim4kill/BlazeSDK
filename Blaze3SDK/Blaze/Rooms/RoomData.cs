@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Rooms
 {
-	[TdfStruct]
+	[TdfStruct(0xD27984FB)]
 	public struct RoomData
 	{
 

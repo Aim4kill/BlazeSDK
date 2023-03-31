@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.GameManager
 {
-	[TdfStruct]
+	[TdfStruct(0xC86D3EA7)]
 	public struct ReplicatedGamePlayer
 	{
 

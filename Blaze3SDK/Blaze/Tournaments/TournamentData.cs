@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Tournaments
 {
-	[TdfStruct]
+	[TdfStruct(0x9567DCBB)]
 	public struct TournamentData
 	{
 

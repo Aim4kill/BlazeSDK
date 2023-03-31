@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Clubs
 {
-	[TdfStruct]
+	[TdfStruct(0x129FBD9E)]
 	public struct ReplicationContext
 	{
 

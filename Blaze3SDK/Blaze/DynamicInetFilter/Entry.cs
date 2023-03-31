@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.DynamicInetFilter
 {
-	[TdfStruct]
+	[TdfStruct(0xC43D1029)]
 	public struct Entry
 	{
 

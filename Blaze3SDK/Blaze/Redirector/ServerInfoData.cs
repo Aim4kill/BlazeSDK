@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Redirector
 {
-	[TdfStruct]
+	[TdfStruct(0xDBFBD5BC)]
 	public struct ServerInfoData
 	{
 

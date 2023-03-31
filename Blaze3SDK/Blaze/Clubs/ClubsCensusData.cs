@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Clubs
 {
-	[TdfStruct]
+	[TdfStruct(0xDE7B5AB1)]
 	public struct ClubsCensusData
 	{
 

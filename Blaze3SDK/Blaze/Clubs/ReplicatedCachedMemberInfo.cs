@@ -2,7 +2,7 @@ using Tdf;
 
 namespace Blaze3SDK.Blaze.Clubs
 {
-	[TdfStruct]
+	[TdfStruct(0x66196E00)]
 	public struct ReplicatedCachedMemberInfo
 	{
 
