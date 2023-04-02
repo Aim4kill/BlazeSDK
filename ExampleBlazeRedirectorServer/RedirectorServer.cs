@@ -1,4 +1,5 @@
 ﻿using Blaze3SDK;
+using Blaze3SDK.Blaze;
 using Blaze3SDK.Blaze.Redirector;
 using BlazeCommon;
 using System.Net;
@@ -40,7 +41,7 @@ namespace ExampleBlazeRedirectorServer
             //Check if blaze packet component is redirector component, if not send ERR_COMPONENT_NOT_FOUND back as response
             if (packet.Frame.Component != (ushort)Component.RedirectorComponent)
             {
-                response = packet.CreateResponsePacket((int)GlobalError.ERR_COMPONENT_NOT_FOUND);
+                response = packet.CreateResponsePacket(new NullStruct(), (int)GlobalError.ERR_COMPONENT_NOT_FOUND);
                 connection.Send(response.ToProtoFirePacket(Encoder));
                 return;
             }
@@ -48,7 +49,7 @@ namespace ExampleBlazeRedirectorServer
             //Check if blaze packet command is getServerInstance, if not send ERR_COMMAND_NOT_FOUND back as response
             if (packet.Frame.Command != (ushort)RedirectorComponentCommand.getServerInstance)
             {
-                response = packet.CreateResponsePacket((int)GlobalError.ERR_COMMAND_NOT_FOUND);
+                response = packet.CreateResponsePacket(new NullStruct(), (int)GlobalError.ERR_COMMAND_NOT_FOUND);
                 connection.Send(response.ToProtoFirePacket(Encoder));
                 return;
             }
@@ -74,7 +75,7 @@ namespace ExampleBlazeRedirectorServer
                 //this is an union type, so we specify only one of the values
                 mAddress = new ServerAddress() 
                 {
-                    IpAddress = new IpAddress()
+                    IpAddress = new Blaze3SDK.Blaze.Redirector.IpAddress()
                     {
                         mHostname = ip,
                         mIp = Utils.GetIPAddressAsUInt(ip),
