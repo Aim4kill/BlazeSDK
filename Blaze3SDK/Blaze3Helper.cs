@@ -40,8 +40,10 @@ namespace Blaze3SDK
 
         public Type GetCommandErrorResponseType(ushort componentId, ushort commandId)
         {
-            //TODO: Implement this
-            return typeof(NullStruct);
+            if (!_componentDataMap.TryGetValue((Component)componentId, out var componentData))
+                return GetNullType();
+
+            return componentData.GetCommandErrorResponseType(commandId);
         }
 
         public string GetCommandName(ushort componentId, ushort commandId) => GetCommandName((Component)componentId, commandId);
@@ -55,7 +57,7 @@ namespace Blaze3SDK
         public Type GetCommandRequestType(ushort componentId, ushort commandId)
         {
             if (!_componentDataMap.TryGetValue((Component)componentId, out var componentData))
-                return typeof(NullStruct);
+                return GetNullType();
 
             return componentData.GetCommandRequestType(commandId);
         }
@@ -63,7 +65,7 @@ namespace Blaze3SDK
         public Type GetCommandResponseType(ushort componentId, ushort commandId)
         {
             if (!_componentDataMap.TryGetValue((Component)componentId, out var componentData))
-                return typeof(NullStruct);
+                return GetNullType();
 
             return componentData.GetCommandResponseType(commandId);
         }
@@ -108,15 +110,12 @@ namespace Blaze3SDK
         public Type GetNotificationType(ushort componentId, ushort command)
         {
             if (!_componentDataMap.TryGetValue((Component)componentId, out var componentData))
-                return typeof(NullStruct);
+                return GetNullType();
 
             return componentData.GetNotificationType(command);
         }
 
-        public Type GetNullType()
-        {
-            return typeof(NullStruct);
-        }
+        public Type GetNullType() => typeof(NullStruct);
     }
 
     public enum GlobalError
