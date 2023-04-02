@@ -14,11 +14,12 @@ I wanted to create a blaze library where i can:
   *  __Work better with integer types__
       - All booleans, enums, bitfields are under TDF_TYPE_INTEGER, which means they all are represented by numbers. Now it is possible to know the actual type behind Tdf integer value and work with them better. For example you have [ClientType](Blaze3SDK/Blaze/ClientType.cs) enum value = 2. Now you know that it is actually CLIENT_TYPE_DEDICATED_SERVER.
       - Now there are integer limits. Usually Tdf varsize integer encoding allows encoding any integer value, but now you can't (which is a good thing!). Lets take for example a look at [IpAddress](Blaze3SDK/Blaze/IpAddress.cs) Tdf structure. If you wanted to set the port (type = unsigned short) to -673 (which is not a valid port), you won't be able to.
-  * __Create my own blaze server__ - I am not planning to share the source code of my still work in progress blaze server, but later will try to provide examples.
+  * __Create my own blaze server__ - [Here](ExampleBlazeRedirectorServer/Program.cs) you can see example blaze redirector server.
 
 ## Project descriptions
   * __[Blaze3SDK](#blaze3sdk)__ - SDK for Blaze 3.xx.xx.xx versions. Blaze3SDK is currently being created mainly using information from BF3 Beta .pdb.
   * __BlazeCommon__ - Common files used for Blaze. Can be used to create base for blaze server (only for clients who are using [FireFrame](BlazeCommon/FireFrame.cs) as their packet header (moh2010, mohw, nfstr, bf3, bf4, etc.)).
+  * __[ExampleBlazeRedirectorServer](ExampleBlazeRedirectorServer/Program.cs)__ - A example blaze redirector server which works similary like gosredirector.ea.com:42127.
   * __FixedSsl__ - Used in BlazeCommon project to allow the use of deprecated SSL protocol versions in C# (that some games are using), for example, Ssl3. So there is no need for SSPI patches on host server.
   * __HashLib__ - Used in XI5 project, where SHA224 is needed, which is not natively supported in C#.
   * __Tdf__ - Used to encode and decode Blaze packet Tdf structures.
