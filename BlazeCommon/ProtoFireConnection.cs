@@ -9,13 +9,13 @@ namespace BlazeCommon
     public class ProtoFireConnection
     {
         public long ID { get; }
-        public ProtoFireServer? Owner { get; }
+        public ProtoFireBasicServer? Owner { get; }
         public Socket Socket { get; }
         public Stream? Stream { get; private set; }
         public bool Disconnected { get; private set; }
         
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-        public ProtoFireConnection(long id, ProtoFireServer owner, Socket socket)
+        public ProtoFireConnection(long id, ProtoFireBasicServer owner, Socket socket)
         {
             ID = id;
             Owner = owner;

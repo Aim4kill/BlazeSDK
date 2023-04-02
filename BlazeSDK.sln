@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashLib", "HashLib\HashLib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixedSsl", "FixedSsl\FixedSsl.csproj", "{D5FB5E18-3D28-4079-A25B-23A47FE2E0D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleBlazeRedirectorServer", "ExampleBlazeRedirectorServer\ExampleBlazeRedirectorServer.csproj", "{6534198C-FF59-4C72-892C-248F14E7FB22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{D5FB5E18-3D28-4079-A25B-23A47FE2E0D0}.Release|x64.Build.0 = Release|Any CPU
 		{D5FB5E18-3D28-4079-A25B-23A47FE2E0D0}.Release|x86.ActiveCfg = Release|Any CPU
 		{D5FB5E18-3D28-4079-A25B-23A47FE2E0D0}.Release|x86.Build.0 = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|x64.Build.0 = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Debug|x86.Build.0 = Debug|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|x64.ActiveCfg = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|x64.Build.0 = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|x86.ActiveCfg = Release|Any CPU
+		{6534198C-FF59-4C72-892C-248F14E7FB22}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
