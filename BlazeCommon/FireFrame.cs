@@ -87,7 +87,7 @@
         {
             return stream.WriteAsync(Frame, 0, HeaderSize);
         }
-        
+
         public byte[] ToHeader()
         {
             byte[] header = new byte[HeaderSize];
@@ -219,7 +219,7 @@
             }
             set
             {
-                                    //optionBits            msgnumbits
+                //optionBits            msgnumbits
                 Frame[9] = (byte)((Frame[9] & 0xF0) | (byte)((value >> 16) & 0xF));
                 Frame[10] = (byte)(value >> 8);
                 Frame[11] = (byte)(value);
@@ -285,7 +285,7 @@
             }
             set
             {
-                                    //msgNumBits          //Options
+                //msgNumBits          //Options
                 Frame[9] = (byte)((Frame[9] & 0xF) | (((byte)value) << 4));
             }
         }
@@ -336,15 +336,26 @@
             };
         }
 
-        public string ToString(IBlazeHelper helper, bool inbound)
+        public string ToString(IBlazeComponent component, bool inbound)
         {
             string error = "";
             int errorCode = FullErrorCode;
 
             if (errorCode != 0 || MsgType == MessageType.ERROR_REPLY)
-                error = $", ERR[{helper.GetErrorName(errorCode)} (0x{errorCode:X8})]";
-            
-            return $"{(inbound ? "<-" : "->")} {getMsgTypeString(MsgType)}: ID[{MsgNum}], UI[{UserIndex}], {helper.GetFullName(this)} [0x{Component:X4}::0x{Command:X4}]{error}";
+                error = $", ERR[{component.GetErrorName(errorCode)} (0x{errorCode:X8})]";
+
+            return $"{(inbound ? "<-" : "->")} {getMsgTypeString(MsgType)}: ID[{MsgNum}], UI[{UserIndex}], {component.GetFullName(this)} [0x{Component:X4}::0x{Command:X4}]{error}";
+        }
+
+        public string ToString(bool inbound)
+        {
+            string error = "";
+            int errorCode = FullErrorCode;
+
+            if (errorCode != 0 || MsgType == MessageType.ERROR_REPLY)
+                error = $", ERR[0x{errorCode:X8}]";
+
+            return $"{(inbound ? "<-" : "->")} {getMsgTypeString(MsgType)}: ID[{MsgNum}], UI[{UserIndex}], {Component}::{Command} [0x{Component:X4}::0x{Command:X4}]{error}";
         }
     }
 }

@@ -6,22 +6,24 @@ using Tdf;
 
 namespace BlazeCommon
 {
-    public class BlazePacket<T> : IBlazePacket where T: struct 
+    public class BlazePacket<T> : IBlazePacket where T : notnull
     {
         public FireFrame Frame { get; set; }
         public T Data { get; set; }
-        
+        public object DataObj => Data;
+
         public BlazePacket(FireFrame frame, T data)
         {
-            Frame = frame;  
+            Frame = frame;
             Data = data;
         }
 
-        public string ToString(IBlazeHelper helper, bool inbound)
+
+        public string ToString(IBlazeComponent component, bool inbound)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(Frame.ToString(helper, inbound));
-            
+            builder.Append(Frame.ToString(component, inbound));
+
             TdfStruct? tdfStruct = typeof(T).GetCustomAttribute<TdfStruct>();
             if (tdfStruct != null && tdfStruct.HasData)
             {
@@ -34,9 +36,6 @@ namespace BlazeCommon
             return builder.ToString();
         }
 
-        
-
-        
         private string Object2String(object obj, int spaces, int deltaSpaces)
         {
             StringBuilder builder = new StringBuilder();
@@ -67,7 +66,7 @@ namespace BlazeCommon
                     //    TdfUnion union = (TdfUnion)fieldValue;
                     //    unionStr = $"(union : {union.ActiveMember}) ";
                     //}
-                    builder.AppendLine($"{new string(' ', spaces)}{field.Name}({tag}) {unionStr}= { _obj2str(fieldValue, spaces + deltaSpaces, deltaSpaces) }");
+                    builder.AppendLine($"{new string(' ', spaces)}{field.Name}({tag}) {unionStr}= {_obj2str(fieldValue, spaces + deltaSpaces, deltaSpaces)}");
                 }
 
             }
@@ -102,7 +101,7 @@ namespace BlazeCommon
                     return $"{obj} (0x{(ulong)obj:X16})";
                 case TypeCode.String:
                     return $"\"{obj}\"";
-                    
+
             }
 
             if (Attribute.GetCustomAttribute(type, typeof(TdfStruct)) != null)
@@ -117,31 +116,36 @@ namespace BlazeCommon
             if (type == typeof(byte[]))
             {
                 StringBuilder builder = new StringBuilder();
-                MemoryStream stream = new MemoryStream((byte[])obj, false);
+                byte[] arr = (byte[])obj;
+                if (arr.Length > 1024)
+                    Array.Resize(ref arr, 1024);
+
+                MemoryStream stream = new MemoryStream(arr, false);
+
 
                 builder.AppendLine("{");
 
                 string spacesStr1 = new string(' ', spaces);
                 string spacesStr2 = new string(' ', spaces - deltaSpaces);
-                
+
                 while (stream.Position < stream.Length)
                 {
                     byte[] buf = new byte[16];
                     int count = stream.Read(buf, 0, 16);
                     builder.Append(spacesStr1);
-                    
+
                     for (int k = 0; k < count; k++)
                         builder.Append($"{buf[k]:x2} ");
 
                     int missingCount = 16 - count;
-                    for(int k = 0; k<missingCount; k++)
+                    for (int k = 0; k < missingCount; k++)
                         builder.Append("   ");
 
 
                     for (int k = 0; k < count; k++)
                         builder.Append($"{((buf[k] < 0x20 || buf[k] > 0x7e) ? '.' : (char)buf[k])}");
                     builder.AppendLine();
-                   
+
                 }
 
 
@@ -170,7 +174,7 @@ namespace BlazeCommon
                     throw new InvalidOperationException("List must have ICollection interface");
 
                 int i = 0;
-                foreach(object item in collection)
+                foreach (object item in collection)
                 {
                     builder.Append(spacesStr1);
                     builder.AppendLine($"[{i++}] = {_obj2str(item, spaces + deltaSpaces, deltaSpaces)}");
@@ -263,7 +267,7 @@ namespace BlazeCommon
             return "TODO(" + type.Name + ")";
         }
 
-        public void WriteTo(Stream stream, TdfEncoder encoder)
+        public void WriteTo(Stream stream, ITdfEncoder encoder)
         {
             byte[] data = encoder.Encode(Data);
             Frame.Size = (uint)data.Length;
@@ -271,7 +275,7 @@ namespace BlazeCommon
             stream.Write(data, 0, data.Length);
         }
 
-        public async Task WriteToAsync(Stream stream, TdfEncoder encoder)
+        public async Task WriteToAsync(Stream stream, ITdfEncoder encoder)
         {
             byte[] data = encoder.Encode(Data);
             Frame.Size = (uint)data.Length;
@@ -279,7 +283,7 @@ namespace BlazeCommon
             await stream.WriteAsync(data, 0, data.Length);
         }
 
-        public byte[] Encode(TdfEncoder encoder)
+        public byte[] Encode(ITdfEncoder encoder)
         {
             byte[] data = encoder.Encode(Data);
             Frame.Size = (uint)data.Length;
@@ -290,24 +294,42 @@ namespace BlazeCommon
             return result;
         }
 
-        public ProtoFirePacket ToProtoFirePacket(TdfEncoder encoder)
+        public ProtoFirePacket ToProtoFirePacket(ITdfEncoder encoder)
         {
             return new ProtoFirePacket(Frame, encoder.Encode(Data));
         }
 
-        public BlazePacket<Resp> CreateResponsePacket<Resp>(Resp data) where Resp : struct
+        public BlazePacket<Resp> CreateResponsePacket<Resp>(Resp data) where Resp : notnull
         {
             return new BlazePacket<Resp>(Frame.CreateResponseFrame(), data);
         }
 
-        public BlazePacket<Resp> CreateResponsePacket<Resp>(int errorCode) where Resp : struct
+        public BlazePacket<Resp> CreateResponsePacket<Resp>(int errorCode) where Resp : notnull
         {
-            return new BlazePacket<Resp>(Frame.CreateResponseFrame(errorCode), default(Resp));
+            return new BlazePacket<Resp>(Frame.CreateResponseFrame(errorCode), default(Resp)!);
         }
 
-        public BlazePacket<Resp> CreateResponsePacket<Resp>(Resp data, int errorCode) where Resp : struct
+        public BlazePacket<Resp> CreateResponsePacket<Resp>(Resp data, int errorCode) where Resp : notnull
         {
             return new BlazePacket<Resp>(Frame.CreateResponseFrame(errorCode), data);
+        }
+
+        public IBlazePacket CreateResponsePacket(object data, int errorCode)
+        {
+            Type fullType = typeof(BlazePacket<>).MakeGenericType(data.GetType());
+            return (IBlazePacket)Activator.CreateInstance(fullType, Frame.CreateResponseFrame(errorCode), data)!;
+        }
+
+        public IBlazePacket CreateResponsePacket(int errorCode)
+        {
+            Type fullType = typeof(BlazePacket<>).MakeGenericType(typeof(NullStruct));
+            return (IBlazePacket)Activator.CreateInstance(fullType, Frame.CreateResponseFrame(errorCode), new NullStruct())!;
+        }
+
+        public IBlazePacket CreateResponsePacket(object data)
+        {
+            Type fullType = typeof(BlazePacket<>).MakeGenericType(data.GetType());
+            return (IBlazePacket)Activator.CreateInstance(fullType, Frame.CreateResponseFrame(), data)!;
         }
 
         public static implicit operator T(BlazePacket<T> packet)

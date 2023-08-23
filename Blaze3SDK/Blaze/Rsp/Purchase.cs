@@ -25,7 +25,7 @@ namespace Blaze3SDK.Blaze.Rsp
 		public PurchaseStatus mStatus;
 
 		[TdfMember("UPDA")]
-		public TimeSpan mUpdatedDate;
+		public TimeValue mUpdatedDate;
 
 		[TdfMember("UID")]
 		public long mUserId;

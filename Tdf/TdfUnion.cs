@@ -5,7 +5,9 @@ namespace Tdf
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = true)]
     public class TdfUnion : TdfStruct
     {
-        internal static readonly byte[] VALU_TAG_DT = new byte[] { 0xDA, 0x1B, 0x35, (byte)TdfBaseType.TDF_TYPE_STRUCT };
+        internal static readonly byte[] TDF_VALU_TAG = new byte[] { 0xDA, 0x1B, 0x35, (byte)TdfBaseType.TDF_TYPE_STRUCT };
+        internal static readonly byte[] TDF_LEGACY_VALU_TAG = new byte[] { 0xDA, 0x1B, 0x35 };
+
         public byte ActiveMember { get; private set; }
         public TdfUnion(byte activeMember)
         {

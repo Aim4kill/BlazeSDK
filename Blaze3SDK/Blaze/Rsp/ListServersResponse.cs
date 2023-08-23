@@ -7,7 +7,7 @@ namespace Blaze3SDK.Blaze.Rsp
 	{
 
 		[TdfMember("TIME")]
-		public TimeSpan mCurrentTime;
+		public TimeValue mCurrentTime;
 
 		[TdfMember("SLST")]
 		public List<Server> mServerList;

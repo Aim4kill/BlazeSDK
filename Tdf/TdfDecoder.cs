@@ -1,15 +1,16 @@
-﻿using System.Numerics;
+﻿using System.Buffers.Binary;
+using System.Numerics;
 using System.Reflection;
 using Tdf.Extensions;
 
 namespace Tdf
 {
-    public class TdfDecoder
+    public class TdfDecoder : ITdfDecoder
     {
         private TdfFactory _factory;
         private bool _heat1Bug;
 
-        //return value: should reading be terminated
+        //return value: success reading the data(if not stop continue reading the packet)
         internal delegate bool TdfReader(Stream stream, ref object? instance, FieldInfo? field);
 
         internal TdfDecoder(TdfFactory factory, bool heat1Bug)
@@ -18,22 +19,34 @@ namespace Tdf
             _heat1Bug = heat1Bug;
         }
 
-        public T Decode<T>(byte[] data) where T : struct => Decode<T>(new MemoryStream(data));
-        
-        public T Decode<T>(Stream stream) where T : struct
+        public T Decode<T>(byte[] data) where T : notnull => Decode<T>(new MemoryStream(data));
+
+        public T Decode<T>(Stream stream) where T : notnull
         {
             object? ret = Activator.CreateInstance<T>();
             if (ret == null)
                 throw new NotSupportedException($"'{typeof(T).FullName}' must have a parameterless constructor!");
-            
+
             Type type = typeof(T);
             Dictionary<string, FieldInfo> mainContext = _factory.GetContext(type);
-            
-            while (stream.Position < stream.Length && ReadTdf(stream, ref ret, mainContext));
+
+            while (stream.Position < stream.Length && ReadTdf(stream, ref ret, mainContext)) ;
             return (T)ret!;
         }
 
+        public object Decode(Type type, byte[] data) => Decode(type, new MemoryStream(data));
 
+        public object Decode(Type type, Stream stream)
+        {
+            object? ret = Activator.CreateInstance(type);
+            if (ret == null)
+                throw new NotSupportedException($"'{type.FullName}' must have a parameterless constructor!");
+
+            Dictionary<string, FieldInfo> mainContext = _factory.GetContext(type);
+
+            while (stream.Position < stream.Length && ReadTdf(stream, ref ret, mainContext)) ;
+            return ret!;
+        }
 
         private bool ReadTdf(Stream stream, ref object? instance, Dictionary<string, FieldInfo> context)
         {
@@ -55,7 +68,7 @@ namespace Tdf
 
         private TdfReader? GetTdfReader(TdfBaseType baseType)
         {
-            switch(baseType)
+            switch (baseType)
             {
                 case TdfBaseType.TDF_TYPE_INTEGER:
                     return ReadTdfInteger;
@@ -93,50 +106,68 @@ namespace Tdf
             BigInteger? value = stream.ReadTdfInteger();
             if (value == null)
                 return false;
-            
-            if(field == null)
+
+            if (field == null)
                 return true;
 
-            Type type = field.FieldType;
-            
-            object resObject;
+            //will not be using BigInteger explicit conversions to needed data types, because it is checking whether the number fits the data type and will throw exception if it does not.
+            //logic changed due to multiple encounters of exceptions when ea blaze sent a negative number for uint64 field (game protocol version hash) (it had the correct datatype).
+            //it looks like they messed up with encoding uint64 where the MSB (which is the sign bit for int64) was set to 1 and therefore was interpreted as negative number (this makes sense because they internally are using int64 for encoding integers).
+            //this is the reason why we are forced to do unchecked conversions, but the result still will be valid.
 
+            byte[] binary = value.Value.ToByteArray(false, false);
+
+            Type type = field.FieldType;
+            object resObject;
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean:
                     resObject = value.Value != 0;
                     break;
                 case TypeCode.SByte:
-                    resObject = (sbyte)value.Value;
+                    resObject = unchecked((sbyte)binary[0]);
                     break;
                 case TypeCode.Byte:
-                    resObject = (byte)value.Value;
+                    resObject = binary[0];
                     break;
                 case TypeCode.Int16:
-                    resObject = (short)value.Value;
+                    Array.Resize(ref binary, 2);
+                    resObject = BinaryPrimitives.ReadInt16LittleEndian(binary);
                     break;
                 case TypeCode.UInt16:
-                    resObject = (ushort)value.Value;
+                    Array.Resize(ref binary, 2);
+                    resObject = BinaryPrimitives.ReadUInt16LittleEndian(binary);
                     break;
                 case TypeCode.Int32:
-                    resObject = (int)value.Value;
+                    Array.Resize(ref binary, 4);
+                    resObject = BinaryPrimitives.ReadInt32LittleEndian(binary);
                     break;
                 case TypeCode.UInt32:
-                    resObject = (uint)value.Value;
+                    Array.Resize(ref binary, 4);
+                    resObject = BinaryPrimitives.ReadUInt32LittleEndian(binary);
                     break;
                 case TypeCode.Int64:
-                    resObject = (long)value.Value;
+                    Array.Resize(ref binary, 8);
+                    resObject = BinaryPrimitives.ReadInt64LittleEndian(binary);
                     break;
                 case TypeCode.UInt64:
-                    resObject = (ulong)value.Value;
+                    Array.Resize(ref binary, 8);
+                    resObject = BinaryPrimitives.ReadUInt64LittleEndian(binary);
                     break;
                 default:
-                    resObject = value.Value;
+                    if (type == typeof(TimeValue))
+                    {
+                        Array.Resize(ref binary, 8);
+                        resObject = new TimeValue(BinaryPrimitives.ReadInt64LittleEndian(binary));
+                    }
+                    else
+                        resObject = value.Value;
                     break;
             }
 
             if (type.IsEnum)
                 resObject = Enum.ToObject(type, resObject);
+
 
             field.SetValue(instance, resObject);
             return true;
@@ -147,7 +178,7 @@ namespace Tdf
             string? str = stream.ReadTdfString();
             if (str == null)
                 return false;
-            
+
             field?.SetValue(instance, str);
             return true;
         }
@@ -157,7 +188,6 @@ namespace Tdf
             byte[]? blob = stream.ReadTdfBlob();
             if (blob == null)
                 return false;
-
 
             field?.SetValue(instance, blob);
             return true;
@@ -181,7 +211,7 @@ namespace Tdf
                 if (!ReadTdf(stream, ref structValue, structContext))
                     return null;
             }
-            
+
             return structValue;
         }
 
@@ -215,7 +245,7 @@ namespace Tdf
             if (countNullable == null)
                 return false;
             ulong count = countNullable.Value;
-            
+
             #region bug implementation fix
 
             if (_heat1Bug && baseType == TdfBaseType.TDF_TYPE_STRUCT && listMemberType != null)
@@ -235,11 +265,11 @@ namespace Tdf
 
             }
             #endregion
-            
+
             TdfReader? reader = GetTdfReader(baseType);
             if (reader == null)
                 return false;
-            
+
             //unknown type, skip it
             if (listFullType == null || listMemberType == null)
             {
@@ -251,7 +281,7 @@ namespace Tdf
                 }
                 return true;
             }
-            
+
             var list = Activator.CreateInstance(listFullType);
             MethodInfo addMethod = listFullType.GetMethod("Add")!;
 
@@ -264,7 +294,7 @@ namespace Tdf
                 if (!reader(stream, ref typeContainerObj, typeContainer.ValueFieldInfo))
                     return false;
 
-                addMethod.Invoke(list, new[] { typeContainer .Value} );
+                addMethod.Invoke(list, new[] { typeContainer.Value });
             }
 
             field?.SetValue(instance, list);
@@ -327,19 +357,19 @@ namespace Tdf
             return true;
         }
 
-        
+
         private bool ReadTdfUnion(Stream stream, ref object? instance, FieldInfo? field)
         {
             int activeMember = stream.ReadByte();
             if (activeMember == -1)
                 return false;
 
-            byte[] peek = new byte[TdfUnion.VALU_TAG_DT.Length];
+            byte[] peek = new byte[TdfUnion.TDF_VALU_TAG.Length];
             if (!stream.ReadAll(peek, 0, peek.Length))
                 return false;
-            
+
             //don't care about the valu tag with struct datatype, now we can read this as a struct, this also fixes the bug with the list of unions
-            if (!peek.SequenceEqual(TdfUnion.VALU_TAG_DT)) 
+            if (!peek.SequenceEqual(TdfUnion.TDF_VALU_TAG))
                 stream.Seek(-peek.Length, SeekOrigin.Current);
 
             Type? type = field?.FieldType;
@@ -373,7 +403,7 @@ namespace Tdf
             object? tdfStruct = ReadTdfStruct(stream, memberType);
             if (tdfStruct == null)
                 return false;
-            
+
             union.SetValue(tdfStruct);
             field?.SetValue(instance, union);
             return true;
@@ -384,7 +414,7 @@ namespace Tdf
             int b = stream.ReadByte();
             if (b == -1)
                 return false;
-            
+
             bool present = b != 0;
             if (!present)
             {
@@ -443,7 +473,8 @@ namespace Tdf
 
         private bool ReadTdfTimeValue(Stream stream, ref object? instance, FieldInfo? field)
         {
-            throw new NotImplementedException("TdfTimeValue is not yet implemented!");
+            //This should never happen, since TimeValues are encoded using TDF_TYPE_INTEGER
+            return false;
         }
 
 

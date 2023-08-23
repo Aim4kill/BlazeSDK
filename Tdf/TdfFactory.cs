@@ -13,19 +13,19 @@ namespace Tdf
             _tdfVariableTypeMap = new ConcurrentDictionary<uint, Type>();
             _tdfTypeMap = new ConcurrentDictionary<Type, Dictionary<string, FieldInfo>>();
         }
-        
+
         public bool RegisterTdfType(Type tdfType)
         {
             TdfStruct? tdfStruct = tdfType.GetCustomAttribute<TdfStruct>();
-            
-            if(tdfStruct != null)
+
+            if (tdfStruct != null)
                 _tdfVariableTypeMap.TryAdd(tdfStruct.TdfId, tdfType);
             else if (tdfType.BaseType != typeof(TdfUnion))
                 return false;
 
             if (!_tdfTypeMap.TryAdd(tdfType, getTypeFieldContext(tdfType)))
                 return false;
-            
+
             return true;
         }
 
@@ -51,13 +51,23 @@ namespace Tdf
                 TdfMember? tag = field.GetCustomAttribute<TdfMember>();
                 if (tag == null)
                     continue;
-                
+
                 map.Add(tag, field);
             }
 
             return map;
         }
-        
+
+        public TdfLegacyDecoder CreateLegacyDecoder()
+        {
+            return new TdfLegacyDecoder(this);
+        }
+
+        public TdfLegacyEncoder CreateLegacyEncoder()
+        {
+            return new TdfLegacyEncoder(this);
+        }
+
         public TdfDecoder CreateDecoder(bool heat1Bug)
         {
             return new TdfDecoder(this, heat1Bug);
@@ -73,7 +83,7 @@ namespace Tdf
             if (_tdfTypeMap.TryGetValue(type, out Dictionary<string, FieldInfo>? context))
                 return context;
 
-            if(RegisterTdfType(type))
+            if (RegisterTdfType(type))
                 return _tdfTypeMap[type];
 
             return new Dictionary<string, FieldInfo>();

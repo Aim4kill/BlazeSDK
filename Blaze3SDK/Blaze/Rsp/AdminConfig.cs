@@ -28,13 +28,13 @@ namespace Blaze3SDK.Blaze.Rsp
 		public ushort mMaxServerVips;
 
 		[TdfMember("SEXP")]
-		public TimeSpan mServerExpiredPeriod;
+		public TimeValue mServerExpiredPeriod;
 
 		[TdfMember("SEXT")]
-		public TimeSpan mServerExtensionPeriod;
+		public TimeValue mServerExtensionPeriod;
 
 		[TdfMember("SREM")]
-		public TimeSpan mServerReminderPeriod;
+		public TimeValue mServerReminderPeriod;
 
 	}
 }

@@ -10,10 +10,10 @@ namespace Blaze3SDK.Blaze.Rsp
 		public int mBannerId;
 
 		[TdfMember("CRDA")]
-		public TimeSpan mCreatedDate;
+		public TimeValue mCreatedDate;
 
 		[TdfMember("EXDA")]
-		public TimeSpan mExpirationDate;
+		public TimeValue mExpirationDate;
 
 		[TdfMember("GPVS")]
 		public string mGameProtocolVersionString;
@@ -43,7 +43,7 @@ namespace Blaze3SDK.Blaze.Rsp
 		public long mUpdatedBy;
 
 		[TdfMember("UPDA")]
-		public TimeSpan mUpdatedDate;
+		public TimeValue mUpdatedDate;
 
 	}
 }

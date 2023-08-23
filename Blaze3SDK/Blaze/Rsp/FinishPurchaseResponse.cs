@@ -7,7 +7,7 @@ namespace Blaze3SDK.Blaze.Rsp
 	{
 
 		[TdfMember("DATE")]
-		public TimeSpan mExpirationDate;
+		public TimeValue mExpirationDate;
 
 		[TdfMember("QUAN")]
 		public uint mQuantity;

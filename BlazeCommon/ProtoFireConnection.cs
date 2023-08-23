@@ -9,13 +9,13 @@ namespace BlazeCommon
     public class ProtoFireConnection
     {
         public long ID { get; }
-        public ProtoFireBasicServer? Owner { get; }
+        public ProtoFireServer? Owner { get; }
         public Socket Socket { get; }
         public Stream? Stream { get; private set; }
         public bool Disconnected { get; private set; }
-        
+
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
-        public ProtoFireConnection(long id, ProtoFireBasicServer owner, Socket socket)
+        public ProtoFireConnection(long id, ProtoFireServer owner, Socket socket)
         {
             ID = id;
             Owner = owner;
@@ -183,10 +183,17 @@ namespace BlazeCommon
             // Create a TCP/IP  socket.
             Socket sock = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
-            await sock.ConnectAsync(remoteEP).ConfigureAwait(false);
-            return sock;
+            try
+            {
+                await sock.ConnectAsync(remoteEP).ConfigureAwait(false);
+                return sock;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
-        
+
         public static async Task<ProtoFireConnection?> ConnectAsync(string hostname, int port, bool ssl = true)
         {
             Socket? sock = await ConnectToAsync(hostname, port).ConfigureAwait(false);
@@ -194,13 +201,13 @@ namespace BlazeCommon
                 return null;
 
             Stream stream = new NetworkStream(sock);
-            if(ssl)
+            if (ssl)
             {
                 SslStream sslStream = new SslStream(stream, false, RemoteCertificateVerify);
                 await sslStream.AuthenticateAsClientAsync(hostname, null, System.Security.Authentication.SslProtocols.Tls, false).ConfigureAwait(false);
                 stream = sslStream;
             }
-            
+
             var ret = new ProtoFireConnection(sock);
             ret.SetStream(stream);
             return ret;
@@ -227,7 +234,7 @@ namespace BlazeCommon
             // connect to the remote host
             s.Connect(new IPEndPoint(host.AddressList[0], port));
 
-           
+
             ProtoFireConnection connection = new ProtoFireConnection(null);
             connection.SetStream(new SecureNetworkStream(s));
             return connection;

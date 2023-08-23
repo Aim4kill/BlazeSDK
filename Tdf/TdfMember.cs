@@ -10,13 +10,13 @@ namespace Tdf
 
         public string Tag { get; private set; }
         public byte[] Bytes { get; private set; }
-        
+
         //public bool EncodeIfEmpty { get; set; } = false;
 
         public TdfMember(string tagString)
         {
             Tag = tagString;
-           
+
             if (!IsASCII(tagString))
                 throw new Exception($"Tag can only consist of ASCII characters from 32 to 95 ({tagString})");
 
@@ -119,7 +119,7 @@ namespace Tdf
 
             Tag = Encoding.ASCII.GetString(buf, 0, len);
         }
-        
+
         public static TdfMember FromString(string tagString)
         {
             return new TdfMember(tagString);
@@ -128,7 +128,7 @@ namespace Tdf
         public static TdfMember? FromStream(Stream stream)
         {
             byte[] tag = new byte[TAG_LENGTH];
-            if(!stream.ReadAll(tag, 0, TAG_LENGTH))
+            if (!stream.ReadAll(tag, 0, TAG_LENGTH))
                 return null;
             return new TdfMember(tag);
         }

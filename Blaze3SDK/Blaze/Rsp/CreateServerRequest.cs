@@ -7,7 +7,7 @@ namespace Blaze3SDK.Blaze.Rsp
 	{
 
 		[TdfMember("EXDA")]
-		public TimeSpan mExpirationDate;
+		public TimeValue mExpirationDate;
 
 		[TdfMember("EXPE")]
 		public uint mExpirationPeriod;

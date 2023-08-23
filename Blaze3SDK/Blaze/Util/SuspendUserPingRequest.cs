@@ -7,7 +7,7 @@ namespace Blaze3SDK.Blaze.Util
 	{
 
 		[TdfMember("TVAL")]
-		public TimeSpan mSuspendTime;
+		public TimeValue mSuspendTime;
 
 	}
 }

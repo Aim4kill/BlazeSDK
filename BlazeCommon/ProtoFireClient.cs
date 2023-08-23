@@ -1,77 +1,119 @@
-﻿using Tdf;
+﻿using System.Collections.Concurrent;
 
 namespace BlazeCommon
 {
-    public abstract class ProtoFireClient : ProtoFireBasicClient
+    public abstract class ProtoFireClient
     {
-        TdfEncoder _encoder;
-        TdfDecoder _decoder;
-        IBlazeHelper _blazeHelper;
-        uint _msgNum;
-        public ProtoFireClient(ProtoFireConnection connection, IBlazeHelper helper, TdfEncoder encoder, TdfDecoder decoder) : base(connection)
+        public ProtoFireConnection Connection { get; }
+        ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>> awaitableReplies;
+
+        public int RequestTimeout { get; set; }
+        public PacketReceivedFilter Filter { get; set; }
+        public ProtoFireClient(ProtoFireConnection connection, PacketReceivedFilter filter = PacketReceivedFilter.All)
         {
-            _encoder = encoder;
-            _decoder = decoder;
-            _blazeHelper = helper;
-            _msgNum = 0;
+
+            if (connection.Disconnected)
+                throw new ArgumentException("The connection is disconnected.");
+
+            awaitableReplies = new ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>>();
+            RequestTimeout = 15000;
+            Filter = filter;
+            Connection = connection;
+            _ = ReadPacket();
         }
 
-        public async Task<IBlazePacket> SendRequestAsync<Req>(ushort component, ushort command, Req request) where Req : struct
+        async Task ReadPacket()
         {
-            BlazePacket<Req> reqPacket = new BlazePacket<Req>(new FireFrame()
+            while (!Connection.Disconnected)
             {
-                MsgNum = Interlocked.Increment(ref _msgNum),
-                MsgType = FireFrame.MessageType.MESSAGE,
-                Component = component,
-                Command = command,
-            }, request);
-            ProtoFirePacket response = await SendRequestAsync(reqPacket.ToProtoFirePacket(_encoder)).ConfigureAwait(false);
-            return _blazeHelper.Decode(response, _decoder);
+                ProtoFirePacket? packet = await Connection.ReadPacketAsync().ConfigureAwait(false);
+
+                if (packet == null)
+                {
+                    OnClientDisconnected();
+                    break;
+                }
+
+                switch (packet.Frame.MsgType)
+                {
+                    case FireFrame.MessageType.REPLY:
+                        if (Filter.HasFlag(PacketReceivedFilter.Reply))
+                            OnPacketReceived(packet);
+                        HandleReplyPacket(packet);
+                        break;
+                    case FireFrame.MessageType.ERROR_REPLY:
+                        if (Filter.HasFlag(PacketReceivedFilter.ErrorReply))
+                            OnPacketReceived(packet);
+                        HandleReplyPacket(packet);
+                        break;
+                    case FireFrame.MessageType.MESSAGE:
+                        if (Filter.HasFlag(PacketReceivedFilter.Message))
+                            OnPacketReceived(packet);
+                        break;
+                    case FireFrame.MessageType.NOTIFICATION:
+                        if (Filter.HasFlag(PacketReceivedFilter.Notification))
+                            OnPacketReceived(packet);
+                        break;
+                    default:
+                        if (Filter.HasFlag(PacketReceivedFilter.Unknown))
+                            OnPacketReceived(packet);
+                        break;
+                }
+            }
         }
 
-        public IBlazePacket SendRequest<Req>(ushort component, ushort command, Req request) where Req : struct
+        void HandleReplyPacket(ProtoFirePacket reply)
         {
-            BlazePacket<Req> reqPacket = new BlazePacket<Req>(new FireFrame()
+            if (awaitableReplies.TryRemove(reply.Frame.MsgNum, out TaskCompletionSource<ProtoFirePacket>? tcs))
+                tcs.SetResult(reply);
+        }
+
+
+        public ProtoFirePacket SendRequest(ProtoFirePacket packet)
+        {
+            TaskCompletionSource<ProtoFirePacket> tcs = new TaskCompletionSource<ProtoFirePacket>();
+            awaitableReplies.TryAdd(packet.Frame.MsgNum, tcs);
+            Connection.Send(packet);
+            CancellationTokenSource cts = new CancellationTokenSource(RequestTimeout);
+            cts.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
+            try { return tcs.Task.GetAwaiter().GetResult(); }
+            catch (TaskCanceledException)
             {
-                MsgNum = Interlocked.Increment(ref _msgNum),
-                MsgType = FireFrame.MessageType.MESSAGE,
-                Component = component,
-                Command = command,
-            }, request);
-            ProtoFirePacket response = SendRequest(reqPacket.ToProtoFirePacket(_encoder));
-            return _blazeHelper.Decode(response, _decoder);
+                throw new TimeoutException("The request timed out.");
+            }
+
         }
-        public async Task<Resp> SendRequestAsync<Req, Resp>(ushort component, ushort command, Req request) where Req : struct where Resp : struct
+
+        public async Task<ProtoFirePacket> SendRequestAsync(ProtoFirePacket packet)
         {
-            BlazePacket<Req> reqPacket = new BlazePacket<Req>(new FireFrame()
+            TaskCompletionSource<ProtoFirePacket> tcs = new TaskCompletionSource<ProtoFirePacket>();
+            awaitableReplies.TryAdd(packet.Frame.MsgNum, tcs);
+            await Connection.SendAsync(packet).ConfigureAwait(false);
+            CancellationTokenSource cts = new CancellationTokenSource(RequestTimeout);
+            cts.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
+            try { return await tcs.Task.ConfigureAwait(false); }
+            catch (TaskCanceledException)
             {
-                MsgNum = Interlocked.Increment(ref _msgNum),
-                MsgType = FireFrame.MessageType.MESSAGE,
-                Component = component,
-                Command = command,
-            }, request);
-            ProtoFirePacket response = await SendRequestAsync(reqPacket.ToProtoFirePacket(_encoder)).ConfigureAwait(false);
-            return _decoder.Decode<Resp>(response.GetDataStream());
+                throw new TimeoutException("The request timed out.");
+            }
+
         }
 
-        public Resp SendRequest<Req, Resp>(ushort component, ushort command, Req request) where Req : struct where Resp : struct
-        {
-            BlazePacket<Req> reqPacket = new BlazePacket<Req>(new FireFrame()
-            {
-                MsgNum = Interlocked.Increment(ref _msgNum),
-                MsgType = FireFrame.MessageType.MESSAGE,
-                Component = component,
-                Command = command,
-            }, request);
-            ProtoFirePacket response = SendRequest(reqPacket.ToProtoFirePacket(_encoder));
-            return _decoder.Decode<Resp>(response.GetDataStream());
-        }
+        public abstract void OnClientDisconnected();
+        public abstract void OnPacketReceived(ProtoFirePacket request);
 
-        public override void OnNonReplyPacketReceived(ProtoFirePacket request)
-        {
-            OnNonReplyPacketReceived(_blazeHelper.Decode(request, _decoder));
-        }
-
-        public abstract void OnNonReplyPacketReceived(IBlazePacket request);
     }
+
+    [Flags]
+    public enum PacketReceivedFilter
+    {
+        None = 0,
+        Message = 1,
+        Reply = 2,
+        ErrorReply = 4,
+        Notification = 8,
+        Unknown = 16,
+        All = Message | Reply | ErrorReply | Notification | Unknown
+    }
+
 }

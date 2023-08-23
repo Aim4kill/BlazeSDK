@@ -22,7 +22,7 @@
     /*
         ### TDF_BASE_TYPE <-> C# TYPE ###
     
-        TDF_TYPE_INTEGER -> bool, sbyte, byte, short, ushort, int, uint, long, ulong
+        TDF_TYPE_INTEGER -> bool, sbyte, byte, short, ushort, int, uint, long, ulong and TimeValue
         TDF_TYPE_STRING -> string
         TDF_TYPE_BINARY -> byte[]
         TDF_TYPE_STRUCT -> structs with TdfStruct attribute
@@ -33,6 +33,6 @@
         TDF_TYPE_BLAZE_OBJECT_TYPE -> BlazeObjectType
         TDF_TYPE_BLAZE_OBJECT_ID -> BlazeObjectId
         TDF_TYPE_FLOAT -> float
-        TDF_TYPE_TIMEVALUE -> NOT YET IMPLEMENTED //when the time will come (find some packet with this type being used), then will implement it
+        TDF_TYPE_TIMEVALUE -> unused
      */
 }

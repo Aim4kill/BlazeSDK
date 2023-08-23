@@ -5,7 +5,7 @@ using Tdf.Extensions;
 
 namespace Tdf
 {
-    public class TdfEncoder
+    public class TdfEncoder : ITdfEncoder
     {
         private TdfFactory _factory;
         private bool _heat1Bug;
@@ -18,20 +18,27 @@ namespace Tdf
             _heat1Bug = heat1Bug;
         }
 
-        public byte[] Encode<T>(T obj) where T : struct
+        public byte[] Encode<T>(T obj) where T : notnull
         {
             MemoryStream payload = new MemoryStream();
             WriteTo(payload, obj);
             return payload.ToArray();
         }
 
-        public void WriteTo<T>(Stream stream, T obj) where T : struct => WriteTo(stream, (object)obj);
+        public byte[] Encode(object obj)
+        {
+            MemoryStream payload = new MemoryStream();
+            WriteTo(payload, obj);
+            return payload.ToArray();
+        }
 
-        internal void WriteTo(Stream stream, object obj)
+        public void WriteTo<T>(Stream stream, T obj) where T : notnull => WriteTo(stream, (object)obj);
+
+        public void WriteTo(Stream stream, object obj)
         {
             Type objectType = obj.GetType();
 
-            
+
             Dictionary<TdfMember, FieldInfo> keyValuePairs = new Dictionary<TdfMember, FieldInfo>();
 
             foreach (FieldInfo field in objectType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
@@ -72,6 +79,8 @@ namespace Tdf
                 case TdfBaseType.TDF_TYPE_INTEGER:
                     if (fieldType == typeof(bool))
                         return WriteTdfBoolean;
+                    if (fieldType == typeof(TimeValue))
+                        return WriteTdfTimeValue;
                     return WriteTdfInteger;
                 case TdfBaseType.TDF_TYPE_STRING:
                     return WriteTdfString;
@@ -144,14 +153,15 @@ namespace Tdf
             if (fieldType == typeof(BlazeObjectId))
                 return TdfBaseType.TDF_TYPE_BLAZE_OBJECT_ID;
 
-            if(fieldType.BaseType == typeof(TdfUnion))
+            if (fieldType.BaseType == typeof(TdfUnion))
                 return TdfBaseType.TDF_TYPE_UNION;
+
+            //NOTE: Time values are encoded as integers, TDF_TYPE_TIMEVALUE is not actually used
+            if (fieldType.BaseType == typeof(TimeValue))
+                return TdfBaseType.TDF_TYPE_INTEGER;
 
             if (fieldType == typeof(object) || Nullable.GetUnderlyingType(fieldType) == typeof(object))
                 return TdfBaseType.TDF_TYPE_VARIABLE;
-
-
-            //TODO: TDF_TYPE_TIMEVALUE
 
             return TdfBaseType.TDF_TYPE_MAX;
         }
@@ -213,7 +223,7 @@ namespace Tdf
                 if (listType.IsGenericType)
                     listType = listType.GetGenericTypeDefinition();
 
-                if (listType.BaseType == typeof(TdfUnion) || listType == typeof(List<>) || listType == typeof(Dictionary<,>) || listType == typeof(SortedDictionary<,>) )
+                if (listType.BaseType == typeof(TdfUnion) || listType == typeof(List<>) || listType == typeof(Dictionary<,>) || listType == typeof(SortedDictionary<,>))
                     baseType = TdfBaseType.TDF_TYPE_STRUCT;
             }
             #endregion
@@ -239,7 +249,7 @@ namespace Tdf
             TdfWriter? keyWriter = GetTdfWriter(keyType, keyBaseType, false);
             TdfWriter? valueWriter = GetTdfWriter(valueType, valueBaseType, false);
 
-            if(keyWriter == null)
+            if (keyWriter == null)
                 throw new NotSupportedException($"Map key type '{keyType.FullName}' not supported!");
             if (valueWriter == null)
                 throw new NotSupportedException($"Map value type '{valueType.FullName}' not supported!");
@@ -273,7 +283,7 @@ namespace Tdf
 
             if (activeMember != 0x7F)
             {
-                stream.Write(TdfUnion.VALU_TAG_DT, 0, TdfUnion.VALU_TAG_DT.Length);
+                stream.Write(TdfUnion.TDF_VALU_TAG, 0, TdfUnion.TDF_VALU_TAG.Length);
                 WriteTdfStruct(stream, tag, obj!);
             }
         }
@@ -304,9 +314,9 @@ namespace Tdf
             stream.WriteTdfBaseType(baseType);
 
             TdfWriter? writer = GetTdfWriter(valueType, baseType, false);
-            if(writer == null)
+            if (writer == null)
                 throw new NotSupportedException($"Type '{valueType.FullName}' not supported!");
-            writer(stream,tag, value);
+            writer(stream, tag, value);
             stream.WriteByte(0x00); //tdf variable terminator
         }
 
@@ -323,6 +333,11 @@ namespace Tdf
         private void WriteTdfFloat(Stream stream, TdfMember tag, object value)
         {
             stream.WriteTdfFloat((float)value);
+        }
+
+        private void WriteTdfTimeValue(Stream stream, TdfMember tag, object value)
+        {
+            stream.WriteTdfTimeValue((TimeValue)value);
         }
     }
 }

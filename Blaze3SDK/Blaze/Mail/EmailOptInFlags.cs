@@ -3,5 +3,6 @@
     [Flags]
     public enum EmailOptInFlags
     {
+        None = 0,
     }
 }
