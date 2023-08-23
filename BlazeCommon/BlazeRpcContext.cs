@@ -2,13 +2,22 @@
 {
     public class BlazeRpcContext
     {
-        public ProtoFireConnection Connection { get; }
+        BlazeConnectionInfo _connectionInfo;
 
-        //TODO: Add more properties
+        public ProtoFireConnection Connection => _connectionInfo.Connection;
+        public object State { get => _connectionInfo.State; set => _connectionInfo.State = value; }
+        public int ErrorCode { get; }
+        public uint MsgNum { get; }
+        public byte UserIndex { get; }
+        public ulong Context { get; }
 
-        public BlazeRpcContext(ProtoFireConnection connection)
+        internal BlazeRpcContext(BlazeConnectionInfo connectionInfo, int errorCode, uint msgNum, byte userIndex, ulong context)
         {
-            Connection = connection;
+            _connectionInfo = connectionInfo;
+            ErrorCode = errorCode;
+            MsgNum = msgNum;
+            UserIndex = userIndex;
+            Context = context;
         }
     }
 }

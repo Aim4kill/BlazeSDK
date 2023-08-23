@@ -9,13 +9,13 @@ namespace BlazeCommon
         public BlazeServerSettings Settings { get; }
 
         Dictionary<ushort, IBlazeComponent> _components;
-        ConcurrentDictionary<ProtoFireConnection, BlazeRpcContext> _connectionContexts;
+        ConcurrentDictionary<ProtoFireConnection, BlazeConnectionInfo> _connectionInfos;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         public BlazeServer(BlazeServerSettings settings) : base(settings.Name, settings.LocalEP, settings.Certificate)
         {
             Settings = settings;
             _components = new Dictionary<ushort, IBlazeComponent>();
-            _connectionContexts = new ConcurrentDictionary<ProtoFireConnection, BlazeRpcContext>();
+            _connectionInfos = new ConcurrentDictionary<ProtoFireConnection, BlazeConnectionInfo>();
         }
 
         public bool AddComponent<TComponent>() where TComponent : IBlazeComponent, new()
@@ -36,28 +36,23 @@ namespace BlazeCommon
         }
 
 
-        BlazeRpcContext GetRpcContext(ProtoFireConnection connection)
+        BlazeConnectionInfo GetConnectionInfo(ProtoFireConnection connection)
         {
-            return _connectionContexts.GetOrAdd(connection, (c) =>
+            return _connectionInfos.GetOrAdd(connection, (c) =>
             {
-                return new BlazeRpcContext(c);
+                return new BlazeConnectionInfo(c);
             });
-        }
-
-        BlazeRpcContext? RemoveRpcContext(ProtoFireConnection connection)
-        {
-            _connectionContexts.TryRemove(connection, out BlazeRpcContext? context);
-            return context;
         }
 
         public override void OnProtoFireConnect(ProtoFireConnection connection)
         {
-
+            Settings.OnNewConnection?.Invoke(GetConnectionInfo(connection));
         }
 
         public override void OnProtoFireDisconnect(ProtoFireConnection connection)
         {
-            RemoveRpcContext(connection);
+            if (_connectionInfos.TryRemove(connection, out BlazeConnectionInfo? connectionInfo))
+                Settings.OnDisconnected?.Invoke(connectionInfo);
         }
 
         public override void OnProtoFireError(ProtoFireConnection connection, Exception exception)
@@ -157,8 +152,10 @@ namespace BlazeCommon
 
             try
             {
-                object responseObj = await commandInfo.InvokeAsync(blazePacket.DataObj, GetRpcContext(connection)).ConfigureAwait(false);
+                BlazeRpcContext? context = new BlazeRpcContext(GetConnectionInfo(connection), frame.FullErrorCode, frame.MsgNum, frame.UserIndex, frame.Context);
+                object responseObj = await commandInfo.InvokeAsync(blazePacket.DataObj, context).ConfigureAwait(false);
                 response = blazePacket.CreateResponsePacket(responseObj);
+                context = null;
             }
             catch (Exception exception)
             {

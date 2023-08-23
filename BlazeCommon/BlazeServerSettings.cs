@@ -4,6 +4,8 @@ using Tdf;
 
 namespace BlazeCommon
 {
+    public delegate void ConnectionDelegate(BlazeConnectionInfo connectionInfo);
+
     public class BlazeServerSettings
     {
         public string Name { get; }
@@ -14,6 +16,8 @@ namespace BlazeCommon
         public int ComponentNotFoundErrorCode { get; set; }
         public int CommandNotFoundErrorCode { get; set; }
         public int ErrSystemErrorCode { get; set; }
+        public ConnectionDelegate? OnNewConnection { get; set; }
+        public ConnectionDelegate? OnDisconnected { get; set; }
 
 
         public BlazeServerSettings(string name, IPEndPoint endPoint, ITdfEncoder encoder, ITdfDecoder decoder)

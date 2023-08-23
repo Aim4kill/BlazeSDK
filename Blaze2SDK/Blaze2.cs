@@ -18,14 +18,16 @@ namespace Blaze2SDK
             decoder = factory.CreateLegacyDecoder();
         }
 
-        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null)
+        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null)
         {
             BlazeServerSettings blaze2Settings = new BlazeServerSettings(name, endPoint, encoder, decoder)
             {
                 Certificate = certificate,
                 ComponentNotFoundErrorCode = (int)Blaze2RpcError.ERR_COMPONENT_NOT_FOUND,
                 CommandNotFoundErrorCode = (int)Blaze2RpcError.ERR_COMMAND_NOT_FOUND,
-                ErrSystemErrorCode = (int)Blaze2RpcError.ERR_SYSTEM
+                ErrSystemErrorCode = (int)Blaze2RpcError.ERR_SYSTEM,
+                OnNewConnection = onNewConnection,
+                OnDisconnected = onDisconnected
             };
 
             return new BlazeServer(blaze2Settings);
