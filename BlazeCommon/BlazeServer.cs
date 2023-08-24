@@ -160,9 +160,17 @@ namespace BlazeCommon
             catch (Exception exception)
             {
                 if (exception is BlazeRpcException rpcException)
+                {
+                    if (rpcException.InnerException != null)
+                        OnProtoFireError(connection, rpcException.InnerException);
                     response = GetErrorResponse(blazePacket, rpcException);
+                }
                 else if (exception is TargetInvocationException targException && targException.InnerException is BlazeRpcException rpcException2)
+                {
+                    if (rpcException2.InnerException != null)
+                        OnProtoFireError(connection, rpcException2.InnerException);
                     response = GetErrorResponse(blazePacket, rpcException2);
+                }
                 else
                 {
                     response = blazePacket.CreateResponsePacket(new NullStruct(), Settings.ErrSystemErrorCode);
