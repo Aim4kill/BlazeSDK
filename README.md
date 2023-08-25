@@ -3,6 +3,7 @@ BlazeSDK
 * [About](#about)
   - [Why?](#why)
 * [Project descriptions](#project-descriptions)
+* [BlazeComponentBaseGenerator](#blazecomponentbasegenerator)
 * [Blaze2SDK](#blaze2sdk)
 * [Blaze3SDK](#blaze3sdk)
 
@@ -21,13 +22,22 @@ I wanted to create a blaze library where i can:
   * __[Blaze2SDK](#blaze2sdk)__ - SDK for Blaze 2.xx.xx.xx versions. Blaze2SDK is currently being created mainly using information from MOH2010 Beta .pdb.
   * __[Blaze3SDK](#blaze3sdk)__ - SDK for Blaze 3.xx.xx.xx versions. Blaze3SDK is currently being created mainly using information from BF3 Beta .pdb.
   * __BlazeCommon__ - Common files used for Blaze. Can be used to create base for blaze server (only for clients who are using [FireFrame](BlazeCommon/FireFrame.cs) as their packet header (moh2010, mohw, nfstr, bf3, bf4, etc.)).
-  * __BlazeComponentBaseGenerator__ - A Visual Studio extension (Custom Tool) that is used to generate component bases (.cs) from .json description file. So if you need to modify the component data, do not modify the component base .cs file, but the .json file instead and the component base will be auto regenerated.
+  * __[BlazeComponentBaseGenerator](#blazecomponentbasegenerator)__ - A Visual Studio extension (Custom Tool) that is used to generate component bases (.cs) from .json description file. So if you need to modify the component data, do not modify the component base .cs file, but the .json file instead and the component base will be auto regenerated.
   * __[ExampleBlazeRedirectorServer](ExampleBlazeRedirectorServer/Program.cs)__ - A example Blaze 3 redirector server which works similary like gosredirector.ea.com:42127.
   * __FixedSsl__ - Used in BlazeCommon project to allow the use of deprecated SSL protocol versions in C# (that some games are using), for example, Ssl3. So there is no need for SSPI patches on host server.
   * __HashLib__ - Used in XI5 project, where SHA224 is needed, which is not natively supported in C#.
   * __Tdf__ - Used to encode and decode Blaze packet Tdf structures.
   * __XI5__ - An extra project provided for decoding and verifying (verification for [RPCN](https://github.com/RipleyTom/rpcn) only!) PS3 tickets that can be found in [PS3LoginRequest](Blaze3SDK/Blaze/Authentication/PS3LoginRequest.cs) Tdf structure.
 
+## BlazeComponentBaseGenerator
+:white_check_mark: Finished:
+  * Default handlers for server for client requests
+
+:wrench: Todo:
+  * Methods for server to send notifications to clients
+  * Default handlers for client for server notifications
+  * Methods for client to send requests to server
+  * Some other stuff.
 
 ## Blaze2SDK
 :white_check_mark: Finished:
@@ -36,7 +46,7 @@ I wanted to create a blaze library where i can:
 
 :wrench: Todo:
   * Link all component requests/responses/error responses/notifications to their respective Tdf types.
-  * Other stuff.
+  * Some other stuff.
 
 ## Blaze3SDK
 :white_check_mark: Finished:
