@@ -1,3 +1,4 @@
+using Blaze3SDK.Blaze.Messaging;
 using BlazeCommon;
 
 namespace Blaze3SDK.Components
@@ -43,6 +44,18 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyMessageAsync(BlazeServerConnection connection, ServerMessage notification)
+            {
+                return connection.NotifyAsync(MessagingComponentBase.Id, (ushort)MessagingComponentNotification.NotifyMessage, notification);
+            }
+            
+            public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(MessagingComponentNotification notification) => MessagingComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<MessagingComponentCommand, MessagingComponentNotification, Blaze3RpcError>
@@ -51,7 +64,49 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(MessagingComponentNotification notification) => MessagingComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(MessagingComponentCommand command) => command switch
+        {
+            MessagingComponentCommand.sendMessage => typeof(NullStruct),
+            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
+            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
+            MessagingComponentCommand.touchMessages => typeof(NullStruct),
+            MessagingComponentCommand.getMessages => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(MessagingComponentCommand command) => command switch
+        {
+            MessagingComponentCommand.sendMessage => typeof(NullStruct),
+            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
+            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
+            MessagingComponentCommand.touchMessages => typeof(NullStruct),
+            MessagingComponentCommand.getMessages => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(MessagingComponentCommand command) => command switch
+        {
+            MessagingComponentCommand.sendMessage => typeof(NullStruct),
+            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
+            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
+            MessagingComponentCommand.touchMessages => typeof(NullStruct),
+            MessagingComponentCommand.getMessages => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(MessagingComponentNotification notification) => notification switch
+        {
+            MessagingComponentNotification.NotifyMessage => typeof(ServerMessage),
+            _ => typeof(NullStruct)
+        };
         
         public enum MessagingComponentCommand : ushort
         {

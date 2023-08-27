@@ -1,3 +1,4 @@
+using Blaze3SDK.Blaze.League;
 using BlazeCommon;
 
 namespace Blaze3SDK.Components
@@ -193,6 +194,18 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyFindLeaguesAsyncNotificationAsync(BlazeServerConnection connection, FindLeaguesAsyncNotification notification)
+            {
+                return connection.NotifyAsync(LeagueComponentBase.Id, (ushort)LeagueComponentNotification.FindLeaguesAsyncNotification, notification);
+            }
+            
+            public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(LeagueComponentNotification notification) => LeagueComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<LeagueComponentCommand, LeagueComponentNotification, Blaze3RpcError>
@@ -201,7 +214,124 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(LeagueComponentNotification notification) => LeagueComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(LeagueComponentCommand command) => command switch
+        {
+            LeagueComponentCommand.createLeague => typeof(NullStruct),
+            LeagueComponentCommand.joinLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
+            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
+            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
+            LeagueComponentCommand.findLeagues => typeof(NullStruct),
+            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
+            LeagueComponentCommand.removeMember => typeof(NullStruct),
+            LeagueComponentCommand.resetLeague => typeof(NullStruct),
+            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
+            LeagueComponentCommand.setMetadata => typeof(NullStruct),
+            LeagueComponentCommand.postNews => typeof(NullStruct),
+            LeagueComponentCommand.getNews => typeof(NullStruct),
+            LeagueComponentCommand.setRoster => typeof(NullStruct),
+            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
+            LeagueComponentCommand.getInvitations => typeof(NullStruct),
+            LeagueComponentCommand.processInvitation => typeof(NullStruct),
+            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
+            LeagueComponentCommand.processTrade => typeof(NullStruct),
+            LeagueComponentCommand.getTrades => typeof(NullStruct),
+            LeagueComponentCommand.getMembers => typeof(NullStruct),
+            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
+            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
+            LeagueComponentCommand.submitScores => typeof(NullStruct),
+            LeagueComponentCommand.getRoster => typeof(NullStruct),
+            LeagueComponentCommand.runDraft => typeof(NullStruct),
+            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(LeagueComponentCommand command) => command switch
+        {
+            LeagueComponentCommand.createLeague => typeof(NullStruct),
+            LeagueComponentCommand.joinLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
+            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
+            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
+            LeagueComponentCommand.findLeagues => typeof(NullStruct),
+            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
+            LeagueComponentCommand.removeMember => typeof(NullStruct),
+            LeagueComponentCommand.resetLeague => typeof(NullStruct),
+            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
+            LeagueComponentCommand.setMetadata => typeof(NullStruct),
+            LeagueComponentCommand.postNews => typeof(NullStruct),
+            LeagueComponentCommand.getNews => typeof(NullStruct),
+            LeagueComponentCommand.setRoster => typeof(NullStruct),
+            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
+            LeagueComponentCommand.getInvitations => typeof(NullStruct),
+            LeagueComponentCommand.processInvitation => typeof(NullStruct),
+            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
+            LeagueComponentCommand.processTrade => typeof(NullStruct),
+            LeagueComponentCommand.getTrades => typeof(NullStruct),
+            LeagueComponentCommand.getMembers => typeof(NullStruct),
+            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
+            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
+            LeagueComponentCommand.submitScores => typeof(NullStruct),
+            LeagueComponentCommand.getRoster => typeof(NullStruct),
+            LeagueComponentCommand.runDraft => typeof(NullStruct),
+            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(LeagueComponentCommand command) => command switch
+        {
+            LeagueComponentCommand.createLeague => typeof(NullStruct),
+            LeagueComponentCommand.joinLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeague => typeof(NullStruct),
+            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
+            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
+            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
+            LeagueComponentCommand.findLeagues => typeof(NullStruct),
+            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
+            LeagueComponentCommand.removeMember => typeof(NullStruct),
+            LeagueComponentCommand.resetLeague => typeof(NullStruct),
+            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
+            LeagueComponentCommand.setMetadata => typeof(NullStruct),
+            LeagueComponentCommand.postNews => typeof(NullStruct),
+            LeagueComponentCommand.getNews => typeof(NullStruct),
+            LeagueComponentCommand.setRoster => typeof(NullStruct),
+            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
+            LeagueComponentCommand.getInvitations => typeof(NullStruct),
+            LeagueComponentCommand.processInvitation => typeof(NullStruct),
+            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
+            LeagueComponentCommand.processTrade => typeof(NullStruct),
+            LeagueComponentCommand.getTrades => typeof(NullStruct),
+            LeagueComponentCommand.getMembers => typeof(NullStruct),
+            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
+            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
+            LeagueComponentCommand.submitScores => typeof(NullStruct),
+            LeagueComponentCommand.getRoster => typeof(NullStruct),
+            LeagueComponentCommand.runDraft => typeof(NullStruct),
+            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
+            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(LeagueComponentNotification notification) => notification switch
+        {
+            LeagueComponentNotification.FindLeaguesAsyncNotification => typeof(FindLeaguesAsyncNotification),
+            _ => typeof(NullStruct)
+        };
         
         public enum LeagueComponentCommand : ushort
         {

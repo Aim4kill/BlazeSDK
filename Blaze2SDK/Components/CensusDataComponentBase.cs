@@ -1,3 +1,4 @@
+using Blaze2SDK.Blaze.CensusData;
 using BlazeCommon;
 
 namespace Blaze2SDK.Components
@@ -31,6 +32,18 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyServerCensusDataAsync(BlazeServerConnection connection, NotifyServerCensusData notification)
+            {
+                return connection.NotifyAsync(CensusDataComponentBase.Id, (ushort)CensusDataComponentNotification.NotifyServerCensusData, notification);
+            }
+            
+            public override Type GetCommandRequestType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(CensusDataComponentNotification notification) => CensusDataComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
@@ -39,7 +52,43 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(CensusDataComponentNotification notification) => CensusDataComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(CensusDataComponentCommand command) => command switch
+        {
+            CensusDataComponentCommand.subscribeToCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.unsubscribeFromCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.getRegionCounts => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(CensusDataComponentCommand command) => command switch
+        {
+            CensusDataComponentCommand.subscribeToCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.unsubscribeFromCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.getRegionCounts => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(CensusDataComponentCommand command) => command switch
+        {
+            CensusDataComponentCommand.subscribeToCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.unsubscribeFromCensusData => typeof(NullStruct),
+            CensusDataComponentCommand.getRegionCounts => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(CensusDataComponentNotification notification) => notification switch
+        {
+            CensusDataComponentNotification.NotifyServerCensusData => typeof(NotifyServerCensusData),
+            _ => typeof(NullStruct)
+        };
         
         public enum CensusDataComponentCommand : ushort
         {

@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze",
     "Blaze2SDK.Blaze.GameManager",
     "BlazeCommon"
   ],
@@ -298,142 +299,142 @@
         {
           "Id": 10,
           "Name": "NotifyMatchmakingFinished",
-          "Type": "NullStruct"
+          "Type": "NotifyMatchmakingFinished"
         },
         {
           "Id": 12,
           "Name": "NotifyMatchmakingAsyncStatus",
-          "Type": "NullStruct"
+          "Type": "NotifyMatchmakingAsyncStatus"
         },
         {
           "Id": 15,
           "Name": "NotifyGameCreated",
-          "Type": "NullStruct"
+          "Type": "NotifyGameCreated"
         },
         {
           "Id": 16,
           "Name": "NotifyGameRemoved",
-          "Type": "NullStruct"
+          "Type": "NotifyGameRemoved"
         },
         {
           "Id": 20,
           "Name": "NotifyJoinGame",
-          "Type": "NullStruct"
+          "Type": "NotifyJoinGame"
         },
         {
           "Id": 21,
           "Name": "NotifyPlayerJoining",
-          "Type": "NullStruct"
+          "Type": "NotifyPlayerJoining"
         },
         {
           "Id": 30,
           "Name": "NotifyPlayerJoinCompleted",
-          "Type": "NullStruct"
+          "Type": "NotifyPlayerJoinCompleted"
         },
         {
           "Id": 35,
           "Name": "NotifyGroupPreJoinedGame",
-          "Type": "NullStruct"
+          "Type": "NotifyGroupPreJoinedGame"
         },
         {
           "Id": 40,
           "Name": "NotifyPlayerRemoved",
-          "Type": "NullStruct"
+          "Type": "NotifyPlayerRemoved"
         },
         {
           "Id": 41,
           "Name": "NotifyQueueChanged",
-          "Type": "NullStruct"
+          "Type": "NotifyQueueChanged"
         },
         {
           "Id": 60,
           "Name": "NotifyHostMigrationFinished",
-          "Type": "NullStruct"
+          "Type": "NotifyHostMigrationFinished"
         },
         {
           "Id": 70,
           "Name": "NotifyHostMigrationStart",
-          "Type": "NullStruct"
+          "Type": "NotifyHostMigrationStart"
         },
         {
           "Id": 71,
           "Name": "NotifyPlatformHostInitialized",
-          "Type": "NullStruct"
+          "Type": "NotifyPlatformHostInitialized"
         },
         {
           "Id": 80,
           "Name": "NotifyGameAttribChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameAttribChange"
         },
         {
           "Id": 90,
           "Name": "NotifyPlayerAttribChange",
-          "Type": "NullStruct"
+          "Type": "NotifyPlayerAttribChange"
         },
         {
           "Id": 95,
           "Name": "NotifyPlayerCustomDataChange",
-          "Type": "NullStruct"
+          "Type": "NotifyPlayerCustomDataChange"
         },
         {
           "Id": 100,
           "Name": "NotifyGameStateChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameStateChange"
         },
         {
           "Id": 110,
           "Name": "NotifyGameSettingsChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameSettingsChange"
         },
         {
           "Id": 111,
           "Name": "NotifyGameCapacityChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameCapacityChange"
         },
         {
           "Id": 112,
           "Name": "NotifyGameReset",
-          "Type": "NullStruct"
+          "Type": "NotifyGameReset"
         },
         {
           "Id": 113,
           "Name": "NotifyGameReportingIdChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameReportingIdChange"
         },
         {
           "Id": 115,
           "Name": "NotifyGameSessionUpdated",
-          "Type": "NullStruct"
+          "Type": "GameSessionUpdatedNotification"
         },
         {
           "Id": 116,
           "Name": "NotifyGamePlayerStateChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGamePlayerStateChange"
         },
         {
           "Id": 117,
           "Name": "NotifyGamePlayerTeamChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGamePlayerTeamChange"
         },
         {
           "Id": 118,
           "Name": "NotifyGameTeamIdChange",
-          "Type": "NullStruct"
+          "Type": "NotifyGameTeamIdChange"
         },
         {
           "Id": 201,
           "Name": "NotifyGameListUpdate",
-          "Type": "NullStruct"
+          "Type": "NotifyGameListUpdate"
         },
         {
           "Id": 202,
           "Name": "NotifyAdminListChange",
-          "Type": "NullStruct"
+          "Type": "NotifyAdminListChange"
         },
         {
           "Id": 220,
           "Name": "NotifyCreateDynamicDedicatedServerGame",
-          "Type": "NullStruct"
+          "Type": "NotifyCreateDynamicDedicatedServerGame"
         }
       ]
     }

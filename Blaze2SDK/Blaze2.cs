@@ -20,7 +20,7 @@ namespace Blaze2SDK
 
         public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null)
         {
-            BlazeServerSettings blaze2Settings = new BlazeServerSettings(name, endPoint, encoder, decoder)
+            BlazeServerConfiguration blaze2Settings = new BlazeServerConfiguration(name, endPoint, encoder, decoder)
             {
                 Certificate = certificate,
                 ComponentNotFoundErrorCode = (int)Blaze2RpcError.ERR_COMPONENT_NOT_FOUND,

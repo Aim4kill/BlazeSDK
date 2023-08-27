@@ -111,6 +111,13 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<UtilComponentCommand, UtilComponentNotification, Blaze2RpcError>
@@ -119,7 +126,81 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(NullStruct),
+            UtilComponentCommand.ping => typeof(NullStruct),
+            UtilComponentCommand.setClientData => typeof(NullStruct),
+            UtilComponentCommand.localizeStrings => typeof(NullStruct),
+            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerRequest),
+            UtilComponentCommand.getTickerServer => typeof(NullStruct),
+            UtilComponentCommand.preAuth => typeof(PreAuthRequest),
+            UtilComponentCommand.postAuth => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
+            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
+            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
+            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
+            UtilComponentCommand.setClientMetrics => typeof(ClientMetrics),
+            UtilComponentCommand.setConnectionState => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(NullStruct),
+            UtilComponentCommand.ping => typeof(PingResponse),
+            UtilComponentCommand.setClientData => typeof(NullStruct),
+            UtilComponentCommand.localizeStrings => typeof(NullStruct),
+            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerResponse),
+            UtilComponentCommand.getTickerServer => typeof(NullStruct),
+            UtilComponentCommand.preAuth => typeof(PreAuthResponse),
+            UtilComponentCommand.postAuth => typeof(PostAuthResponse),
+            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
+            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
+            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
+            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
+            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
+            UtilComponentCommand.setConnectionState => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(NullStruct),
+            UtilComponentCommand.ping => typeof(NullStruct),
+            UtilComponentCommand.setClientData => typeof(NullStruct),
+            UtilComponentCommand.localizeStrings => typeof(NullStruct),
+            UtilComponentCommand.getTelemetryServer => typeof(NullStruct),
+            UtilComponentCommand.getTickerServer => typeof(NullStruct),
+            UtilComponentCommand.preAuth => typeof(NullStruct),
+            UtilComponentCommand.postAuth => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
+            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
+            UtilComponentCommand.filterForProfanity => typeof(NullStruct),
+            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
+            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
+            UtilComponentCommand.setConnectionState => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(UtilComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum UtilComponentCommand : ushort
         {

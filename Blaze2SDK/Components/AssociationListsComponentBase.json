@@ -74,12 +74,12 @@
         {
           "Id": 1,
           "Name": "NotifyListMemberUpdated",
-          "Type": "NullStruct"
+          "Type": "MemberInfo"
         },
         {
           "Id": 2,
           "Name": "NotifyListMemberRemoved",
-          "Type": "NullStruct"
+          "Type": "AssociationListInfo"
         }
       ]
     }

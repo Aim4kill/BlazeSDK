@@ -135,6 +135,13 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<UtilComponentCommand, UtilComponentNotification, Blaze3RpcError>
@@ -143,7 +150,93 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(FetchClientConfigRequest),
+            UtilComponentCommand.ping => typeof(NullStruct),
+            UtilComponentCommand.setClientData => typeof(ClientData),
+            UtilComponentCommand.localizeStrings => typeof(LocalizeStringsRequest),
+            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerRequest),
+            UtilComponentCommand.getTickerServer => typeof(NullStruct),
+            UtilComponentCommand.preAuth => typeof(PreAuthRequest),
+            UtilComponentCommand.postAuth => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoad => typeof(UserSettingsLoadRequest),
+            UtilComponentCommand.userSettingsSave => typeof(UserSettingsSaveRequest),
+            UtilComponentCommand.userSettingsLoadAll => typeof(UserSettingsLoadAllRequest),
+            UtilComponentCommand.deleteUserSettings => typeof(DeleteUserSettingsRequest),
+            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
+            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
+            UtilComponentCommand.setClientMetrics => typeof(ClientMetrics),
+            UtilComponentCommand.setConnectionState => typeof(SetConnectionStateRequest),
+            UtilComponentCommand.getPssConfig => typeof(NullStruct),
+            UtilComponentCommand.getUserOptions => typeof(GetUserOptionsRequest),
+            UtilComponentCommand.setUserOptions => typeof(UserOptions),
+            UtilComponentCommand.suspendUserPing => typeof(SuspendUserPingRequest),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(FetchConfigResponse),
+            UtilComponentCommand.ping => typeof(PingResponse),
+            UtilComponentCommand.setClientData => typeof(NullStruct),
+            UtilComponentCommand.localizeStrings => typeof(LocalizeStringsResponse),
+            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerResponse),
+            UtilComponentCommand.getTickerServer => typeof(GetTickerServerResponse),
+            UtilComponentCommand.preAuth => typeof(PreAuthResponse),
+            UtilComponentCommand.postAuth => typeof(PostAuthResponse),
+            UtilComponentCommand.userSettingsLoad => typeof(UserSettingsResponse),
+            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAll => typeof(UserSettingsLoadAllResponse),
+            UtilComponentCommand.deleteUserSettings => typeof(NullStruct),
+            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
+            UtilComponentCommand.fetchQosConfig => typeof(QosConfigInfo),
+            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
+            UtilComponentCommand.setConnectionState => typeof(NullStruct),
+            UtilComponentCommand.getPssConfig => typeof(PssConfig),
+            UtilComponentCommand.getUserOptions => typeof(UserOptions),
+            UtilComponentCommand.setUserOptions => typeof(NullStruct),
+            UtilComponentCommand.suspendUserPing => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(UtilComponentCommand command) => command switch
+        {
+            UtilComponentCommand.fetchClientConfig => typeof(NullStruct),
+            UtilComponentCommand.ping => typeof(NullStruct),
+            UtilComponentCommand.setClientData => typeof(NullStruct),
+            UtilComponentCommand.localizeStrings => typeof(NullStruct),
+            UtilComponentCommand.getTelemetryServer => typeof(NullStruct),
+            UtilComponentCommand.getTickerServer => typeof(NullStruct),
+            UtilComponentCommand.preAuth => typeof(NullStruct),
+            UtilComponentCommand.postAuth => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
+            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
+            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
+            UtilComponentCommand.deleteUserSettings => typeof(NullStruct),
+            UtilComponentCommand.filterForProfanity => typeof(NullStruct),
+            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
+            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
+            UtilComponentCommand.setConnectionState => typeof(NullStruct),
+            UtilComponentCommand.getPssConfig => typeof(NullStruct),
+            UtilComponentCommand.getUserOptions => typeof(NullStruct),
+            UtilComponentCommand.setUserOptions => typeof(NullStruct),
+            UtilComponentCommand.suspendUserPing => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(UtilComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum UtilComponentCommand : ushort
         {

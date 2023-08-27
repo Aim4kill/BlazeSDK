@@ -55,6 +55,39 @@ namespace BlazeComponentBaseGenerator
             }
         }
 
+        void AppendComponentServerNotifications(CStringBuilder builder, Data.Component component)
+        {
+            string componentBaseName = $"{component.Name}Base";
+            string componentNotificationName = $"{component.Name}Notification";
+
+            foreach (Notification notification in component.Notifications)
+            {
+                string notificationMethodName = notification.Name;
+                if (notificationMethodName.Length != 0)
+                    notificationMethodName = char.ToUpper(notificationMethodName[0]) + notificationMethodName.Substring(1);
+
+                if (!notificationMethodName.StartsWith("Notify"))
+                    notificationMethodName = "Notify" + notificationMethodName;
+
+                if (!notificationMethodName.EndsWith("Async"))
+                    notificationMethodName += "Async";
+
+                string notificationType = notification.Type;
+                if (string.IsNullOrEmpty(notificationType))
+                    notificationType = component.DefaultNotificationType;
+
+                builder.AppendLine();
+                builder.AppendLine($"public static Task {notificationMethodName}(BlazeServerConnection connection, {notificationType} notification)");
+                builder.AppendLine($"{{");
+                builder.AddTab();
+
+                builder.AppendLine($"return connection.NotifyAsync({componentBaseName}.Id, (ushort){componentNotificationName}.{notification.Name}, notification);");
+
+                builder.RemoveTab();
+                builder.AppendLine($"}}");
+            }
+        }
+
         void AppendComponentServerBase(CStringBuilder builder, Data.Component component)
         {
             string componentCommandName = $"{component.Name}Command";
@@ -72,6 +105,17 @@ namespace BlazeComponentBaseGenerator
             builder.AppendLine($"}}");
 
             AppendComponentServerMethods(builder, component);
+            builder.AppendLine();
+
+            AppendComponentServerNotifications(builder, component);
+            builder.AppendLine();
+
+
+            builder.AppendLine($"public override Type GetCommandRequestType({componentCommandName} command) => {component.Name}Base.GetCommandRequestType(command);");
+            builder.AppendLine($"public override Type GetCommandResponseType({componentCommandName} command) => {component.Name}Base.GetCommandResponseType(command);");
+            builder.AppendLine($"public override Type GetCommandErrorResponseType({componentCommandName} command) => {component.Name}Base.GetCommandErrorResponseType(command);");
+            builder.AppendLine($"public override Type GetNotificationType({componentCommandNotification} notification) => {component.Name}Base.GetNotificationType(notification);");
+            builder.AppendLine();
 
             builder.RemoveTab();
             builder.AppendLine($"}}");
@@ -91,6 +135,13 @@ namespace BlazeComponentBaseGenerator
             builder.AppendLine();
             builder.RemoveTab();
             builder.AppendLine($"}}");
+            builder.AppendLine();
+
+            builder.AppendLine($"public override Type GetCommandRequestType({componentCommandName} command) => {component.Name}Base.GetCommandRequestType(command);");
+            builder.AppendLine($"public override Type GetCommandResponseType({componentCommandName} command) => {component.Name}Base.GetCommandResponseType(command);");
+            builder.AppendLine($"public override Type GetCommandErrorResponseType({componentCommandName} command) => {component.Name}Base.GetCommandErrorResponseType(command);");
+            builder.AppendLine($"public override Type GetNotificationType({componentCommandNotification} notification) => {component.Name}Base.GetNotificationType(notification);");
+            builder.AppendLine();
 
             builder.RemoveTab();
             builder.AppendLine($"}}");
@@ -142,6 +193,18 @@ namespace BlazeComponentBaseGenerator
             AppendComponentClientBase(builder, component);
             builder.AppendLine();
 
+            AppendGetCommandRequestType(builder, component);
+            builder.AppendLine();
+
+            AppendGetCommandResponseType(builder, component);
+            builder.AppendLine();
+
+            AppendGetCommandErrorResponseType(builder, component);
+            builder.AppendLine();
+
+            AppendGetNotificationType(builder, component);
+            builder.AppendLine();
+
             AppendComponentCommandEnum(builder, component);
             builder.AppendLine();
 
@@ -150,6 +213,90 @@ namespace BlazeComponentBaseGenerator
 
             builder.RemoveTab();
             builder.AppendLine($"}}");
+        }
+
+        private void AppendGetCommandRequestType(CStringBuilder builder, Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+            builder.AppendLine($"public static Type GetCommandRequestType({componentCommandName} command) => command switch");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+
+            foreach (Method method in component.Methods)
+            {
+                string requestType = method.RequestType;
+                if (string.IsNullOrEmpty(requestType))
+                    requestType = component.DefaultRequestType;
+                builder.AppendLine($"{componentCommandName}.{method.Name} => typeof({requestType}),");
+            }
+
+            builder.AppendLine($"_ => typeof({component.DefaultRequestType})");
+
+            builder.RemoveTab();
+            builder.AppendLine($"}};");
+        }
+
+        private void AppendGetCommandResponseType(CStringBuilder builder, Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+            builder.AppendLine($"public static Type GetCommandResponseType({componentCommandName} command) => command switch");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+
+            foreach (Method method in component.Methods)
+            {
+                string responseType = method.ResponseType;
+                if (string.IsNullOrEmpty(responseType))
+                    responseType = component.DefaultResponseType;
+                builder.AppendLine($"{componentCommandName}.{method.Name} => typeof({responseType}),");
+            }
+
+            builder.AppendLine($"_ => typeof({component.DefaultResponseType})");
+
+            builder.RemoveTab();
+            builder.AppendLine($"}};");
+        }
+
+        private void AppendGetCommandErrorResponseType(CStringBuilder builder, Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+            builder.AppendLine($"public static Type GetCommandErrorResponseType({componentCommandName} command) => command switch");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+
+            foreach (Method method in component.Methods)
+            {
+                string errorResponseType = method.ErrorResponseType;
+                if (string.IsNullOrEmpty(errorResponseType))
+                    errorResponseType = component.DefaultErrorType;
+                builder.AppendLine($"{componentCommandName}.{method.Name} => typeof({errorResponseType}),");
+            }
+
+            builder.AppendLine($"_ => typeof({component.DefaultErrorType})");
+
+            builder.RemoveTab();
+            builder.AppendLine($"}};");
+        }
+
+        private void AppendGetNotificationType(CStringBuilder builder, Component component)
+        {
+            string notificationName = $"{component.Name}Notification";
+            builder.AppendLine($"public static Type GetNotificationType({notificationName} notification) => notification switch");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+
+            foreach (Notification notification in component.Notifications)
+            {
+                string notificationType = notification.Type;
+                if (string.IsNullOrEmpty(notificationType))
+                    notificationType = component.DefaultNotificationType;
+                builder.AppendLine($"{notificationName}.{notification.Name} => typeof({notificationType}),");
+            }
+
+            builder.AppendLine($"_ => typeof({component.DefaultNotificationType})");
+
+            builder.RemoveTab();
+            builder.AppendLine($"}};");
         }
 
         protected override byte[] GenerateCode(string inputFileName, string inputFileContent)
@@ -165,7 +312,6 @@ namespace BlazeComponentBaseGenerator
             {
                 return StringToBytes(e.ToString());
             }
-
 
             CStringBuilder builder = new CStringBuilder();
 

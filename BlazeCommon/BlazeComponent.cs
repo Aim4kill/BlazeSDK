@@ -74,29 +74,15 @@ namespace BlazeCommon
         public string GetErrorName(int fullErrorCode) => GetErrorName((ErrorEnum)Enum.ToObject(typeof(ErrorEnum), fullErrorCode));
         public string GetErrorName(ushort shortErrorCode) => throw new NotImplementedException();
 
-        public Type? GetCommandRequestType(ushort commandId)
-        {
-            if (!_commands.TryGetValue(commandId, out BlazeCommandInfo? commandInfo))
-                return null;
-            return commandInfo.RequestType;
-        }
+        public abstract Type GetCommandRequestType(CommandEnum command);
+        public abstract Type GetCommandResponseType(CommandEnum command);
+        public abstract Type GetCommandErrorResponseType(CommandEnum command);
+        public abstract Type GetNotificationType(NotificationEnum notification);
 
-        public Type? GetCommandResponseType(ushort commandId)
-        {
-            if (!_commands.TryGetValue(commandId, out BlazeCommandInfo? commandInfo))
-                return null;
-            return commandInfo.ResponseType;
-        }
-
-        public Type? GetCommandErrorResponseType(ushort commandId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type? GetNotificationType(ushort notificationId)
-        {
-            throw new NotImplementedException();
-        }
+        public Type GetCommandRequestType(ushort commandId) => GetCommandRequestType((CommandEnum)Enum.ToObject(typeof(CommandEnum), commandId));
+        public Type GetCommandResponseType(ushort commandId) => GetCommandResponseType((CommandEnum)Enum.ToObject(typeof(CommandEnum), commandId));
+        public Type GetCommandErrorResponseType(ushort commandId) => GetCommandErrorResponseType((CommandEnum)Enum.ToObject(typeof(CommandEnum), commandId));
+        public Type GetNotificationType(ushort notificationId) => GetNotificationType((NotificationEnum)Enum.ToObject(typeof(NotificationEnum), notificationId));
 
         public string GetFullName(FireFrame frame)
         {

@@ -122,6 +122,23 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyGetStatsAsyncNotificationAsync(BlazeServerConnection connection, KeyScopedStatValues notification)
+            {
+                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetStatsAsyncNotification, notification);
+            }
+            
+            public static Task NotifyGetLeaderboardTreeNotificationAsync(BlazeServerConnection connection, LeaderboardTreeNode notification)
+            {
+                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetLeaderboardTreeNotification, notification);
+            }
+            
+            public override Type GetCommandRequestType(StatsComponentCommand command) => StatsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(StatsComponentCommand command) => StatsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(StatsComponentCommand command) => StatsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(StatsComponentNotification notification) => StatsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<StatsComponentCommand, StatsComponentNotification, Blaze2RpcError>
@@ -130,7 +147,89 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(StatsComponentCommand command) => StatsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(StatsComponentCommand command) => StatsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(StatsComponentCommand command) => StatsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(StatsComponentNotification notification) => StatsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(StatsComponentCommand command) => command switch
+        {
+            StatsComponentCommand.getStatDescs => typeof(NullStruct),
+            StatsComponentCommand.getStats => typeof(NullStruct),
+            StatsComponentCommand.getStatGroupList => typeof(NullStruct),
+            StatsComponentCommand.getStatGroup => typeof(GetStatGroupRequest),
+            StatsComponentCommand.getStatsByGroup => typeof(NullStruct),
+            StatsComponentCommand.getDateRange => typeof(NullStruct),
+            StatsComponentCommand.getEntityCount => typeof(NullStruct),
+            StatsComponentCommand.updateStats => typeof(NullStruct),
+            StatsComponentCommand.wipeStats => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardGroup => typeof(LeaderboardGroupRequest),
+            StatsComponentCommand.getLeaderboardFolderGroup => typeof(LeaderboardFolderGroupRequest),
+            StatsComponentCommand.getLeaderboard => typeof(LeaderboardStatsRequest),
+            StatsComponentCommand.getCenteredLeaderboard => typeof(CenteredLeaderboardStatsRequest),
+            StatsComponentCommand.getFilteredLeaderboard => typeof(FilteredLeaderboardStatsRequest),
+            StatsComponentCommand.getKeyScopesMap => typeof(NullStruct),
+            StatsComponentCommand.getStatsByGroupAsync => typeof(GetStatsByGroupRequest),
+            StatsComponentCommand.getLeaderboardTreeAsync => typeof(GetLeaderboardTreeRequest),
+            StatsComponentCommand.getLeaderboardEntityCount => typeof(LeaderboardEntityCountRequest),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(StatsComponentCommand command) => command switch
+        {
+            StatsComponentCommand.getStatDescs => typeof(NullStruct),
+            StatsComponentCommand.getStats => typeof(NullStruct),
+            StatsComponentCommand.getStatGroupList => typeof(StatGroupList),
+            StatsComponentCommand.getStatGroup => typeof(StatGroupResponse),
+            StatsComponentCommand.getStatsByGroup => typeof(NullStruct),
+            StatsComponentCommand.getDateRange => typeof(NullStruct),
+            StatsComponentCommand.getEntityCount => typeof(NullStruct),
+            StatsComponentCommand.updateStats => typeof(NullStruct),
+            StatsComponentCommand.wipeStats => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardGroup => typeof(LeaderboardGroupResponse),
+            StatsComponentCommand.getLeaderboardFolderGroup => typeof(LeaderboardFolderGroup),
+            StatsComponentCommand.getLeaderboard => typeof(LeaderboardStatValues),
+            StatsComponentCommand.getCenteredLeaderboard => typeof(LeaderboardStatValues),
+            StatsComponentCommand.getFilteredLeaderboard => typeof(LeaderboardStatValues),
+            StatsComponentCommand.getKeyScopesMap => typeof(KeyScopes),
+            StatsComponentCommand.getStatsByGroupAsync => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardTreeAsync => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardEntityCount => typeof(EntityCount),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(StatsComponentCommand command) => command switch
+        {
+            StatsComponentCommand.getStatDescs => typeof(NullStruct),
+            StatsComponentCommand.getStats => typeof(NullStruct),
+            StatsComponentCommand.getStatGroupList => typeof(NullStruct),
+            StatsComponentCommand.getStatGroup => typeof(NullStruct),
+            StatsComponentCommand.getStatsByGroup => typeof(NullStruct),
+            StatsComponentCommand.getDateRange => typeof(NullStruct),
+            StatsComponentCommand.getEntityCount => typeof(NullStruct),
+            StatsComponentCommand.updateStats => typeof(NullStruct),
+            StatsComponentCommand.wipeStats => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardGroup => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardFolderGroup => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboard => typeof(NullStruct),
+            StatsComponentCommand.getCenteredLeaderboard => typeof(NullStruct),
+            StatsComponentCommand.getFilteredLeaderboard => typeof(NullStruct),
+            StatsComponentCommand.getKeyScopesMap => typeof(NullStruct),
+            StatsComponentCommand.getStatsByGroupAsync => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardTreeAsync => typeof(NullStruct),
+            StatsComponentCommand.getLeaderboardEntityCount => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(StatsComponentNotification notification) => notification switch
+        {
+            StatsComponentNotification.GetStatsAsyncNotification => typeof(KeyScopedStatValues),
+            StatsComponentNotification.GetLeaderboardTreeNotification => typeof(LeaderboardTreeNode),
+            _ => typeof(NullStruct)
+        };
         
         public enum StatsComponentCommand : ushort
         {

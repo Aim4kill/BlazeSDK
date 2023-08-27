@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.Playgroups",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -87,52 +88,52 @@
         {
           "Id": 50,
           "Name": "NotifyDestroyPlaygroup",
-          "Type": "NullStruct"
+          "Type": "NotifyDestroyPlaygroup"
         },
         {
           "Id": 51,
           "Name": "NotifyJoinPlaygroup",
-          "Type": "NullStruct"
+          "Type": "NotifyJoinPlaygroup"
         },
         {
           "Id": 52,
           "Name": "NotifyMemberJoinedPlaygroup",
-          "Type": "NullStruct"
+          "Type": "NotifyMemberJoinedPlaygroup"
         },
         {
           "Id": 53,
           "Name": "NotifyMemberRemovedFromPlaygroup",
-          "Type": "NullStruct"
+          "Type": "NotifyMemberRemoveFromPlaygroup"
         },
         {
           "Id": 54,
           "Name": "NotifyPlaygroupAttributesSet",
-          "Type": "NullStruct"
+          "Type": "NotifyPlaygroupAttributesSet"
         },
         {
           "Id": 75,
           "Name": "NotifyMemberAttributesSet",
-          "Type": "NullStruct"
+          "Type": "NotifyMemberAttributesSet"
         },
         {
           "Id": 79,
           "Name": "NotifyLeaderChange",
-          "Type": "NullStruct"
+          "Type": "NotifyLeaderChange"
         },
         {
           "Id": 80,
           "Name": "NotifyMemberPermissionsChange",
-          "Type": "NullStruct"
+          "Type": "NotifyMemberPermissionsChange"
         },
         {
           "Id": 85,
           "Name": "NotifyJoinControlsChange",
-          "Type": "NullStruct"
+          "Type": "NotifyJoinControlsChange"
         },
         {
           "Id": 86,
           "Name": "NotifyXboxSessionInfo",
-          "Type": "NullStruct"
+          "Type": "NotifyXboxSessionInfo"
         }
       ]
     }

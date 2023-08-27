@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.Clubs",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -290,12 +291,12 @@
         {
           "Id": 14464,
           "Name": "FindClubsAsyncNotification",
-          "Type": "NullStruct"
+          "Type": "FindClubsAsyncResult"
         },
         {
           "Id": 15464,
           "Name": "NewClubTickerMessageNotification",
-          "Type": "NullStruct"
+          "Type": "ClubTickerMessage"
         }
       ]
     }

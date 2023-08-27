@@ -7,12 +7,12 @@
         BlazeCommandInfo? GetBlazeCommandInfo(ushort commandId);
 
         string GetCommandName(ushort commandId);
-        Type? GetCommandRequestType(ushort commandId);
-        Type? GetCommandResponseType(ushort commandId);
-        Type? GetCommandErrorResponseType(ushort commandId);
+        Type GetCommandRequestType(ushort commandId);
+        Type GetCommandResponseType(ushort commandId);
+        Type GetCommandErrorResponseType(ushort commandId);
 
         string GetNotificationName(ushort notificationId);
-        Type? GetNotificationType(ushort notificationId);
+        Type GetNotificationType(ushort notificationId);
 
         string GetErrorName(int fullErorCode);
         string GetErrorName(ushort shortErrorCode);

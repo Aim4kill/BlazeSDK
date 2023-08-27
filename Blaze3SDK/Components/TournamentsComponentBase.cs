@@ -61,6 +61,13 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(TournamentsComponentNotification notification) => TournamentsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<TournamentsComponentCommand, TournamentsComponentNotification, Blaze3RpcError>
@@ -69,7 +76,57 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(TournamentsComponentCommand command) => TournamentsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(TournamentsComponentNotification notification) => TournamentsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(TournamentsComponentCommand command) => command switch
+        {
+            TournamentsComponentCommand.getTournaments => typeof(NullStruct),
+            TournamentsComponentCommand.getMemberCounts => typeof(NullStruct),
+            TournamentsComponentCommand.getTrophies => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentId => typeof(NullStruct),
+            TournamentsComponentCommand.joinTournament => typeof(NullStruct),
+            TournamentsComponentCommand.leaveTournament => typeof(NullStruct),
+            TournamentsComponentCommand.resetMyTournament => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentDetails => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(TournamentsComponentCommand command) => command switch
+        {
+            TournamentsComponentCommand.getTournaments => typeof(NullStruct),
+            TournamentsComponentCommand.getMemberCounts => typeof(NullStruct),
+            TournamentsComponentCommand.getTrophies => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentId => typeof(NullStruct),
+            TournamentsComponentCommand.joinTournament => typeof(NullStruct),
+            TournamentsComponentCommand.leaveTournament => typeof(NullStruct),
+            TournamentsComponentCommand.resetMyTournament => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentDetails => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(TournamentsComponentCommand command) => command switch
+        {
+            TournamentsComponentCommand.getTournaments => typeof(NullStruct),
+            TournamentsComponentCommand.getMemberCounts => typeof(NullStruct),
+            TournamentsComponentCommand.getTrophies => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentId => typeof(NullStruct),
+            TournamentsComponentCommand.joinTournament => typeof(NullStruct),
+            TournamentsComponentCommand.leaveTournament => typeof(NullStruct),
+            TournamentsComponentCommand.resetMyTournament => typeof(NullStruct),
+            TournamentsComponentCommand.getMyTournamentDetails => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(TournamentsComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum TournamentsComponentCommand : ushort
         {

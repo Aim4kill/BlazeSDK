@@ -290,6 +290,183 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyMatchmakingFailedAsync(BlazeServerConnection connection, NotifyMatchmakingFailed notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingFailed, notification);
+            }
+            
+            public static Task NotifyMatchmakingAsyncStatusAsync(BlazeServerConnection connection, NotifyMatchmakingAsyncStatus notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingAsyncStatus, notification);
+            }
+            
+            public static Task NotifyGameCreatedAsync(BlazeServerConnection connection, NotifyGameCreated notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCreated, notification);
+            }
+            
+            public static Task NotifyGameRemovedAsync(BlazeServerConnection connection, NotifyGameRemoved notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameRemoved, notification);
+            }
+            
+            public static Task NotifyGameSetupAsync(BlazeServerConnection connection, NotifyGameSetup notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSetup, notification);
+            }
+            
+            public static Task NotifyPlayerJoiningAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoining, notification);
+            }
+            
+            public static Task NotifyJoiningPlayerInitiateConnectionsAsync(BlazeServerConnection connection, NotifyGameSetup notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyJoiningPlayerInitiateConnections, notification);
+            }
+            
+            public static Task NotifyPlayerJoiningQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoiningQueue, notification);
+            }
+            
+            public static Task NotifyPlayerPromotedFromQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerPromotedFromQueue, notification);
+            }
+            
+            public static Task NotifyPlayerClaimingReservationAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerClaimingReservation, notification);
+            }
+            
+            public static Task NotifyPlayerJoinCompletedAsync(BlazeServerConnection connection, NotifyPlayerJoinCompleted notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoinCompleted, notification);
+            }
+            
+            public static Task NotifyPlayerRemovedAsync(BlazeServerConnection connection, NotifyPlayerRemoved notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerRemoved, notification);
+            }
+            
+            public static Task NotifyHostMigrationFinishedAsync(BlazeServerConnection connection, NotifyHostMigrationFinished notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationFinished, notification);
+            }
+            
+            public static Task NotifyHostMigrationStartAsync(BlazeServerConnection connection, NotifyHostMigrationStart notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationStart, notification);
+            }
+            
+            public static Task NotifyPlatformHostInitializedAsync(BlazeServerConnection connection, NotifyPlatformHostInitialized notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlatformHostInitialized, notification);
+            }
+            
+            public static Task NotifyGameAttribChangeAsync(BlazeServerConnection connection, NotifyGameAttribChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameAttribChange, notification);
+            }
+            
+            public static Task NotifyPlayerAttribChangeAsync(BlazeServerConnection connection, NotifyPlayerAttribChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerAttribChange, notification);
+            }
+            
+            public static Task NotifyPlayerCustomDataChangeAsync(BlazeServerConnection connection, NotifyPlayerCustomDataChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerCustomDataChange, notification);
+            }
+            
+            public static Task NotifyGameStateChangeAsync(BlazeServerConnection connection, NotifyGameStateChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameStateChange, notification);
+            }
+            
+            public static Task NotifyGameSettingsChangeAsync(BlazeServerConnection connection, NotifyGameSettingsChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSettingsChange, notification);
+            }
+            
+            public static Task NotifyGameCapacityChangeAsync(BlazeServerConnection connection, NotifyGameCapacityChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCapacityChange, notification);
+            }
+            
+            public static Task NotifyGameResetAsync(BlazeServerConnection connection, NotifyGameReset notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReset, notification);
+            }
+            
+            public static Task NotifyGameReportingIdChangeAsync(BlazeServerConnection connection, NotifyGameReportingIdChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReportingIdChange, notification);
+            }
+            
+            public static Task NotifyGameSessionUpdatedAsync(BlazeServerConnection connection, GameSessionUpdatedNotification notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSessionUpdated, notification);
+            }
+            
+            public static Task NotifyGamePlayerStateChangeAsync(BlazeServerConnection connection, NotifyGamePlayerStateChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerStateChange, notification);
+            }
+            
+            public static Task NotifyGamePlayerTeamChangeAsync(BlazeServerConnection connection, NotifyGamePlayerTeamChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerTeamChange, notification);
+            }
+            
+            public static Task NotifyGameTeamIdChangeAsync(BlazeServerConnection connection, NotifyGameTeamIdChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameTeamIdChange, notification);
+            }
+            
+            public static Task NotifyProcessQueueAsync(BlazeServerConnection connection, NotifyProcessQueue notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyProcessQueue, notification);
+            }
+            
+            public static Task NotifyPresenceModeChangedAsync(BlazeServerConnection connection, NotifyPresenceModeChanged notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPresenceModeChanged, notification);
+            }
+            
+            public static Task NotifyGamePlayerQueuePositionChangeAsync(BlazeServerConnection connection, NotifyGamePlayerQueuePositionChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerQueuePositionChange, notification);
+            }
+            
+            public static Task NotifyGameListUpdateAsync(BlazeServerConnection connection, NotifyGameListUpdate notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameListUpdate, notification);
+            }
+            
+            public static Task NotifyAdminListChangeAsync(BlazeServerConnection connection, NotifyAdminListChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyAdminListChange, notification);
+            }
+            
+            public static Task NotifyCreateDynamicDedicatedServerGameAsync(BlazeServerConnection connection, NotifyCreateDynamicDedicatedServerGame notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyCreateDynamicDedicatedServerGame, notification);
+            }
+            
+            public static Task NotifyGameNameChangeAsync(BlazeServerConnection connection, NotifyGameNameChange notification)
+            {
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameNameChange, notification);
+            }
+            
+            public override Type GetCommandRequestType(GameManagerCommand command) => GameManagerBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GameManagerCommand command) => GameManagerBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GameManagerCommand command) => GameManagerBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GameManagerNotification notification) => GameManagerBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<GameManagerCommand, GameManagerNotification, Blaze3RpcError>
@@ -298,7 +475,205 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(GameManagerCommand command) => GameManagerBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GameManagerCommand command) => GameManagerBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GameManagerCommand command) => GameManagerBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GameManagerNotification notification) => GameManagerBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(GameManagerCommand command) => command switch
+        {
+            GameManagerCommand.createGame => typeof(CreateGameRequest),
+            GameManagerCommand.destroyGame => typeof(DestroyGameRequest),
+            GameManagerCommand.advanceGameState => typeof(AdvanceGameStateRequest),
+            GameManagerCommand.setGameSettings => typeof(SetGameSettingsRequest),
+            GameManagerCommand.setPlayerCapacity => typeof(SetPlayerCapacityRequest),
+            GameManagerCommand.setPresenceMode => typeof(SetPresenceModeRequest),
+            GameManagerCommand.setGameAttributes => typeof(SetGameAttributesRequest),
+            GameManagerCommand.setPlayerAttributes => typeof(SetPlayerAttributesRequest),
+            GameManagerCommand.joinGame => typeof(JoinGameRequest),
+            GameManagerCommand.removePlayer => typeof(RemovePlayerRequest),
+            GameManagerCommand.startMatchmaking => typeof(StartMatchmakingRequest),
+            GameManagerCommand.cancelMatchmaking => typeof(CancelMatchmakingRequest),
+            GameManagerCommand.finalizeGameCreation => typeof(UpdateGameSessionRequest),
+            GameManagerCommand.listGames => typeof(NullStruct),
+            GameManagerCommand.setPlayerCustomData => typeof(SetPlayerCustomDataRequest),
+            GameManagerCommand.replayGame => typeof(ReplayGameRequest),
+            GameManagerCommand.returnDedicatedServerToPool => typeof(ReturnDedicatedServerToPoolRequest),
+            GameManagerCommand.joinGameByGroup => typeof(JoinGameRequest),
+            GameManagerCommand.leaveGameByGroup => typeof(RemovePlayerRequest),
+            GameManagerCommand.migrateGame => typeof(MigrateHostRequest),
+            GameManagerCommand.updateGameHostMigrationStatus => typeof(UpdateGameHostMigrationStatusRequest),
+            GameManagerCommand.resetDedicatedServer => typeof(CreateGameRequest),
+            GameManagerCommand.updateGameSession => typeof(UpdateGameSessionRequest),
+            GameManagerCommand.banPlayer => typeof(BanPlayerRequest),
+            GameManagerCommand.updateMeshConnection => typeof(UpdateMeshConnectionRequest),
+            GameManagerCommand.removePlayerFromBannedList => typeof(RemovePlayerFromBannedListRequest),
+            GameManagerCommand.clearBannedList => typeof(BannedListRequest),
+            GameManagerCommand.getBannedList => typeof(BannedListRequest),
+            GameManagerCommand.addQueuedPlayerToGame => typeof(AddQueuedPlayerToGameRequest),
+            GameManagerCommand.updateGameName => typeof(UpdateGameNameRequest),
+            GameManagerCommand.ejectHost => typeof(EjectHostRequest),
+            GameManagerCommand.getGameListSnapshot => typeof(GetGameListRequest),
+            GameManagerCommand.getGameListSubscription => typeof(GetGameListRequest),
+            GameManagerCommand.destroyGameList => typeof(DestroyGameListRequest),
+            GameManagerCommand.getFullGameData => typeof(GetFullGameDataRequest),
+            GameManagerCommand.getMatchmakingConfig => typeof(NullStruct),
+            GameManagerCommand.getGameDataFromId => typeof(GetGameDataFromIdRequest),
+            GameManagerCommand.addAdminPlayer => typeof(UpdateAdminListRequest),
+            GameManagerCommand.removeAdminPlayer => typeof(UpdateAdminListRequest),
+            GameManagerCommand.setPlayerTeam => typeof(SetPlayerTeamRequest),
+            GameManagerCommand.changeGameTeamId => typeof(ChangeTeamIdRequest),
+            GameManagerCommand.migrateAdminPlayer => typeof(UpdateAdminListRequest),
+            GameManagerCommand.getUserSetGameListSubscription => typeof(GetUserSetGameListSubscriptionRequest),
+            GameManagerCommand.swapPlayersTeam => typeof(SwapPlayersTeamRequest),
+            GameManagerCommand.registerDynamicDedicatedServerCreator => typeof(RegisterDynamicDedicatedServerCreatorRequest),
+            GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(UnregisterDynamicDedicatedServerCreatorRequest),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(GameManagerCommand command) => command switch
+        {
+            GameManagerCommand.createGame => typeof(CreateGameResponse),
+            GameManagerCommand.destroyGame => typeof(DestroyGameResponse),
+            GameManagerCommand.advanceGameState => typeof(NullStruct),
+            GameManagerCommand.setGameSettings => typeof(NullStruct),
+            GameManagerCommand.setPlayerCapacity => typeof(NullStruct),
+            GameManagerCommand.setPresenceMode => typeof(NullStruct),
+            GameManagerCommand.setGameAttributes => typeof(NullStruct),
+            GameManagerCommand.setPlayerAttributes => typeof(NullStruct),
+            GameManagerCommand.joinGame => typeof(JoinGameResponse),
+            GameManagerCommand.removePlayer => typeof(NullStruct),
+            GameManagerCommand.startMatchmaking => typeof(StartMatchmakingResponse),
+            GameManagerCommand.cancelMatchmaking => typeof(NullStruct),
+            GameManagerCommand.finalizeGameCreation => typeof(NullStruct),
+            GameManagerCommand.listGames => typeof(ListGamesResponse),
+            GameManagerCommand.setPlayerCustomData => typeof(NullStruct),
+            GameManagerCommand.replayGame => typeof(NullStruct),
+            GameManagerCommand.returnDedicatedServerToPool => typeof(NullStruct),
+            GameManagerCommand.joinGameByGroup => typeof(NullStruct),
+            GameManagerCommand.leaveGameByGroup => typeof(NullStruct),
+            GameManagerCommand.migrateGame => typeof(NullStruct),
+            GameManagerCommand.updateGameHostMigrationStatus => typeof(NullStruct),
+            GameManagerCommand.resetDedicatedServer => typeof(NullStruct),
+            GameManagerCommand.updateGameSession => typeof(NullStruct),
+            GameManagerCommand.banPlayer => typeof(NullStruct),
+            GameManagerCommand.updateMeshConnection => typeof(NullStruct),
+            GameManagerCommand.removePlayerFromBannedList => typeof(NullStruct),
+            GameManagerCommand.clearBannedList => typeof(NullStruct),
+            GameManagerCommand.getBannedList => typeof(BannedListResponse),
+            GameManagerCommand.addQueuedPlayerToGame => typeof(NullStruct),
+            GameManagerCommand.updateGameName => typeof(NullStruct),
+            GameManagerCommand.ejectHost => typeof(NullStruct),
+            GameManagerCommand.getGameListSnapshot => typeof(GetGameListResponse),
+            GameManagerCommand.getGameListSubscription => typeof(GetGameListResponse),
+            GameManagerCommand.destroyGameList => typeof(NullStruct),
+            GameManagerCommand.getFullGameData => typeof(GetFullGameDataResponse),
+            GameManagerCommand.getMatchmakingConfig => typeof(GetMatchmakingConfigResponse),
+            GameManagerCommand.getGameDataFromId => typeof(NullStruct),
+            GameManagerCommand.addAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.removeAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.setPlayerTeam => typeof(NullStruct),
+            GameManagerCommand.changeGameTeamId => typeof(NullStruct),
+            GameManagerCommand.migrateAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.getUserSetGameListSubscription => typeof(NullStruct),
+            GameManagerCommand.swapPlayersTeam => typeof(NullStruct),
+            GameManagerCommand.registerDynamicDedicatedServerCreator => typeof(RegisterDynamicDedicatedServerCreatorResponse),
+            GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(UnregisterDynamicDedicatedServerCreatorResponse),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(GameManagerCommand command) => command switch
+        {
+            GameManagerCommand.createGame => typeof(NullStruct),
+            GameManagerCommand.destroyGame => typeof(NullStruct),
+            GameManagerCommand.advanceGameState => typeof(NullStruct),
+            GameManagerCommand.setGameSettings => typeof(NullStruct),
+            GameManagerCommand.setPlayerCapacity => typeof(NullStruct),
+            GameManagerCommand.setPresenceMode => typeof(NullStruct),
+            GameManagerCommand.setGameAttributes => typeof(NullStruct),
+            GameManagerCommand.setPlayerAttributes => typeof(NullStruct),
+            GameManagerCommand.joinGame => typeof(NullStruct),
+            GameManagerCommand.removePlayer => typeof(NullStruct),
+            GameManagerCommand.startMatchmaking => typeof(NullStruct),
+            GameManagerCommand.cancelMatchmaking => typeof(NullStruct),
+            GameManagerCommand.finalizeGameCreation => typeof(NullStruct),
+            GameManagerCommand.listGames => typeof(NullStruct),
+            GameManagerCommand.setPlayerCustomData => typeof(NullStruct),
+            GameManagerCommand.replayGame => typeof(NullStruct),
+            GameManagerCommand.returnDedicatedServerToPool => typeof(NullStruct),
+            GameManagerCommand.joinGameByGroup => typeof(NullStruct),
+            GameManagerCommand.leaveGameByGroup => typeof(NullStruct),
+            GameManagerCommand.migrateGame => typeof(NullStruct),
+            GameManagerCommand.updateGameHostMigrationStatus => typeof(NullStruct),
+            GameManagerCommand.resetDedicatedServer => typeof(NullStruct),
+            GameManagerCommand.updateGameSession => typeof(NullStruct),
+            GameManagerCommand.banPlayer => typeof(NullStruct),
+            GameManagerCommand.updateMeshConnection => typeof(NullStruct),
+            GameManagerCommand.removePlayerFromBannedList => typeof(NullStruct),
+            GameManagerCommand.clearBannedList => typeof(NullStruct),
+            GameManagerCommand.getBannedList => typeof(NullStruct),
+            GameManagerCommand.addQueuedPlayerToGame => typeof(NullStruct),
+            GameManagerCommand.updateGameName => typeof(NullStruct),
+            GameManagerCommand.ejectHost => typeof(NullStruct),
+            GameManagerCommand.getGameListSnapshot => typeof(NullStruct),
+            GameManagerCommand.getGameListSubscription => typeof(NullStruct),
+            GameManagerCommand.destroyGameList => typeof(NullStruct),
+            GameManagerCommand.getFullGameData => typeof(NullStruct),
+            GameManagerCommand.getMatchmakingConfig => typeof(NullStruct),
+            GameManagerCommand.getGameDataFromId => typeof(NullStruct),
+            GameManagerCommand.addAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.removeAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.setPlayerTeam => typeof(NullStruct),
+            GameManagerCommand.changeGameTeamId => typeof(NullStruct),
+            GameManagerCommand.migrateAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.getUserSetGameListSubscription => typeof(NullStruct),
+            GameManagerCommand.swapPlayersTeam => typeof(NullStruct),
+            GameManagerCommand.registerDynamicDedicatedServerCreator => typeof(NullStruct),
+            GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(GameManagerNotification notification) => notification switch
+        {
+            GameManagerNotification.NotifyMatchmakingFailed => typeof(NotifyMatchmakingFailed),
+            GameManagerNotification.NotifyMatchmakingAsyncStatus => typeof(NotifyMatchmakingAsyncStatus),
+            GameManagerNotification.NotifyGameCreated => typeof(NotifyGameCreated),
+            GameManagerNotification.NotifyGameRemoved => typeof(NotifyGameRemoved),
+            GameManagerNotification.NotifyGameSetup => typeof(NotifyGameSetup),
+            GameManagerNotification.NotifyPlayerJoining => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyJoiningPlayerInitiateConnections => typeof(NotifyGameSetup),
+            GameManagerNotification.NotifyPlayerJoiningQueue => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyPlayerPromotedFromQueue => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyPlayerClaimingReservation => typeof(NotifyPlayerJoining),
+            GameManagerNotification.NotifyPlayerJoinCompleted => typeof(NotifyPlayerJoinCompleted),
+            GameManagerNotification.NotifyPlayerRemoved => typeof(NotifyPlayerRemoved),
+            GameManagerNotification.NotifyHostMigrationFinished => typeof(NotifyHostMigrationFinished),
+            GameManagerNotification.NotifyHostMigrationStart => typeof(NotifyHostMigrationStart),
+            GameManagerNotification.NotifyPlatformHostInitialized => typeof(NotifyPlatformHostInitialized),
+            GameManagerNotification.NotifyGameAttribChange => typeof(NotifyGameAttribChange),
+            GameManagerNotification.NotifyPlayerAttribChange => typeof(NotifyPlayerAttribChange),
+            GameManagerNotification.NotifyPlayerCustomDataChange => typeof(NotifyPlayerCustomDataChange),
+            GameManagerNotification.NotifyGameStateChange => typeof(NotifyGameStateChange),
+            GameManagerNotification.NotifyGameSettingsChange => typeof(NotifyGameSettingsChange),
+            GameManagerNotification.NotifyGameCapacityChange => typeof(NotifyGameCapacityChange),
+            GameManagerNotification.NotifyGameReset => typeof(NotifyGameReset),
+            GameManagerNotification.NotifyGameReportingIdChange => typeof(NotifyGameReportingIdChange),
+            GameManagerNotification.NotifyGameSessionUpdated => typeof(GameSessionUpdatedNotification),
+            GameManagerNotification.NotifyGamePlayerStateChange => typeof(NotifyGamePlayerStateChange),
+            GameManagerNotification.NotifyGamePlayerTeamChange => typeof(NotifyGamePlayerTeamChange),
+            GameManagerNotification.NotifyGameTeamIdChange => typeof(NotifyGameTeamIdChange),
+            GameManagerNotification.NotifyProcessQueue => typeof(NotifyProcessQueue),
+            GameManagerNotification.NotifyPresenceModeChanged => typeof(NotifyPresenceModeChanged),
+            GameManagerNotification.NotifyGamePlayerQueuePositionChange => typeof(NotifyGamePlayerQueuePositionChange),
+            GameManagerNotification.NotifyGameListUpdate => typeof(NotifyGameListUpdate),
+            GameManagerNotification.NotifyAdminListChange => typeof(NotifyAdminListChange),
+            GameManagerNotification.NotifyCreateDynamicDedicatedServerGame => typeof(NotifyCreateDynamicDedicatedServerGame),
+            GameManagerNotification.NotifyGameNameChange => typeof(NotifyGameNameChange),
+            _ => typeof(NullStruct)
+        };
         
         public enum GameManagerCommand : ushort
         {

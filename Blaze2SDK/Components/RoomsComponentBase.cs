@@ -1,3 +1,4 @@
+using Blaze2SDK.Blaze.Rooms;
 using BlazeCommon;
 
 namespace Blaze2SDK.Components
@@ -121,6 +122,93 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyRoomViewUpdatedNotificationAsync(BlazeServerConnection connection, RoomViewData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewUpdatedNotification, notification);
+            }
+            
+            public static Task NotifyRoomViewAddedNotificationAsync(BlazeServerConnection connection, RoomViewData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewAddedNotification, notification);
+            }
+            
+            public static Task NotifyRoomViewRemovedNotificationAsync(BlazeServerConnection connection, RoomViewRemoved notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewRemovedNotification, notification);
+            }
+            
+            public static Task NotifyRoomCategoryUpdatedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryUpdatedNotification, notification);
+            }
+            
+            public static Task NotifyRoomCategoryAddedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryAddedNotification, notification);
+            }
+            
+            public static Task NotifyRoomCategoryRemovedNotificationAsync(BlazeServerConnection connection, RoomCategoryRemoved notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryRemovedNotification, notification);
+            }
+            
+            public static Task NotifyRoomUpdatedNotificationAsync(BlazeServerConnection connection, RoomData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomUpdatedNotification, notification);
+            }
+            
+            public static Task NotifyRoomAddedNotificationAsync(BlazeServerConnection connection, RoomData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAddedNotification, notification);
+            }
+            
+            public static Task NotifyRoomRemovedNotificationAsync(BlazeServerConnection connection, RoomRemoved notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomRemovedNotification, notification);
+            }
+            
+            public static Task NotifyRoomPopulationUpdatedAsync(BlazeServerConnection connection, RoomsPopulationUpdate notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomPopulationUpdated, notification);
+            }
+            
+            public static Task NotifyRoomMemberJoinedAsync(BlazeServerConnection connection, RoomMemberData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberJoined, notification);
+            }
+            
+            public static Task NotifyRoomMemberLeftAsync(BlazeServerConnection connection, RoomMemberRemoved notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberLeft, notification);
+            }
+            
+            public static Task NotifyRoomMemberUpdatedAsync(BlazeServerConnection connection, RoomMemberData notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberUpdated, notification);
+            }
+            
+            public static Task NotifyRoomKickAsync(BlazeServerConnection connection, RoomMemberKicked notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomKick, notification);
+            }
+            
+            public static Task NotifyRoomHostTransferAsync(BlazeServerConnection connection, RoomHostTransfered notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomHostTransfer, notification);
+            }
+            
+            public static Task NotifyRoomAttributesSetAsync(BlazeServerConnection connection, RoomAttributesSet notification)
+            {
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAttributesSet, notification);
+            }
+            
+            public override Type GetCommandRequestType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RoomsComponentNotification notification) => RoomsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<RoomsComponentCommand, RoomsComponentNotification, Blaze2RpcError>
@@ -129,7 +217,103 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RoomsComponentNotification notification) => RoomsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(RoomsComponentCommand command) => command switch
+        {
+            RoomsComponentCommand.selectViewUpdates => typeof(NullStruct),
+            RoomsComponentCommand.selectCategoryUpdates => typeof(NullStruct),
+            RoomsComponentCommand.joinRoom => typeof(NullStruct),
+            RoomsComponentCommand.leaveRoom => typeof(NullStruct),
+            RoomsComponentCommand.kickUser => typeof(NullStruct),
+            RoomsComponentCommand.transferRoomHost => typeof(NullStruct),
+            RoomsComponentCommand.createRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.removeRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.createRoom => typeof(NullStruct),
+            RoomsComponentCommand.removeRoom => typeof(NullStruct),
+            RoomsComponentCommand.getViews => typeof(NullStruct),
+            RoomsComponentCommand.createScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.deleteScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.getScheduledCategories => typeof(NullStruct),
+            RoomsComponentCommand.lookupRoomData => typeof(NullStruct),
+            RoomsComponentCommand.setRoomAttributes => typeof(NullStruct),
+            RoomsComponentCommand.checkEntryCriteria => typeof(NullStruct),
+            RoomsComponentCommand.toggleJoinedRoomNotifications => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(RoomsComponentCommand command) => command switch
+        {
+            RoomsComponentCommand.selectViewUpdates => typeof(NullStruct),
+            RoomsComponentCommand.selectCategoryUpdates => typeof(NullStruct),
+            RoomsComponentCommand.joinRoom => typeof(NullStruct),
+            RoomsComponentCommand.leaveRoom => typeof(NullStruct),
+            RoomsComponentCommand.kickUser => typeof(NullStruct),
+            RoomsComponentCommand.transferRoomHost => typeof(NullStruct),
+            RoomsComponentCommand.createRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.removeRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.createRoom => typeof(NullStruct),
+            RoomsComponentCommand.removeRoom => typeof(NullStruct),
+            RoomsComponentCommand.getViews => typeof(NullStruct),
+            RoomsComponentCommand.createScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.deleteScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.getScheduledCategories => typeof(NullStruct),
+            RoomsComponentCommand.lookupRoomData => typeof(NullStruct),
+            RoomsComponentCommand.setRoomAttributes => typeof(NullStruct),
+            RoomsComponentCommand.checkEntryCriteria => typeof(NullStruct),
+            RoomsComponentCommand.toggleJoinedRoomNotifications => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(RoomsComponentCommand command) => command switch
+        {
+            RoomsComponentCommand.selectViewUpdates => typeof(NullStruct),
+            RoomsComponentCommand.selectCategoryUpdates => typeof(NullStruct),
+            RoomsComponentCommand.joinRoom => typeof(NullStruct),
+            RoomsComponentCommand.leaveRoom => typeof(NullStruct),
+            RoomsComponentCommand.kickUser => typeof(NullStruct),
+            RoomsComponentCommand.transferRoomHost => typeof(NullStruct),
+            RoomsComponentCommand.createRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.removeRoomCategory => typeof(NullStruct),
+            RoomsComponentCommand.createRoom => typeof(NullStruct),
+            RoomsComponentCommand.removeRoom => typeof(NullStruct),
+            RoomsComponentCommand.getViews => typeof(NullStruct),
+            RoomsComponentCommand.createScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.deleteScheduledCategory => typeof(NullStruct),
+            RoomsComponentCommand.getScheduledCategories => typeof(NullStruct),
+            RoomsComponentCommand.lookupRoomData => typeof(NullStruct),
+            RoomsComponentCommand.setRoomAttributes => typeof(NullStruct),
+            RoomsComponentCommand.checkEntryCriteria => typeof(NullStruct),
+            RoomsComponentCommand.toggleJoinedRoomNotifications => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(RoomsComponentNotification notification) => notification switch
+        {
+            RoomsComponentNotification.RoomViewUpdatedNotification => typeof(RoomViewData),
+            RoomsComponentNotification.RoomViewAddedNotification => typeof(RoomViewData),
+            RoomsComponentNotification.RoomViewRemovedNotification => typeof(RoomViewRemoved),
+            RoomsComponentNotification.RoomCategoryUpdatedNotification => typeof(RoomCategoryData),
+            RoomsComponentNotification.RoomCategoryAddedNotification => typeof(RoomCategoryData),
+            RoomsComponentNotification.RoomCategoryRemovedNotification => typeof(RoomCategoryRemoved),
+            RoomsComponentNotification.RoomUpdatedNotification => typeof(RoomData),
+            RoomsComponentNotification.RoomAddedNotification => typeof(RoomData),
+            RoomsComponentNotification.RoomRemovedNotification => typeof(RoomRemoved),
+            RoomsComponentNotification.RoomPopulationUpdated => typeof(RoomsPopulationUpdate),
+            RoomsComponentNotification.RoomMemberJoined => typeof(RoomMemberData),
+            RoomsComponentNotification.RoomMemberLeft => typeof(RoomMemberRemoved),
+            RoomsComponentNotification.RoomMemberUpdated => typeof(RoomMemberData),
+            RoomsComponentNotification.RoomKick => typeof(RoomMemberKicked),
+            RoomsComponentNotification.RoomHostTransfer => typeof(RoomHostTransfered),
+            RoomsComponentNotification.RoomAttributesSet => typeof(RoomAttributesSet),
+            _ => typeof(NullStruct)
+        };
         
         public enum RoomsComponentCommand : ushort
         {

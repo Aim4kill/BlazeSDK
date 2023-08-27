@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.Rooms",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -143,82 +144,82 @@
         {
           "Id": 10,
           "Name": "RoomViewUpdatedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomViewData"
         },
         {
           "Id": 11,
           "Name": "RoomViewAddedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomViewData"
         },
         {
           "Id": 12,
           "Name": "RoomViewRemovedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomViewRemoved"
         },
         {
           "Id": 20,
           "Name": "RoomCategoryUpdatedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomCategoryData"
         },
         {
           "Id": 21,
           "Name": "RoomCategoryAddedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomCategoryData"
         },
         {
           "Id": 22,
           "Name": "RoomCategoryRemovedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomCategoryRemoved"
         },
         {
           "Id": 30,
           "Name": "RoomUpdatedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomData"
         },
         {
           "Id": 31,
           "Name": "RoomAddedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomData"
         },
         {
           "Id": 32,
           "Name": "RoomRemovedNotification",
-          "Type": "NullStruct"
+          "Type": "RoomRemoved"
         },
         {
           "Id": 40,
           "Name": "RoomPopulationUpdated",
-          "Type": "NullStruct"
+          "Type": "RoomsPopulationUpdate"
         },
         {
           "Id": 50,
           "Name": "RoomMemberJoined",
-          "Type": "NullStruct"
+          "Type": "RoomMemberData"
         },
         {
           "Id": 51,
           "Name": "RoomMemberLeft",
-          "Type": "NullStruct"
+          "Type": "RoomMemberRemoved"
         },
         {
           "Id": 52,
           "Name": "RoomMemberUpdated",
-          "Type": "NullStruct"
+          "Type": "RoomMemberData"
         },
         {
           "Id": 60,
           "Name": "RoomKick",
-          "Type": "NullStruct"
+          "Type": "RoomMemberKicked"
         },
         {
           "Id": 70,
           "Name": "RoomHostTransfer",
-          "Type": "NullStruct"
+          "Type": "RoomHostTransfered"
         },
         {
           "Id": 80,
           "Name": "RoomAttributesSet",
-          "Type": "NullStruct"
+          "Type": "RoomAttributesSet"
         }
       ]
     }

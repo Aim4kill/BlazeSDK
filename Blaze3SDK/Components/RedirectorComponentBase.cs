@@ -20,6 +20,13 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
@@ -28,7 +35,36 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(RedirectorComponentCommand command) => command switch
+        {
+            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceRequest),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(RedirectorComponentCommand command) => command switch
+        {
+            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceInfo),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(RedirectorComponentCommand command) => command switch
+        {
+            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceError),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(RedirectorComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum RedirectorComponentCommand : ushort
         {

@@ -1,3 +1,4 @@
+using Blaze3SDK.Blaze.GameReportingLegacy;
 using BlazeCommon;
 
 namespace Blaze3SDK.Components
@@ -73,6 +74,18 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyResultNotificationAsync(BlazeServerConnection connection, ResultNotification notification)
+            {
+                return connection.NotifyAsync(GameReportingLegacyComponentBase.Id, (ushort)GameReportingLegacyComponentNotification.ResultNotification, notification);
+            }
+            
+            public override Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GameReportingLegacyComponentNotification notification) => GameReportingLegacyComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<GameReportingLegacyComponentCommand, GameReportingLegacyComponentNotification, Blaze3RpcError>
@@ -81,7 +94,64 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GameReportingLegacyComponentNotification notification) => GameReportingLegacyComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => command switch
+        {
+            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => command switch
+        {
+            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => command switch
+        {
+            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
+            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(GameReportingLegacyComponentNotification notification) => notification switch
+        {
+            GameReportingLegacyComponentNotification.ResultNotification => typeof(ResultNotification),
+            _ => typeof(NullStruct)
+        };
         
         public enum GameReportingLegacyComponentCommand : ushort
         {

@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze3SDK.Blaze.CensusData",
     "BlazeCommon"
   ],
   "Namespace": "Blaze3SDK.Components",

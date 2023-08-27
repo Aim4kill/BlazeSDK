@@ -31,6 +31,13 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GpsContentControllerComponentNotification notification) => GpsContentControllerComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<GpsContentControllerComponentCommand, GpsContentControllerComponentNotification, Blaze2RpcError>
@@ -39,7 +46,42 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(GpsContentControllerComponentNotification notification) => GpsContentControllerComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(GpsContentControllerComponentCommand command) => command switch
+        {
+            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
+            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
+            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(GpsContentControllerComponentCommand command) => command switch
+        {
+            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
+            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
+            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => command switch
+        {
+            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
+            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
+            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(GpsContentControllerComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum GpsContentControllerComponentCommand : ushort
         {

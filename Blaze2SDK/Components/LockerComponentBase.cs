@@ -103,6 +103,13 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(LockerComponentCommand command) => LockerComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(LockerComponentNotification notification) => LockerComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<LockerComponentCommand, LockerComponentNotification, Blaze2RpcError>
@@ -111,7 +118,78 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(LockerComponentCommand command) => LockerComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(LockerComponentNotification notification) => LockerComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(LockerComponentCommand command) => command switch
+        {
+            LockerComponentCommand.createContent => typeof(NullStruct),
+            LockerComponentCommand.createSubContent => typeof(NullStruct),
+            LockerComponentCommand.confirmUpload => typeof(NullStruct),
+            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
+            LockerComponentCommand.deleteContent => typeof(NullStruct),
+            LockerComponentCommand.copyContentReference => typeof(NullStruct),
+            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
+            LockerComponentCommand.getContentInfo => typeof(NullStruct),
+            LockerComponentCommand.ListContent => typeof(NullStruct),
+            LockerComponentCommand.getTopN => typeof(NullStruct),
+            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
+            LockerComponentCommand.updateRating => typeof(NullStruct),
+            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
+            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
+            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(LockerComponentCommand command) => command switch
+        {
+            LockerComponentCommand.createContent => typeof(NullStruct),
+            LockerComponentCommand.createSubContent => typeof(NullStruct),
+            LockerComponentCommand.confirmUpload => typeof(NullStruct),
+            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
+            LockerComponentCommand.deleteContent => typeof(NullStruct),
+            LockerComponentCommand.copyContentReference => typeof(NullStruct),
+            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
+            LockerComponentCommand.getContentInfo => typeof(NullStruct),
+            LockerComponentCommand.ListContent => typeof(NullStruct),
+            LockerComponentCommand.getTopN => typeof(NullStruct),
+            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
+            LockerComponentCommand.updateRating => typeof(NullStruct),
+            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
+            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
+            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(LockerComponentCommand command) => command switch
+        {
+            LockerComponentCommand.createContent => typeof(NullStruct),
+            LockerComponentCommand.createSubContent => typeof(NullStruct),
+            LockerComponentCommand.confirmUpload => typeof(NullStruct),
+            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
+            LockerComponentCommand.deleteContent => typeof(NullStruct),
+            LockerComponentCommand.copyContentReference => typeof(NullStruct),
+            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
+            LockerComponentCommand.getContentInfo => typeof(NullStruct),
+            LockerComponentCommand.ListContent => typeof(NullStruct),
+            LockerComponentCommand.getTopN => typeof(NullStruct),
+            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
+            LockerComponentCommand.updateRating => typeof(NullStruct),
+            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
+            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
+            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(LockerComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum LockerComponentCommand : ushort
         {

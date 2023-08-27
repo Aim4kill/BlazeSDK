@@ -53,7 +53,7 @@
         {
           "Id": 1,
           "Name": "NotifyMessage",
-          "Type": "NullStruct"
+          "Type": "ServerMessage"
         }
       ]
     }

@@ -1,3 +1,4 @@
+using Blaze3SDK.Blaze.Playgroups;
 using BlazeCommon;
 
 namespace Blaze3SDK.Components
@@ -79,6 +80,68 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyDestroyPlaygroupAsync(BlazeServerConnection connection, NotifyDestroyPlaygroup notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup, notification);
+            }
+            
+            public static Task NotifyJoinPlaygroupAsync(BlazeServerConnection connection, NotifyJoinPlaygroup notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup, notification);
+            }
+            
+            public static Task NotifyMemberJoinedPlaygroupAsync(BlazeServerConnection connection, NotifyMemberJoinedPlaygroup notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup, notification);
+            }
+            
+            public static Task NotifyMemberRemovedFromPlaygroupAsync(BlazeServerConnection connection, NotifyMemberRemoveFromPlaygroup notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup, notification);
+            }
+            
+            public static Task NotifyPlaygroupAttributesSetAsync(BlazeServerConnection connection, NotifyPlaygroupAttributesSet notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet, notification);
+            }
+            
+            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, NotifyMemberAttributesSet notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet, notification);
+            }
+            
+            public static Task NotifyLeaderChangeAsync(BlazeServerConnection connection, NotifyLeaderChange notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyLeaderChange, notification);
+            }
+            
+            public static Task NotifyMemberPermissionsChangeAsync(BlazeServerConnection connection, NotifyMemberPermissionsChange notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange, notification);
+            }
+            
+            public static Task NotifyJoinControlsChangeAsync(BlazeServerConnection connection, NotifyJoinControlsChange notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange, notification);
+            }
+            
+            public static Task NotifyXboxSessionInfoAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo, notification);
+            }
+            
+            public static Task NotifyXboxSessionChangeAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification)
+            {
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionChange, notification);
+            }
+            
+            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze3RpcError>
@@ -87,7 +150,77 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(PlaygroupsComponentCommand command) => command switch
+        {
+            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
+            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
+            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
+            PlaygroupsComponentCommand.resetPlaygroupSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(PlaygroupsComponentCommand command) => command switch
+        {
+            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
+            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
+            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
+            PlaygroupsComponentCommand.resetPlaygroupSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => command switch
+        {
+            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
+            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
+            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
+            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
+            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
+            PlaygroupsComponentCommand.resetPlaygroupSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(PlaygroupsComponentNotification notification) => notification switch
+        {
+            PlaygroupsComponentNotification.NotifyDestroyPlaygroup => typeof(NotifyDestroyPlaygroup),
+            PlaygroupsComponentNotification.NotifyJoinPlaygroup => typeof(NotifyJoinPlaygroup),
+            PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup => typeof(NotifyMemberJoinedPlaygroup),
+            PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup => typeof(NotifyMemberRemoveFromPlaygroup),
+            PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet => typeof(NotifyPlaygroupAttributesSet),
+            PlaygroupsComponentNotification.NotifyMemberAttributesSet => typeof(NotifyMemberAttributesSet),
+            PlaygroupsComponentNotification.NotifyLeaderChange => typeof(NotifyLeaderChange),
+            PlaygroupsComponentNotification.NotifyMemberPermissionsChange => typeof(NotifyMemberPermissionsChange),
+            PlaygroupsComponentNotification.NotifyJoinControlsChange => typeof(NotifyJoinControlsChange),
+            PlaygroupsComponentNotification.NotifyXboxSessionInfo => typeof(NotifyXboxSessionInfo),
+            PlaygroupsComponentNotification.NotifyXboxSessionChange => typeof(NotifyXboxSessionInfo),
+            _ => typeof(NullStruct)
+        };
         
         public enum PlaygroupsComponentCommand : ushort
         {

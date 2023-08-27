@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.CensusData",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -38,7 +39,7 @@
         {
           "Id": 1,
           "Name": "NotifyServerCensusData",
-          "Type": "NullStruct"
+          "Type": "NotifyServerCensusData"
         }
       ]
     }

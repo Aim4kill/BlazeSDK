@@ -176,6 +176,13 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(RspComponentCommand command) => RspComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RspComponentCommand command) => RspComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RspComponentCommand command) => RspComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RspComponentNotification notification) => RspComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<RspComponentCommand, RspComponentNotification, Blaze3RpcError>
@@ -184,7 +191,114 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(RspComponentCommand command) => RspComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RspComponentCommand command) => RspComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RspComponentCommand command) => RspComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RspComponentNotification notification) => RspComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(RspComponentCommand command) => command switch
+        {
+            RspComponentCommand.startPurchase => typeof(NullStruct),
+            RspComponentCommand.updatePurchase => typeof(NullStruct),
+            RspComponentCommand.finishPurchase => typeof(NullStruct),
+            RspComponentCommand.listPurchases => typeof(NullStruct),
+            RspComponentCommand.listServers => typeof(NullStruct),
+            RspComponentCommand.getServerDetails => typeof(NullStruct),
+            RspComponentCommand.restartServer => typeof(NullStruct),
+            RspComponentCommand.updateServerBanner => typeof(NullStruct),
+            RspComponentCommand.updateServerSettings => typeof(NullStruct),
+            RspComponentCommand.updateServerPreset => typeof(NullStruct),
+            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
+            RspComponentCommand.addServerAdmin => typeof(NullStruct),
+            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
+            RspComponentCommand.addServerBan => typeof(NullStruct),
+            RspComponentCommand.removeServerBan => typeof(NullStruct),
+            RspComponentCommand.addServerVip => typeof(NullStruct),
+            RspComponentCommand.removeServerVip => typeof(NullStruct),
+            RspComponentCommand.getConfig => typeof(NullStruct),
+            RspComponentCommand.getPingSites => typeof(NullStruct),
+            RspComponentCommand.getGameData => typeof(NullStruct),
+            RspComponentCommand.addGameBan => typeof(NullStruct),
+            RspComponentCommand.createServer => typeof(NullStruct),
+            RspComponentCommand.updateServer => typeof(NullStruct),
+            RspComponentCommand.listAllServers => typeof(NullStruct),
+            RspComponentCommand.startMatch => typeof(NullStruct),
+            RspComponentCommand.abortMatch => typeof(NullStruct),
+            RspComponentCommand.endMatch => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(RspComponentCommand command) => command switch
+        {
+            RspComponentCommand.startPurchase => typeof(NullStruct),
+            RspComponentCommand.updatePurchase => typeof(NullStruct),
+            RspComponentCommand.finishPurchase => typeof(NullStruct),
+            RspComponentCommand.listPurchases => typeof(NullStruct),
+            RspComponentCommand.listServers => typeof(NullStruct),
+            RspComponentCommand.getServerDetails => typeof(NullStruct),
+            RspComponentCommand.restartServer => typeof(NullStruct),
+            RspComponentCommand.updateServerBanner => typeof(NullStruct),
+            RspComponentCommand.updateServerSettings => typeof(NullStruct),
+            RspComponentCommand.updateServerPreset => typeof(NullStruct),
+            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
+            RspComponentCommand.addServerAdmin => typeof(NullStruct),
+            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
+            RspComponentCommand.addServerBan => typeof(NullStruct),
+            RspComponentCommand.removeServerBan => typeof(NullStruct),
+            RspComponentCommand.addServerVip => typeof(NullStruct),
+            RspComponentCommand.removeServerVip => typeof(NullStruct),
+            RspComponentCommand.getConfig => typeof(GetConfigResponse),
+            RspComponentCommand.getPingSites => typeof(NullStruct),
+            RspComponentCommand.getGameData => typeof(NullStruct),
+            RspComponentCommand.addGameBan => typeof(NullStruct),
+            RspComponentCommand.createServer => typeof(NullStruct),
+            RspComponentCommand.updateServer => typeof(NullStruct),
+            RspComponentCommand.listAllServers => typeof(NullStruct),
+            RspComponentCommand.startMatch => typeof(NullStruct),
+            RspComponentCommand.abortMatch => typeof(NullStruct),
+            RspComponentCommand.endMatch => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(RspComponentCommand command) => command switch
+        {
+            RspComponentCommand.startPurchase => typeof(NullStruct),
+            RspComponentCommand.updatePurchase => typeof(NullStruct),
+            RspComponentCommand.finishPurchase => typeof(NullStruct),
+            RspComponentCommand.listPurchases => typeof(NullStruct),
+            RspComponentCommand.listServers => typeof(NullStruct),
+            RspComponentCommand.getServerDetails => typeof(NullStruct),
+            RspComponentCommand.restartServer => typeof(NullStruct),
+            RspComponentCommand.updateServerBanner => typeof(NullStruct),
+            RspComponentCommand.updateServerSettings => typeof(NullStruct),
+            RspComponentCommand.updateServerPreset => typeof(NullStruct),
+            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
+            RspComponentCommand.addServerAdmin => typeof(NullStruct),
+            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
+            RspComponentCommand.addServerBan => typeof(NullStruct),
+            RspComponentCommand.removeServerBan => typeof(NullStruct),
+            RspComponentCommand.addServerVip => typeof(NullStruct),
+            RspComponentCommand.removeServerVip => typeof(NullStruct),
+            RspComponentCommand.getConfig => typeof(NullStruct),
+            RspComponentCommand.getPingSites => typeof(NullStruct),
+            RspComponentCommand.getGameData => typeof(NullStruct),
+            RspComponentCommand.addGameBan => typeof(NullStruct),
+            RspComponentCommand.createServer => typeof(NullStruct),
+            RspComponentCommand.updateServer => typeof(NullStruct),
+            RspComponentCommand.listAllServers => typeof(NullStruct),
+            RspComponentCommand.startMatch => typeof(NullStruct),
+            RspComponentCommand.abortMatch => typeof(NullStruct),
+            RspComponentCommand.endMatch => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(RspComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum RspComponentCommand : ushort
         {

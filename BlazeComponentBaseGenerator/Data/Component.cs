@@ -9,6 +9,7 @@ namespace BlazeComponentBaseGenerator.Data
         public string DefaultRequestType;
         public string DefaultResponseType;
         public string DefaultErrorType;
+        public string DefaultNotificationType;
         public string ErrorEnum;
 
         public List<Method> Methods;
@@ -21,6 +22,7 @@ namespace BlazeComponentBaseGenerator.Data
             DefaultRequestType = "NullStruct";
             DefaultResponseType = "NullStruct";
             DefaultErrorType = "NullStruct";
+            DefaultNotificationType = "NullStruct";
             ErrorEnum = string.Empty;
             Methods = new List<Method>();
             Notifications = new List<Notification>();

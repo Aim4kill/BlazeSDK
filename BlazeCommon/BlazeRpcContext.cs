@@ -2,22 +2,23 @@
 {
     public class BlazeRpcContext
     {
-        BlazeConnectionInfo _connectionInfo;
-
-        public ProtoFireConnection Connection => _connectionInfo.Connection;
-        public object State { get => _connectionInfo.State; set => _connectionInfo.State = value; }
+        public BlazeServerConnection ConnectionInfo { get; }
+        public ProtoFireConnection Connection { get => ConnectionInfo.ProtoFireConnection; }
+        public object State { get => ConnectionInfo.State; set => ConnectionInfo.State = value; }
         public int ErrorCode { get; }
         public uint MsgNum { get; }
         public byte UserIndex { get; }
         public ulong Context { get; }
 
-        internal BlazeRpcContext(BlazeConnectionInfo connectionInfo, int errorCode, uint msgNum, byte userIndex, ulong context)
+        internal BlazeRpcContext(BlazeServerConnection connectionInfo, int errorCode, uint msgNum, byte userIndex, ulong context)
         {
-            _connectionInfo = connectionInfo;
+            ConnectionInfo = connectionInfo;
             ErrorCode = errorCode;
             MsgNum = msgNum;
             UserIndex = userIndex;
             Context = context;
         }
+
+        public static implicit operator BlazeServerConnection(BlazeRpcContext context) => context.ConnectionInfo;
     }
 }

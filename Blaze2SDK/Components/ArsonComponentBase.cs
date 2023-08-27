@@ -97,6 +97,18 @@ namespace Blaze2SDK.Components
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyReconfigureCompletedAsync(BlazeServerConnection connection, NullStruct notification)
+            {
+                return connection.NotifyAsync(ArsonComponentBase.Id, (ushort)ArsonComponentNotification.NotifyReconfigureCompleted, notification);
+            }
+            
+            public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(ArsonComponentNotification notification) => ArsonComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<ArsonComponentCommand, ArsonComponentNotification, Blaze2RpcError>
@@ -105,7 +117,76 @@ namespace Blaze2SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(ArsonComponentNotification notification) => ArsonComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(ArsonComponentCommand command) => command switch
+        {
+            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
+            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
+            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
+            ArsonComponentCommand.reconfigure => typeof(NullStruct),
+            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
+            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
+            ArsonComponentCommand.setComponentState => typeof(NullStruct),
+            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(ArsonComponentCommand command) => command switch
+        {
+            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
+            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
+            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
+            ArsonComponentCommand.reconfigure => typeof(NullStruct),
+            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
+            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
+            ArsonComponentCommand.setComponentState => typeof(NullStruct),
+            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(ArsonComponentCommand command) => command switch
+        {
+            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
+            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
+            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
+            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
+            ArsonComponentCommand.reconfigure => typeof(NullStruct),
+            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
+            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
+            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
+            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
+            ArsonComponentCommand.setComponentState => typeof(NullStruct),
+            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(ArsonComponentNotification notification) => notification switch
+        {
+            ArsonComponentNotification.NotifyReconfigureCompleted => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
         
         public enum ArsonComponentCommand : ushort
         {

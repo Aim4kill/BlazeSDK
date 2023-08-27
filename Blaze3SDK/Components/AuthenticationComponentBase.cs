@@ -326,6 +326,13 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public override Type GetCommandRequestType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(AuthenticationComponentNotification notification) => AuthenticationComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<AuthenticationComponentCommand, AuthenticationComponentNotification, Blaze3RpcError>
@@ -334,7 +341,189 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(AuthenticationComponentNotification notification) => AuthenticationComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(AuthenticationComponentCommand command) => command switch
+        {
+            AuthenticationComponentCommand.createAccount => typeof(CreateAccountParameters),
+            AuthenticationComponentCommand.updateAccount => typeof(UpdateAccountRequest),
+            AuthenticationComponentCommand.updateParentalEmail => typeof(UpdateAccountRequest),
+            AuthenticationComponentCommand.listUserEntitlements2 => typeof(ListUserEntitlements2Request),
+            AuthenticationComponentCommand.getAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.listEntitlements => typeof(ListEntitlementsRequest),
+            AuthenticationComponentCommand.hasEntitlement => typeof(HasEntitlementRequest),
+            AuthenticationComponentCommand.getUseCount => typeof(GetUseCountRequest),
+            AuthenticationComponentCommand.decrementUseCount => typeof(DecrementUseCountRequest),
+            AuthenticationComponentCommand.getAuthToken => typeof(NullStruct),
+            AuthenticationComponentCommand.getHandoffToken => typeof(GetHandoffTokenRequest),
+            AuthenticationComponentCommand.getPasswordRules => typeof(NullStruct),
+            AuthenticationComponentCommand.grantEntitlement2 => typeof(GrantEntitlement2Request),
+            AuthenticationComponentCommand.login => typeof(LoginRequest),
+            AuthenticationComponentCommand.acceptTos => typeof(AcceptTosRequest),
+            AuthenticationComponentCommand.getTosInfo => typeof(GetTosInfoRequest),
+            AuthenticationComponentCommand.modifyEntitlement2 => typeof(ModifyEntitlement2Request),
+            AuthenticationComponentCommand.consumecode => typeof(ConsumecodeRequest),
+            AuthenticationComponentCommand.passwordForgot => typeof(PasswordForgotRequest),
+            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
+            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(GetLegalDocContentRequest),
+            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(ListPersonaEntitlements2Request),
+            AuthenticationComponentCommand.silentLogin => typeof(SilentLoginRequest),
+            AuthenticationComponentCommand.checkAgeReq => typeof(CheckAgeReqRequest),
+            AuthenticationComponentCommand.getOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.expressLogin => typeof(ExpressLoginRequest),
+            AuthenticationComponentCommand.logout => typeof(NullStruct),
+            AuthenticationComponentCommand.createPersona => typeof(CreatePersonaRequest),
+            AuthenticationComponentCommand.getPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.listPersonas => typeof(NullStruct),
+            AuthenticationComponentCommand.loginPersona => typeof(LoginPersonaRequest),
+            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
+            AuthenticationComponentCommand.disablePersona => typeof(PersonaRequest),
+            AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsRequest),
+            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountRequest),
+            AuthenticationComponentCommand.originLogin => typeof(OriginLoginRequest),
+            AuthenticationComponentCommand.xboxAssociateAccount => typeof(ConsoleAssociateAccountRequest),
+            AuthenticationComponentCommand.xboxLogin => typeof(XboxLoginRequest),
+            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountRequest),
+            AuthenticationComponentCommand.ps3AssociateAccount => typeof(ConsoleAssociateAccountRequest),
+            AuthenticationComponentCommand.ps3Login => typeof(PS3LoginRequest),
+            AuthenticationComponentCommand.validateSessionKey => typeof(ValidateSessionKeyRequest),
+            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
+            AuthenticationComponentCommand.acceptLegalDocs => typeof(AcceptLegalDocsRequest),
+            AuthenticationComponentCommand.getLegalDocsInfo => typeof(GetLegalDocsInfoRequest),
+            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(GetLegalDocContentRequest),
+            AuthenticationComponentCommand.deviceLoginGuest => typeof(DeviceLoginGuestRequest),
+            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(AuthenticationComponentCommand command) => command switch
+        {
+            AuthenticationComponentCommand.createAccount => typeof(CreateAccountResponse),
+            AuthenticationComponentCommand.updateAccount => typeof(UpdateAccountResponse),
+            AuthenticationComponentCommand.updateParentalEmail => typeof(NullStruct),
+            AuthenticationComponentCommand.listUserEntitlements2 => typeof(Entitlements),
+            AuthenticationComponentCommand.getAccount => typeof(AccountInfo),
+            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.listEntitlements => typeof(NullStruct),
+            AuthenticationComponentCommand.hasEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.getUseCount => typeof(UseCount),
+            AuthenticationComponentCommand.decrementUseCount => typeof(DecrementUseCount),
+            AuthenticationComponentCommand.getAuthToken => typeof(GetAuthTokenResponse),
+            AuthenticationComponentCommand.getHandoffToken => typeof(GetHandoffTokenResponse),
+            AuthenticationComponentCommand.getPasswordRules => typeof(PasswordRulesInfo),
+            AuthenticationComponentCommand.grantEntitlement2 => typeof(GrantEntitlement2Response),
+            AuthenticationComponentCommand.login => typeof(LoginResponse),
+            AuthenticationComponentCommand.acceptTos => typeof(NullStruct),
+            AuthenticationComponentCommand.getTosInfo => typeof(GetTosInfoResponse),
+            AuthenticationComponentCommand.modifyEntitlement2 => typeof(NullStruct),
+            AuthenticationComponentCommand.consumecode => typeof(ConsumecodeResponse),
+            AuthenticationComponentCommand.passwordForgot => typeof(NullStruct),
+            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
+            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(GetLegalDocContentResponse),
+            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(NullStruct),
+            AuthenticationComponentCommand.silentLogin => typeof(FullLoginResponse),
+            AuthenticationComponentCommand.checkAgeReq => typeof(CheckAgeReqResponse),
+            AuthenticationComponentCommand.getOptIn => typeof(OptInValue),
+            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.expressLogin => typeof(FullLoginResponse),
+            AuthenticationComponentCommand.logout => typeof(NullStruct),
+            AuthenticationComponentCommand.createPersona => typeof(PersonaDetails),
+            AuthenticationComponentCommand.getPersona => typeof(GetPersonaResponse),
+            AuthenticationComponentCommand.listPersonas => typeof(ListPersonasResponse),
+            AuthenticationComponentCommand.loginPersona => typeof(SessionInfo),
+            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
+            AuthenticationComponentCommand.disablePersona => typeof(NullStruct),
+            AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsResponse),
+            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountResponse),
+            AuthenticationComponentCommand.originLogin => typeof(FullLoginResponse),
+            AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxLogin => typeof(ConsoleLoginResponse),
+            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountResponse),
+            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),
+            AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
+            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
+            AuthenticationComponentCommand.acceptLegalDocs => typeof(NullStruct),
+            AuthenticationComponentCommand.getLegalDocsInfo => typeof(GetLegalDocsInfoResponse),
+            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(GetLegalDocContentResponse),
+            AuthenticationComponentCommand.deviceLoginGuest => typeof(ConsoleLoginResponse),
+            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => command switch
+        {
+            AuthenticationComponentCommand.createAccount => typeof(FieldValidateErrorList),
+            AuthenticationComponentCommand.updateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.updateParentalEmail => typeof(NullStruct),
+            AuthenticationComponentCommand.listUserEntitlements2 => typeof(NullStruct),
+            AuthenticationComponentCommand.getAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.listEntitlements => typeof(NullStruct),
+            AuthenticationComponentCommand.hasEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.getUseCount => typeof(NullStruct),
+            AuthenticationComponentCommand.decrementUseCount => typeof(NullStruct),
+            AuthenticationComponentCommand.getAuthToken => typeof(NullStruct),
+            AuthenticationComponentCommand.getHandoffToken => typeof(NullStruct),
+            AuthenticationComponentCommand.getPasswordRules => typeof(NullStruct),
+            AuthenticationComponentCommand.grantEntitlement2 => typeof(NullStruct),
+            AuthenticationComponentCommand.login => typeof(CreateAccountResponse),
+            AuthenticationComponentCommand.acceptTos => typeof(NullStruct),
+            AuthenticationComponentCommand.getTosInfo => typeof(NullStruct),
+            AuthenticationComponentCommand.modifyEntitlement2 => typeof(NullStruct),
+            AuthenticationComponentCommand.consumecode => typeof(NullStruct),
+            AuthenticationComponentCommand.passwordForgot => typeof(NullStruct),
+            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
+            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(NullStruct),
+            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(NullStruct),
+            AuthenticationComponentCommand.silentLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.checkAgeReq => typeof(FieldValidateErrorList),
+            AuthenticationComponentCommand.getOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
+            AuthenticationComponentCommand.expressLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.logout => typeof(NullStruct),
+            AuthenticationComponentCommand.createPersona => typeof(FieldValidateErrorList),
+            AuthenticationComponentCommand.getPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.listPersonas => typeof(NullStruct),
+            AuthenticationComponentCommand.loginPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
+            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
+            AuthenticationComponentCommand.disablePersona => typeof(NullStruct),
+            AuthenticationComponentCommand.listDeviceAccounts => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.originLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3CreateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3Login => typeof(NullStruct),
+            AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
+            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
+            AuthenticationComponentCommand.acceptLegalDocs => typeof(NullStruct),
+            AuthenticationComponentCommand.getLegalDocsInfo => typeof(NullStruct),
+            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(NullStruct),
+            AuthenticationComponentCommand.deviceLoginGuest => typeof(ConsoleCreateAccountRequest),
+            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(AuthenticationComponentNotification notification) => notification switch
+        {
+            _ => typeof(NullStruct)
+        };
         
         public enum AuthenticationComponentCommand : ushort
         {

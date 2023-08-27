@@ -144,12 +144,12 @@
         {
           "Id": 50,
           "Name": "GetStatsAsyncNotification",
-          "Type": "NullStruct"
+          "Type": "KeyScopedStatValues"
         },
         {
           "Id": 51,
           "Name": "GetLeaderboardTreeNotification",
-          "Type": "NullStruct"
+          "Type": "LeaderboardTreeNode"
         }
       ]
     }

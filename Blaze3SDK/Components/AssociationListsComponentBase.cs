@@ -68,6 +68,18 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyUpdateListMembershipAsync(BlazeServerConnection connection, UpdateListWithMembersRequest notification)
+            {
+                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyUpdateListMembership, notification);
+            }
+            
+            public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(AssociationListsComponentNotification notification) => AssociationListsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<AssociationListsComponentCommand, AssociationListsComponentNotification, Blaze3RpcError>
@@ -76,7 +88,61 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(AssociationListsComponentNotification notification) => AssociationListsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(AssociationListsComponentCommand command) => command switch
+        {
+            AssociationListsComponentCommand.addUsersToList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.clearLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.setUsersToList => typeof(UpdateListMembersRequest),
+            AssociationListsComponentCommand.getListForUser => typeof(GetListForUserRequest),
+            AssociationListsComponentCommand.getLists => typeof(GetListsRequest),
+            AssociationListsComponentCommand.subscribeToLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(UpdateListsRequest),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(AssociationListsComponentCommand command) => command switch
+        {
+            AssociationListsComponentCommand.addUsersToList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.clearLists => typeof(NullStruct),
+            AssociationListsComponentCommand.setUsersToList => typeof(UpdateListMembersResponse),
+            AssociationListsComponentCommand.getListForUser => typeof(ListMembers),
+            AssociationListsComponentCommand.getLists => typeof(Lists),
+            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(ConfigLists),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => command switch
+        {
+            AssociationListsComponentCommand.addUsersToList => typeof(NullStruct),
+            AssociationListsComponentCommand.removeUsersFromList => typeof(NullStruct),
+            AssociationListsComponentCommand.clearLists => typeof(NullStruct),
+            AssociationListsComponentCommand.setUsersToList => typeof(NullStruct),
+            AssociationListsComponentCommand.getListForUser => typeof(NullStruct),
+            AssociationListsComponentCommand.getLists => typeof(NullStruct),
+            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
+            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
+            AssociationListsComponentCommand.getConfigListsInfo => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(AssociationListsComponentNotification notification) => notification switch
+        {
+            AssociationListsComponentNotification.NotifyUpdateListMembership => typeof(UpdateListWithMembersRequest),
+            _ => typeof(NullStruct)
+        };
         
         public enum AssociationListsComponentCommand : ushort
         {

@@ -1,3 +1,4 @@
+using Blaze3SDK.Blaze.Clubs;
 using BlazeCommon;
 
 namespace Blaze3SDK.Components
@@ -307,6 +308,28 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyFindClubsAsyncNotificationAsync(BlazeServerConnection connection, FindClubsAsyncResult notification)
+            {
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.FindClubsAsyncNotification, notification);
+            }
+            
+            public static Task NotifyNewClubTickerMessageNotificationAsync(BlazeServerConnection connection, ClubTickerMessage notification)
+            {
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.NewClubTickerMessageNotification, notification);
+            }
+            
+            public static Task NotifyGetMembersAsyncNotificationAsync(BlazeServerConnection connection, GetMembersAsyncResult notification)
+            {
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.GetMembersAsyncNotification, notification);
+            }
+            
+            public override Type GetCommandRequestType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(ClubsComponentNotification notification) => ClubsComponentBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<ClubsComponentCommand, ClubsComponentNotification, Blaze3RpcError>
@@ -315,7 +338,183 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(ClubsComponentNotification notification) => ClubsComponentBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(ClubsComponentCommand command) => command switch
+        {
+            ClubsComponentCommand.createClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2 => typeof(NullStruct),
+            ClubsComponentCommand.removeMember => typeof(NullStruct),
+            ClubsComponentCommand.sendInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getInvitations => typeof(NullStruct),
+            ClubsComponentCommand.revokeInvitation => typeof(NullStruct),
+            ClubsComponentCommand.acceptInvitation => typeof(NullStruct),
+            ClubsComponentCommand.declineInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getMembers => typeof(NullStruct),
+            ClubsComponentCommand.promoteToGM => typeof(NullStruct),
+            ClubsComponentCommand.demoteToMember => typeof(NullStruct),
+            ClubsComponentCommand.updateClubSettings => typeof(NullStruct),
+            ClubsComponentCommand.postNews => typeof(NullStruct),
+            ClubsComponentCommand.getNews => typeof(NullStruct),
+            ClubsComponentCommand.setNewsItemHidden => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata2 => typeof(NullStruct),
+            ClubsComponentCommand.getClubsComponentSettings => typeof(NullStruct),
+            ClubsComponentCommand.transferOwnership => typeof(NullStruct),
+            ClubsComponentCommand.getClubMembershipForUsers => typeof(NullStruct),
+            ClubsComponentCommand.sendPetition => typeof(NullStruct),
+            ClubsComponentCommand.getPetitions => typeof(NullStruct),
+            ClubsComponentCommand.acceptPetition => typeof(NullStruct),
+            ClubsComponentCommand.declinePetition => typeof(NullStruct),
+            ClubsComponentCommand.revokePetition => typeof(NullStruct),
+            ClubsComponentCommand.joinClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubRecordbook => typeof(NullStruct),
+            ClubsComponentCommand.resetClubRecords => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberOnlineStatus => typeof(NullStruct),
+            ClubsComponentCommand.getClubAwards => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberMetadata => typeof(NullStruct),
+            ClubsComponentCommand.findClubsAsync => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2Async => typeof(NullStruct),
+            ClubsComponentCommand.listRivals => typeof(NullStruct),
+            ClubsComponentCommand.getClubTickerMessages => typeof(NullStruct),
+            ClubsComponentCommand.setClubTickerMessagesSubscription => typeof(NullStruct),
+            ClubsComponentCommand.changeClubStrings => typeof(NullStruct),
+            ClubsComponentCommand.countMessages => typeof(NullStruct),
+            ClubsComponentCommand.getMembersAsync => typeof(NullStruct),
+            ClubsComponentCommand.getClubBans => typeof(NullStruct),
+            ClubsComponentCommand.getUserBans => typeof(NullStruct),
+            ClubsComponentCommand.banMember => typeof(NullStruct),
+            ClubsComponentCommand.unbanMember => typeof(NullStruct),
+            ClubsComponentCommand.GetClubsComponentInfo => typeof(NullStruct),
+            ClubsComponentCommand.disbandClub => typeof(NullStruct),
+            ClubsComponentCommand.getNewsForClubs => typeof(NullStruct),
+            ClubsComponentCommand.getPetitionsForClubs => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(ClubsComponentCommand command) => command switch
+        {
+            ClubsComponentCommand.createClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2 => typeof(NullStruct),
+            ClubsComponentCommand.removeMember => typeof(NullStruct),
+            ClubsComponentCommand.sendInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getInvitations => typeof(NullStruct),
+            ClubsComponentCommand.revokeInvitation => typeof(NullStruct),
+            ClubsComponentCommand.acceptInvitation => typeof(NullStruct),
+            ClubsComponentCommand.declineInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getMembers => typeof(NullStruct),
+            ClubsComponentCommand.promoteToGM => typeof(NullStruct),
+            ClubsComponentCommand.demoteToMember => typeof(NullStruct),
+            ClubsComponentCommand.updateClubSettings => typeof(NullStruct),
+            ClubsComponentCommand.postNews => typeof(NullStruct),
+            ClubsComponentCommand.getNews => typeof(NullStruct),
+            ClubsComponentCommand.setNewsItemHidden => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata2 => typeof(NullStruct),
+            ClubsComponentCommand.getClubsComponentSettings => typeof(NullStruct),
+            ClubsComponentCommand.transferOwnership => typeof(NullStruct),
+            ClubsComponentCommand.getClubMembershipForUsers => typeof(NullStruct),
+            ClubsComponentCommand.sendPetition => typeof(NullStruct),
+            ClubsComponentCommand.getPetitions => typeof(NullStruct),
+            ClubsComponentCommand.acceptPetition => typeof(NullStruct),
+            ClubsComponentCommand.declinePetition => typeof(NullStruct),
+            ClubsComponentCommand.revokePetition => typeof(NullStruct),
+            ClubsComponentCommand.joinClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubRecordbook => typeof(NullStruct),
+            ClubsComponentCommand.resetClubRecords => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberOnlineStatus => typeof(NullStruct),
+            ClubsComponentCommand.getClubAwards => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberMetadata => typeof(NullStruct),
+            ClubsComponentCommand.findClubsAsync => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2Async => typeof(NullStruct),
+            ClubsComponentCommand.listRivals => typeof(NullStruct),
+            ClubsComponentCommand.getClubTickerMessages => typeof(NullStruct),
+            ClubsComponentCommand.setClubTickerMessagesSubscription => typeof(NullStruct),
+            ClubsComponentCommand.changeClubStrings => typeof(NullStruct),
+            ClubsComponentCommand.countMessages => typeof(NullStruct),
+            ClubsComponentCommand.getMembersAsync => typeof(NullStruct),
+            ClubsComponentCommand.getClubBans => typeof(NullStruct),
+            ClubsComponentCommand.getUserBans => typeof(NullStruct),
+            ClubsComponentCommand.banMember => typeof(NullStruct),
+            ClubsComponentCommand.unbanMember => typeof(NullStruct),
+            ClubsComponentCommand.GetClubsComponentInfo => typeof(NullStruct),
+            ClubsComponentCommand.disbandClub => typeof(NullStruct),
+            ClubsComponentCommand.getNewsForClubs => typeof(NullStruct),
+            ClubsComponentCommand.getPetitionsForClubs => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(ClubsComponentCommand command) => command switch
+        {
+            ClubsComponentCommand.createClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2 => typeof(NullStruct),
+            ClubsComponentCommand.removeMember => typeof(NullStruct),
+            ClubsComponentCommand.sendInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getInvitations => typeof(NullStruct),
+            ClubsComponentCommand.revokeInvitation => typeof(NullStruct),
+            ClubsComponentCommand.acceptInvitation => typeof(NullStruct),
+            ClubsComponentCommand.declineInvitation => typeof(NullStruct),
+            ClubsComponentCommand.getMembers => typeof(NullStruct),
+            ClubsComponentCommand.promoteToGM => typeof(NullStruct),
+            ClubsComponentCommand.demoteToMember => typeof(NullStruct),
+            ClubsComponentCommand.updateClubSettings => typeof(NullStruct),
+            ClubsComponentCommand.postNews => typeof(NullStruct),
+            ClubsComponentCommand.getNews => typeof(NullStruct),
+            ClubsComponentCommand.setNewsItemHidden => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata => typeof(NullStruct),
+            ClubsComponentCommand.setMetadata2 => typeof(NullStruct),
+            ClubsComponentCommand.getClubsComponentSettings => typeof(NullStruct),
+            ClubsComponentCommand.transferOwnership => typeof(NullStruct),
+            ClubsComponentCommand.getClubMembershipForUsers => typeof(NullStruct),
+            ClubsComponentCommand.sendPetition => typeof(NullStruct),
+            ClubsComponentCommand.getPetitions => typeof(NullStruct),
+            ClubsComponentCommand.acceptPetition => typeof(NullStruct),
+            ClubsComponentCommand.declinePetition => typeof(NullStruct),
+            ClubsComponentCommand.revokePetition => typeof(NullStruct),
+            ClubsComponentCommand.joinClub => typeof(NullStruct),
+            ClubsComponentCommand.getClubRecordbook => typeof(NullStruct),
+            ClubsComponentCommand.resetClubRecords => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberOnlineStatus => typeof(NullStruct),
+            ClubsComponentCommand.getClubAwards => typeof(NullStruct),
+            ClubsComponentCommand.updateMemberMetadata => typeof(NullStruct),
+            ClubsComponentCommand.findClubsAsync => typeof(NullStruct),
+            ClubsComponentCommand.findClubs2Async => typeof(NullStruct),
+            ClubsComponentCommand.listRivals => typeof(NullStruct),
+            ClubsComponentCommand.getClubTickerMessages => typeof(NullStruct),
+            ClubsComponentCommand.setClubTickerMessagesSubscription => typeof(NullStruct),
+            ClubsComponentCommand.changeClubStrings => typeof(NullStruct),
+            ClubsComponentCommand.countMessages => typeof(NullStruct),
+            ClubsComponentCommand.getMembersAsync => typeof(NullStruct),
+            ClubsComponentCommand.getClubBans => typeof(NullStruct),
+            ClubsComponentCommand.getUserBans => typeof(NullStruct),
+            ClubsComponentCommand.banMember => typeof(NullStruct),
+            ClubsComponentCommand.unbanMember => typeof(NullStruct),
+            ClubsComponentCommand.GetClubsComponentInfo => typeof(NullStruct),
+            ClubsComponentCommand.disbandClub => typeof(NullStruct),
+            ClubsComponentCommand.getNewsForClubs => typeof(NullStruct),
+            ClubsComponentCommand.getPetitionsForClubs => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(ClubsComponentNotification notification) => notification switch
+        {
+            ClubsComponentNotification.FindClubsAsyncNotification => typeof(FindClubsAsyncResult),
+            ClubsComponentNotification.NewClubTickerMessageNotification => typeof(ClubTickerMessage),
+            ClubsComponentNotification.GetMembersAsyncNotification => typeof(GetMembersAsyncResult),
+            _ => typeof(NullStruct)
+        };
         
         public enum ClubsComponentCommand : ushort
         {

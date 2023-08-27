@@ -110,6 +110,38 @@ namespace Blaze3SDK.Components
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
+            
+            
+            public static Task NotifyUserSessionExtendedDataUpdateAsync(BlazeServerConnection connection, UserSessionExtendedDataUpdate notification)
+            {
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionExtendedDataUpdate, notification);
+            }
+            
+            public static Task NotifyUserAddedAsync(BlazeServerConnection connection, NotifyUserAdded notification)
+            {
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserAdded, notification);
+            }
+            
+            public static Task NotifyUserRemovedAsync(BlazeServerConnection connection, NotifyUserRemoved notification)
+            {
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserRemoved, notification);
+            }
+            
+            public static Task NotifyUserSessionDisconnectedAsync(BlazeServerConnection connection, UserSessionDisconnectReason notification)
+            {
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionDisconnected, notification);
+            }
+            
+            public static Task NotifyUserUpdatedAsync(BlazeServerConnection connection, UserStatus notification)
+            {
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserUpdated, notification);
+            }
+            
+            public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UserSessionsNotification notification) => UserSessionsBase.GetNotificationType(notification);
+            
         }
         
         public class Client : BlazeComponent<UserSessionsCommand, UserSessionsNotification, Blaze3RpcError>
@@ -118,7 +150,86 @@ namespace Blaze3SDK.Components
             {
                 
             }
+            
+            public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(UserSessionsNotification notification) => UserSessionsBase.GetNotificationType(notification);
+            
         }
+        
+        public static Type GetCommandRequestType(UserSessionsCommand command) => command switch
+        {
+            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
+            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
+            UserSessionsCommand.updateHardwareFlags => typeof(UpdateHardwareFlagsRequest),
+            UserSessionsCommand.lookupUser => typeof(NullStruct),
+            UserSessionsCommand.lookupUsers => typeof(LookupUsersRequest),
+            UserSessionsCommand.lookupUsersByPrefix => typeof(LookupUsersByPrefixRequest),
+            UserSessionsCommand.updateNetworkInfo => typeof(NetworkInfo),
+            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
+            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
+            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
+            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
+            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
+            UserSessionsCommand.resumeSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandResponseType(UserSessionsCommand command) => command switch
+        {
+            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
+            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
+            UserSessionsCommand.updateHardwareFlags => typeof(NullStruct),
+            UserSessionsCommand.lookupUser => typeof(NullStruct),
+            UserSessionsCommand.lookupUsers => typeof(UserDataResponse),
+            UserSessionsCommand.lookupUsersByPrefix => typeof(NullStruct),
+            UserSessionsCommand.updateNetworkInfo => typeof(NullStruct),
+            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
+            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
+            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
+            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
+            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
+            UserSessionsCommand.resumeSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetCommandErrorResponseType(UserSessionsCommand command) => command switch
+        {
+            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
+            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
+            UserSessionsCommand.updateHardwareFlags => typeof(NullStruct),
+            UserSessionsCommand.lookupUser => typeof(NullStruct),
+            UserSessionsCommand.lookupUsers => typeof(NullStruct),
+            UserSessionsCommand.lookupUsersByPrefix => typeof(NullStruct),
+            UserSessionsCommand.updateNetworkInfo => typeof(NullStruct),
+            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
+            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
+            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
+            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
+            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
+            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
+            UserSessionsCommand.resumeSession => typeof(NullStruct),
+            _ => typeof(NullStruct)
+        };
+        
+        public static Type GetNotificationType(UserSessionsNotification notification) => notification switch
+        {
+            UserSessionsNotification.UserSessionExtendedDataUpdate => typeof(UserSessionExtendedDataUpdate),
+            UserSessionsNotification.UserAdded => typeof(NotifyUserAdded),
+            UserSessionsNotification.UserRemoved => typeof(NotifyUserRemoved),
+            UserSessionsNotification.UserSessionDisconnected => typeof(UserSessionDisconnectReason),
+            UserSessionsNotification.UserUpdated => typeof(UserStatus),
+            _ => typeof(NullStruct)
+        };
         
         public enum UserSessionsCommand : ushort
         {

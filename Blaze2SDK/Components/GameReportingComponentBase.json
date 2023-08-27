@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.GameReporting",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -87,7 +88,7 @@
         {
           "Id": 114,
           "Name": "ResultNotification",
-          "Type": "NullStruct"
+          "Type": "ResultNotification"
         }
       ]
     }

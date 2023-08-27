@@ -1,5 +1,6 @@
 {
   "Usings": [
+    "Blaze2SDK.Blaze.League",
     "BlazeCommon"
   ],
   "Namespace": "Blaze2SDK.Components",
@@ -227,7 +228,7 @@
         {
           "Id": 118,
           "Name": "FindLeaguesAsyncNotification",
-          "Type": "NullStruct"
+          "Type": "FindLeaguesAsyncNotification"
         }
       ]
     }

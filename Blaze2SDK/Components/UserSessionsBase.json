@@ -151,22 +151,22 @@
         {
           "Id": 1,
           "Name": "UserSessionExtendedDataUpdate",
-          "Type": "NullStruct"
+          "Type": "UserSessionExtendedDataUpdate"
         },
         {
           "Id": 2,
           "Name": "UserAdded",
-          "Type": "NullStruct"
+          "Type": "UserIdentification"
         },
         {
           "Id": 3,
           "Name": "UserSessionUnsubscribed",
-          "Type": "NullStruct"
+          "Type": "UserIdentification"
         },
         {
           "Id": 4,
           "Name": "UserSessionDisconnected",
-          "Type": "NullStruct"
+          "Type": "UserSessionDisconnectReason"
         }
       ]
     }
