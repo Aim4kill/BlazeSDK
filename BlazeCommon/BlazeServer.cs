@@ -164,12 +164,10 @@ namespace BlazeCommon
                     OnProtoFireError(connection, exception);
                 }
             }
-            finally
-            {
-                blazeConnection.IsBusyLock.Release();
-            }
+
 
             await SendBlazePacket(connection, component, response).ConfigureAwait(false);
+            blazeConnection.IsBusyLock.Release();
         }
     }
 }
