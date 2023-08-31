@@ -82,59 +82,59 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyDestroyPlaygroupAsync(BlazeServerConnection connection, NotifyDestroyPlaygroup notification)
+            public static Task NotifyDestroyPlaygroupAsync(BlazeServerConnection connection, NotifyDestroyPlaygroup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup, notification, waitUntilFree);
             }
             
-            public static Task NotifyJoinPlaygroupAsync(BlazeServerConnection connection, NotifyJoinPlaygroup notification)
+            public static Task NotifyJoinPlaygroupAsync(BlazeServerConnection connection, NotifyJoinPlaygroup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup, notification, waitUntilFree);
             }
             
-            public static Task NotifyMemberJoinedPlaygroupAsync(BlazeServerConnection connection, NotifyMemberJoinedPlaygroup notification)
+            public static Task NotifyMemberJoinedPlaygroupAsync(BlazeServerConnection connection, NotifyMemberJoinedPlaygroup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup, notification, waitUntilFree);
             }
             
-            public static Task NotifyMemberRemovedFromPlaygroupAsync(BlazeServerConnection connection, NotifyMemberRemoveFromPlaygroup notification)
+            public static Task NotifyMemberRemovedFromPlaygroupAsync(BlazeServerConnection connection, NotifyMemberRemoveFromPlaygroup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlaygroupAttributesSetAsync(BlazeServerConnection connection, NotifyPlaygroupAttributesSet notification)
+            public static Task NotifyPlaygroupAttributesSetAsync(BlazeServerConnection connection, NotifyPlaygroupAttributesSet notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet, notification, waitUntilFree);
             }
             
-            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, NotifyMemberAttributesSet notification)
+            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, NotifyMemberAttributesSet notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet, notification, waitUntilFree);
             }
             
-            public static Task NotifyLeaderChangeAsync(BlazeServerConnection connection, NotifyLeaderChange notification)
+            public static Task NotifyLeaderChangeAsync(BlazeServerConnection connection, NotifyLeaderChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyLeaderChange, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyLeaderChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyMemberPermissionsChangeAsync(BlazeServerConnection connection, NotifyMemberPermissionsChange notification)
+            public static Task NotifyMemberPermissionsChangeAsync(BlazeServerConnection connection, NotifyMemberPermissionsChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyJoinControlsChangeAsync(BlazeServerConnection connection, NotifyJoinControlsChange notification)
+            public static Task NotifyJoinControlsChangeAsync(BlazeServerConnection connection, NotifyJoinControlsChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyXboxSessionInfoAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification)
+            public static Task NotifyXboxSessionInfoAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo, notification, waitUntilFree);
             }
             
-            public static Task NotifyXboxSessionChangeAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification)
+            public static Task NotifyXboxSessionChangeAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionChange, notification);
+                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionChange, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);

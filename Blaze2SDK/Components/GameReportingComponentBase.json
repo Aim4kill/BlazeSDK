@@ -16,14 +16,14 @@
         {
           "Id": 1,
           "Name": "submitGameReport",
-          "RequestType": "NullStruct",
+          "RequestType": "GameReport",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 2,
           "Name": "submitOfflineGameReport",
-          "RequestType": "NullStruct",
+          "RequestType": "GameReport",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
@@ -72,14 +72,14 @@
         {
           "Id": 100,
           "Name": "submitTrustedMidGameReport",
-          "RequestType": "NullStruct",
+          "RequestType": "GameReport",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 101,
           "Name": "submitTrustedEndGameReport",
-          "RequestType": "NullStruct",
+          "RequestType": "GameReport",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         }

@@ -136,7 +136,7 @@ namespace BlazeCommon
 
             BlazeServerConnection blazeConnection = GetBlazeConnection(connection);
             //marking that blaze connection is busy with some kind of request
-            await blazeConnection.IsBusyLock.WaitAsync().ConfigureAwait(false);
+            await blazeConnection.IsBusyLock.EnterAsync().ConfigureAwait(false);
             try
             {
                 BlazeRpcContext? context = new BlazeRpcContext(blazeConnection, frame.FullErrorCode, frame.MsgNum, frame.UserIndex, frame.Context);
@@ -167,7 +167,7 @@ namespace BlazeCommon
 
 
             await SendBlazePacket(connection, component, response).ConfigureAwait(false);
-            blazeConnection.IsBusyLock.Release();
+            blazeConnection.IsBusyLock.Exit();
         }
     }
 }

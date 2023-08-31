@@ -148,14 +148,14 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyGetStatsAsyncNotificationAsync(BlazeServerConnection connection, KeyScopedStatValues notification)
+            public static Task NotifyGetStatsAsyncNotificationAsync(BlazeServerConnection connection, KeyScopedStatValues notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetStatsAsyncNotification, notification);
+                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetStatsAsyncNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyGetLeaderboardTreeNotificationAsync(BlazeServerConnection connection, LeaderboardTreeNode notification)
+            public static Task NotifyGetLeaderboardTreeNotificationAsync(BlazeServerConnection connection, LeaderboardTreeNode notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetLeaderboardTreeNotification, notification);
+                return connection.NotifyAsync(StatsComponentBase.Id, (ushort)StatsComponentNotification.GetLeaderboardTreeNotification, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(StatsComponentCommand command) => StatsComponentBase.GetCommandRequestType(command);

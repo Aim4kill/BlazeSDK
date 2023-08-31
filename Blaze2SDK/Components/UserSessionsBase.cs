@@ -130,24 +130,24 @@ namespace Blaze2SDK.Components
             }
             
             
-            public static Task NotifyUserSessionExtendedDataUpdateAsync(BlazeServerConnection connection, UserSessionExtendedDataUpdate notification)
+            public static Task NotifyUserSessionExtendedDataUpdateAsync(BlazeServerConnection connection, UserSessionExtendedDataUpdate notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionExtendedDataUpdate, notification);
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionExtendedDataUpdate, notification, waitUntilFree);
             }
             
-            public static Task NotifyUserAddedAsync(BlazeServerConnection connection, UserIdentification notification)
+            public static Task NotifyUserAddedAsync(BlazeServerConnection connection, UserIdentification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserAdded, notification);
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserAdded, notification, waitUntilFree);
             }
             
-            public static Task NotifyUserSessionUnsubscribedAsync(BlazeServerConnection connection, UserIdentification notification)
+            public static Task NotifyUserSessionUnsubscribedAsync(BlazeServerConnection connection, UserIdentification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionUnsubscribed, notification);
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionUnsubscribed, notification, waitUntilFree);
             }
             
-            public static Task NotifyUserSessionDisconnectedAsync(BlazeServerConnection connection, UserSessionDisconnectReason notification)
+            public static Task NotifyUserSessionDisconnectedAsync(BlazeServerConnection connection, UserSessionDisconnectReason notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionDisconnected, notification);
+                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionDisconnected, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);

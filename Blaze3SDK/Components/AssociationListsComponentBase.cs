@@ -70,9 +70,9 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyUpdateListMembershipAsync(BlazeServerConnection connection, UpdateListWithMembersRequest notification)
+            public static Task NotifyUpdateListMembershipAsync(BlazeServerConnection connection, UpdateListWithMembersRequest notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyUpdateListMembership, notification);
+                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyUpdateListMembership, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);

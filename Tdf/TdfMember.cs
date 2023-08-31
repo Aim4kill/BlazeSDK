@@ -6,7 +6,7 @@ namespace Tdf
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
     public class TdfMember : Attribute
     {
-        private const byte TAG_LENGTH = 3;
+        public const byte TAG_LENGTH = 3;
 
         public string Tag { get; private set; }
         public byte[] Bytes { get; private set; }

@@ -17,49 +17,49 @@
         {
           "Id": 1,
           "Name": "createGame",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "CreateGameRequest",
+          "ResponseType": "CreateGameResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 2,
           "Name": "destroyGame",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "DestroyGameRequest",
+          "ResponseType": "DestroyGameResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 3,
           "Name": "advanceGameState",
-          "RequestType": "NullStruct",
+          "RequestType": "AdvanceGameStateRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 4,
           "Name": "setGameSettings",
-          "RequestType": "NullStruct",
+          "RequestType": "SetGameSettingsRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 5,
           "Name": "setPlayerCapacity",
-          "RequestType": "NullStruct",
+          "RequestType": "SetPlayerCapacityRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 7,
           "Name": "setGameAttributes",
-          "RequestType": "NullStruct",
+          "RequestType": "SetGameAttributesRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 8,
           "Name": "setPlayerAttributes",
-          "RequestType": "NullStruct",
+          "RequestType": "SetPlayerAttributesRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
@@ -101,7 +101,7 @@
         {
           "Id": 15,
           "Name": "finalizeGameCreation",
-          "RequestType": "NullStruct",
+          "RequestType": "UpdateGameSessionRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
@@ -122,50 +122,50 @@
         {
           "Id": 18,
           "Name": "setPlayerCustomData",
-          "RequestType": "NullStruct",
+          "RequestType": "SetPlayerCustomDataRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 19,
           "Name": "replayGame",
-          "RequestType": "NullStruct",
+          "RequestType": "ReplayGameRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 20,
           "Name": "returnDedicatedServerToPool",
-          "RequestType": "NullStruct",
+          "RequestType": "ReturnDedicatedServerToPoolRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 21,
           "Name": "joinGameByGroup",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
+          "RequestType": "JoinGameRequest",
+          "ResponseType": "JoinGameResponse",
+          "ErrorResponseType": "EntryCriteriaError"
         },
         {
           "Id": 22,
           "Name": "leaveGameByGroup",
-          "RequestType": "NullStruct",
+          "RequestType": "RemovePlayerRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 23,
           "Name": "migrateGame",
-          "RequestType": "NullStruct",
+          "RequestType": "MigrateHostRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 25,
           "Name": "resetDedicatedServer",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "CreateGameRequest",
+          "ResponseType": "JoinGameResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -178,7 +178,7 @@
         {
           "Id": 27,
           "Name": "banPlayer",
-          "RequestType": "NullStruct",
+          "RequestType": "BanPlayerRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
@@ -235,7 +235,7 @@
           "Id": 104,
           "Name": "getMatchmakingConfig",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "GetMatchmakingConfigResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -248,35 +248,35 @@
         {
           "Id": 106,
           "Name": "addAdminPlayer",
-          "RequestType": "NullStruct",
+          "RequestType": "UpdateAdminListRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 107,
           "Name": "removeAdminPlayer",
-          "RequestType": "NullStruct",
+          "RequestType": "UpdateAdminListRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 108,
           "Name": "setPlayerTeam",
-          "RequestType": "NullStruct",
+          "RequestType": "SetPlayerTeamRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 109,
           "Name": "changeGameTeamId",
-          "RequestType": "NullStruct",
+          "RequestType": "ChangeTeamIdRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 110,
           "Name": "migrateAdminPlayer",
-          "RequestType": "NullStruct",
+          "RequestType": "UpdateAdminListRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },

@@ -46,9 +46,9 @@ namespace Blaze2SDK.Components
             }
             
             
-            public static Task NotifyMessageAsync(BlazeServerConnection connection, ServerMessage notification)
+            public static Task NotifyMessageAsync(BlazeServerConnection connection, ServerMessage notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(MessagingComponentBase.Id, (ushort)MessagingComponentNotification.NotifyMessage, notification);
+                return connection.NotifyAsync(MessagingComponentBase.Id, (ushort)MessagingComponentNotification.NotifyMessage, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);

@@ -154,89 +154,89 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyRoomViewUpdatedNotificationAsync(BlazeServerConnection connection, RoomViewData notification)
+            public static Task NotifyRoomViewUpdatedNotificationAsync(BlazeServerConnection connection, RoomViewData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewUpdatedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewUpdatedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomViewAddedNotificationAsync(BlazeServerConnection connection, RoomViewData notification)
+            public static Task NotifyRoomViewAddedNotificationAsync(BlazeServerConnection connection, RoomViewData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewAddedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewAddedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomViewRemovedNotificationAsync(BlazeServerConnection connection, RoomViewRemoved notification)
+            public static Task NotifyRoomViewRemovedNotificationAsync(BlazeServerConnection connection, RoomViewRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewRemovedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomViewRemovedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomCategoryUpdatedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification)
+            public static Task NotifyRoomCategoryUpdatedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryUpdatedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryUpdatedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomCategoryAddedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification)
+            public static Task NotifyRoomCategoryAddedNotificationAsync(BlazeServerConnection connection, RoomCategoryData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryAddedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryAddedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomCategoryRemovedNotificationAsync(BlazeServerConnection connection, RoomCategoryRemoved notification)
+            public static Task NotifyRoomCategoryRemovedNotificationAsync(BlazeServerConnection connection, RoomCategoryRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryRemovedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomCategoryRemovedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomUpdatedNotificationAsync(BlazeServerConnection connection, RoomData notification)
+            public static Task NotifyRoomUpdatedNotificationAsync(BlazeServerConnection connection, RoomData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomUpdatedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomUpdatedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomAddedNotificationAsync(BlazeServerConnection connection, RoomData notification)
+            public static Task NotifyRoomAddedNotificationAsync(BlazeServerConnection connection, RoomData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAddedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAddedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomRemovedNotificationAsync(BlazeServerConnection connection, RoomRemoved notification)
+            public static Task NotifyRoomRemovedNotificationAsync(BlazeServerConnection connection, RoomRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomRemovedNotification, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomRemovedNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomPopulationUpdatedAsync(BlazeServerConnection connection, RoomsPopulationUpdate notification)
+            public static Task NotifyRoomPopulationUpdatedAsync(BlazeServerConnection connection, RoomsPopulationUpdate notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomPopulationUpdated, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomPopulationUpdated, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomMemberJoinedAsync(BlazeServerConnection connection, RoomMemberData notification)
+            public static Task NotifyRoomMemberJoinedAsync(BlazeServerConnection connection, RoomMemberData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberJoined, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberJoined, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomMemberLeftAsync(BlazeServerConnection connection, RoomMemberRemoved notification)
+            public static Task NotifyRoomMemberLeftAsync(BlazeServerConnection connection, RoomMemberRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberLeft, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberLeft, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomMemberUpdatedAsync(BlazeServerConnection connection, RoomMemberData notification)
+            public static Task NotifyRoomMemberUpdatedAsync(BlazeServerConnection connection, RoomMemberData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberUpdated, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomMemberUpdated, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomKickAsync(BlazeServerConnection connection, RoomMemberKicked notification)
+            public static Task NotifyRoomKickAsync(BlazeServerConnection connection, RoomMemberKicked notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomKick, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomKick, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomHostTransferAsync(BlazeServerConnection connection, RoomHostTransfered notification)
+            public static Task NotifyRoomHostTransferAsync(BlazeServerConnection connection, RoomHostTransfered notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomHostTransfer, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomHostTransfer, notification, waitUntilFree);
             }
             
-            public static Task NotifyRoomAttributesSetAsync(BlazeServerConnection connection, RoomAttributesSet notification)
+            public static Task NotifyRoomAttributesSetAsync(BlazeServerConnection connection, RoomAttributesSet notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAttributesSet, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.RoomAttributesSet, notification, waitUntilFree);
             }
             
-            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, MemberAttributesSet notification)
+            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, MemberAttributesSet notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.MemberAttributesSet, notification);
+                return connection.NotifyAsync(RoomsComponentBase.Id, (ushort)RoomsComponentNotification.MemberAttributesSet, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(RoomsComponentCommand command) => RoomsComponentBase.GetCommandRequestType(command);

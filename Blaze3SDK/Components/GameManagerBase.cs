@@ -292,174 +292,174 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyMatchmakingFailedAsync(BlazeServerConnection connection, NotifyMatchmakingFailed notification)
+            public static Task NotifyMatchmakingFailedAsync(BlazeServerConnection connection, NotifyMatchmakingFailed notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingFailed, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingFailed, notification, waitUntilFree);
             }
             
-            public static Task NotifyMatchmakingAsyncStatusAsync(BlazeServerConnection connection, NotifyMatchmakingAsyncStatus notification)
+            public static Task NotifyMatchmakingAsyncStatusAsync(BlazeServerConnection connection, NotifyMatchmakingAsyncStatus notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingAsyncStatus, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingAsyncStatus, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameCreatedAsync(BlazeServerConnection connection, NotifyGameCreated notification)
+            public static Task NotifyGameCreatedAsync(BlazeServerConnection connection, NotifyGameCreated notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCreated, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCreated, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameRemovedAsync(BlazeServerConnection connection, NotifyGameRemoved notification)
+            public static Task NotifyGameRemovedAsync(BlazeServerConnection connection, NotifyGameRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameRemoved, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameRemoved, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameSetupAsync(BlazeServerConnection connection, NotifyGameSetup notification)
+            public static Task NotifyGameSetupAsync(BlazeServerConnection connection, NotifyGameSetup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSetup, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSetup, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerJoiningAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            public static Task NotifyPlayerJoiningAsync(BlazeServerConnection connection, NotifyPlayerJoining notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoining, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoining, notification, waitUntilFree);
             }
             
-            public static Task NotifyJoiningPlayerInitiateConnectionsAsync(BlazeServerConnection connection, NotifyGameSetup notification)
+            public static Task NotifyJoiningPlayerInitiateConnectionsAsync(BlazeServerConnection connection, NotifyGameSetup notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyJoiningPlayerInitiateConnections, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyJoiningPlayerInitiateConnections, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerJoiningQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            public static Task NotifyPlayerJoiningQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoiningQueue, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoiningQueue, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerPromotedFromQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            public static Task NotifyPlayerPromotedFromQueueAsync(BlazeServerConnection connection, NotifyPlayerJoining notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerPromotedFromQueue, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerPromotedFromQueue, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerClaimingReservationAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+            public static Task NotifyPlayerClaimingReservationAsync(BlazeServerConnection connection, NotifyPlayerJoining notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerClaimingReservation, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerClaimingReservation, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerJoinCompletedAsync(BlazeServerConnection connection, NotifyPlayerJoinCompleted notification)
+            public static Task NotifyPlayerJoinCompletedAsync(BlazeServerConnection connection, NotifyPlayerJoinCompleted notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoinCompleted, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoinCompleted, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerRemovedAsync(BlazeServerConnection connection, NotifyPlayerRemoved notification)
+            public static Task NotifyPlayerRemovedAsync(BlazeServerConnection connection, NotifyPlayerRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerRemoved, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerRemoved, notification, waitUntilFree);
             }
             
-            public static Task NotifyHostMigrationFinishedAsync(BlazeServerConnection connection, NotifyHostMigrationFinished notification)
+            public static Task NotifyHostMigrationFinishedAsync(BlazeServerConnection connection, NotifyHostMigrationFinished notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationFinished, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationFinished, notification, waitUntilFree);
             }
             
-            public static Task NotifyHostMigrationStartAsync(BlazeServerConnection connection, NotifyHostMigrationStart notification)
+            public static Task NotifyHostMigrationStartAsync(BlazeServerConnection connection, NotifyHostMigrationStart notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationStart, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationStart, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlatformHostInitializedAsync(BlazeServerConnection connection, NotifyPlatformHostInitialized notification)
+            public static Task NotifyPlatformHostInitializedAsync(BlazeServerConnection connection, NotifyPlatformHostInitialized notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlatformHostInitialized, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlatformHostInitialized, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameAttribChangeAsync(BlazeServerConnection connection, NotifyGameAttribChange notification)
+            public static Task NotifyGameAttribChangeAsync(BlazeServerConnection connection, NotifyGameAttribChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameAttribChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameAttribChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerAttribChangeAsync(BlazeServerConnection connection, NotifyPlayerAttribChange notification)
+            public static Task NotifyPlayerAttribChangeAsync(BlazeServerConnection connection, NotifyPlayerAttribChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerAttribChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerAttribChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyPlayerCustomDataChangeAsync(BlazeServerConnection connection, NotifyPlayerCustomDataChange notification)
+            public static Task NotifyPlayerCustomDataChangeAsync(BlazeServerConnection connection, NotifyPlayerCustomDataChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerCustomDataChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerCustomDataChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameStateChangeAsync(BlazeServerConnection connection, NotifyGameStateChange notification)
+            public static Task NotifyGameStateChangeAsync(BlazeServerConnection connection, NotifyGameStateChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameStateChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameStateChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameSettingsChangeAsync(BlazeServerConnection connection, NotifyGameSettingsChange notification)
+            public static Task NotifyGameSettingsChangeAsync(BlazeServerConnection connection, NotifyGameSettingsChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSettingsChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSettingsChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameCapacityChangeAsync(BlazeServerConnection connection, NotifyGameCapacityChange notification)
+            public static Task NotifyGameCapacityChangeAsync(BlazeServerConnection connection, NotifyGameCapacityChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCapacityChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCapacityChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameResetAsync(BlazeServerConnection connection, NotifyGameReset notification)
+            public static Task NotifyGameResetAsync(BlazeServerConnection connection, NotifyGameReset notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReset, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReset, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameReportingIdChangeAsync(BlazeServerConnection connection, NotifyGameReportingIdChange notification)
+            public static Task NotifyGameReportingIdChangeAsync(BlazeServerConnection connection, NotifyGameReportingIdChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReportingIdChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReportingIdChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameSessionUpdatedAsync(BlazeServerConnection connection, GameSessionUpdatedNotification notification)
+            public static Task NotifyGameSessionUpdatedAsync(BlazeServerConnection connection, GameSessionUpdatedNotification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSessionUpdated, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSessionUpdated, notification, waitUntilFree);
             }
             
-            public static Task NotifyGamePlayerStateChangeAsync(BlazeServerConnection connection, NotifyGamePlayerStateChange notification)
+            public static Task NotifyGamePlayerStateChangeAsync(BlazeServerConnection connection, NotifyGamePlayerStateChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerStateChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerStateChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGamePlayerTeamChangeAsync(BlazeServerConnection connection, NotifyGamePlayerTeamChange notification)
+            public static Task NotifyGamePlayerTeamChangeAsync(BlazeServerConnection connection, NotifyGamePlayerTeamChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerTeamChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerTeamChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameTeamIdChangeAsync(BlazeServerConnection connection, NotifyGameTeamIdChange notification)
+            public static Task NotifyGameTeamIdChangeAsync(BlazeServerConnection connection, NotifyGameTeamIdChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameTeamIdChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameTeamIdChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyProcessQueueAsync(BlazeServerConnection connection, NotifyProcessQueue notification)
+            public static Task NotifyProcessQueueAsync(BlazeServerConnection connection, NotifyProcessQueue notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyProcessQueue, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyProcessQueue, notification, waitUntilFree);
             }
             
-            public static Task NotifyPresenceModeChangedAsync(BlazeServerConnection connection, NotifyPresenceModeChanged notification)
+            public static Task NotifyPresenceModeChangedAsync(BlazeServerConnection connection, NotifyPresenceModeChanged notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPresenceModeChanged, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPresenceModeChanged, notification, waitUntilFree);
             }
             
-            public static Task NotifyGamePlayerQueuePositionChangeAsync(BlazeServerConnection connection, NotifyGamePlayerQueuePositionChange notification)
+            public static Task NotifyGamePlayerQueuePositionChangeAsync(BlazeServerConnection connection, NotifyGamePlayerQueuePositionChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerQueuePositionChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerQueuePositionChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameListUpdateAsync(BlazeServerConnection connection, NotifyGameListUpdate notification)
+            public static Task NotifyGameListUpdateAsync(BlazeServerConnection connection, NotifyGameListUpdate notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameListUpdate, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameListUpdate, notification, waitUntilFree);
             }
             
-            public static Task NotifyAdminListChangeAsync(BlazeServerConnection connection, NotifyAdminListChange notification)
+            public static Task NotifyAdminListChangeAsync(BlazeServerConnection connection, NotifyAdminListChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyAdminListChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyAdminListChange, notification, waitUntilFree);
             }
             
-            public static Task NotifyCreateDynamicDedicatedServerGameAsync(BlazeServerConnection connection, NotifyCreateDynamicDedicatedServerGame notification)
+            public static Task NotifyCreateDynamicDedicatedServerGameAsync(BlazeServerConnection connection, NotifyCreateDynamicDedicatedServerGame notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyCreateDynamicDedicatedServerGame, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyCreateDynamicDedicatedServerGame, notification, waitUntilFree);
             }
             
-            public static Task NotifyGameNameChangeAsync(BlazeServerConnection connection, NotifyGameNameChange notification)
+            public static Task NotifyGameNameChangeAsync(BlazeServerConnection connection, NotifyGameNameChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameNameChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameNameChange, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(GameManagerCommand command) => GameManagerBase.GetCommandRequestType(command);

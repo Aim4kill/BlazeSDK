@@ -5,7 +5,7 @@
         /// <summary>
         ///    Lock to see if the blaze server is busy with answering the request, useful when you want to send a notification after the request is answered (not during it)
         /// </summary>
-        public SemaphoreSlim IsBusyLock { get; }
+        public QueuedLock IsBusyLock { get; }
 
         public ProtoFireConnection ProtoFireConnection { get; }
         public BlazeServerConfiguration ServerConfiguration { get; }
@@ -16,10 +16,10 @@
             ProtoFireConnection = connection;
             State = new object();
             ServerConfiguration = serverConfiguration;
-            IsBusyLock = new SemaphoreSlim(1, 1);
+            IsBusyLock = new QueuedLock();
         }
 
-        public Task NotifyAsync(ushort componentId, ushort notificationId, object notification)
+        public async Task NotifyAsync(ushort componentId, ushort notificationId, object notification, bool waitUntilFree)
         {
             IBlazeComponent? component = ServerConfiguration.GetComponent(componentId);
             FireFrame frame = new FireFrame()
@@ -33,9 +33,17 @@
 
             Type fullType = typeof(BlazePacket<>).MakeGenericType(notification.GetType());
             IBlazePacket packet = (IBlazePacket)Activator.CreateInstance(fullType, frame, notification)!;
-            Utils.LogPacket(component, packet, false);
             ProtoFirePacket protoFirePacket = packet.ToProtoFirePacket(ServerConfiguration.Encoder);
-            return ProtoFireConnection.SendAsync(protoFirePacket);
+
+            //if we have to wait until server finishes some previous request (it is forbidden to await notification task with waitUntilFree true in request handler, it may cause deadlock)
+            if (waitUntilFree)
+            {
+                await IsBusyLock.EnterAsync().ConfigureAwait(false);
+                IsBusyLock.Exit();
+            }
+
+            Utils.LogPacket(component, packet, false);
+            await ProtoFireConnection.SendAsync(protoFirePacket).ConfigureAwait(false);
         }
     }
 }

@@ -196,9 +196,9 @@ namespace Blaze2SDK.Components
             }
             
             
-            public static Task NotifyFindLeaguesAsyncNotificationAsync(BlazeServerConnection connection, FindLeaguesAsyncNotification notification)
+            public static Task NotifyFindLeaguesAsyncNotificationAsync(BlazeServerConnection connection, FindLeaguesAsyncNotification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(LeagueComponentBase.Id, (ushort)LeagueComponentNotification.FindLeaguesAsyncNotification, notification);
+                return connection.NotifyAsync(LeagueComponentBase.Id, (ushort)LeagueComponentNotification.FindLeaguesAsyncNotification, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);

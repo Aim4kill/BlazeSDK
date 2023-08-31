@@ -40,9 +40,9 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyServerCensusDataAsync(BlazeServerConnection connection, NotifyServerCensusData notification)
+            public static Task NotifyServerCensusDataAsync(BlazeServerConnection connection, NotifyServerCensusData notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(CensusDataComponentBase.Id, (ushort)CensusDataComponentNotification.NotifyServerCensusData, notification);
+                return connection.NotifyAsync(CensusDataComponentBase.Id, (ushort)CensusDataComponentNotification.NotifyServerCensusData, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandRequestType(command);

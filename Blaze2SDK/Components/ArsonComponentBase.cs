@@ -99,9 +99,9 @@ namespace Blaze2SDK.Components
             }
             
             
-            public static Task NotifyReconfigureCompletedAsync(BlazeServerConnection connection, NullStruct notification)
+            public static Task NotifyReconfigureCompletedAsync(BlazeServerConnection connection, NullStruct notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(ArsonComponentBase.Id, (ushort)ArsonComponentNotification.NotifyReconfigureCompleted, notification);
+                return connection.NotifyAsync(ArsonComponentBase.Id, (ushort)ArsonComponentNotification.NotifyReconfigureCompleted, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);

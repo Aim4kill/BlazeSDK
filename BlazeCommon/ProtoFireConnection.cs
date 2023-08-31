@@ -133,6 +133,14 @@ namespace BlazeCommon
                 packet.WriteTo(Stream);
                 Stream.Flush();
             }
+            catch (ObjectDisposedException)
+            {
+
+            }
+            catch (IOException)
+            {
+
+            }
             finally
             {
                 semaphoreSlim.Release();
@@ -144,11 +152,21 @@ namespace BlazeCommon
             if (Stream == null)
                 throw new InvalidOperationException("Stream is not set");
 
+
+
             await semaphoreSlim.WaitAsync();
             try
             {
                 await packet.WriteToAsync(Stream).ConfigureAwait(false);
                 await Stream.FlushAsync().ConfigureAwait(false);
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
+            catch (IOException)
+            {
+
             }
             finally
             {

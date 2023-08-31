@@ -8,442 +8,442 @@ namespace Blaze2SDK.Components
     {
         public const ushort Id = 4;
         public const string Name = "GameManager";
-        
+
         public class Server : BlazeComponent<GameManagerCommand, GameManagerNotification, Blaze2RpcError>
         {
             public Server() : base(GameManagerBase.Id, GameManagerBase.Name)
             {
-                
+
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.createGame)]
-            public virtual Task<NullStruct> CreateGameAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<CreateGameResponse> CreateGameAsync(CreateGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.destroyGame)]
-            public virtual Task<NullStruct> DestroyGameAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<DestroyGameResponse> DestroyGameAsync(DestroyGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.advanceGameState)]
-            public virtual Task<NullStruct> AdvanceGameStateAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> AdvanceGameStateAsync(AdvanceGameStateRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setGameSettings)]
-            public virtual Task<NullStruct> SetGameSettingsAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetGameSettingsAsync(SetGameSettingsRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setPlayerCapacity)]
-            public virtual Task<NullStruct> SetPlayerCapacityAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetPlayerCapacityAsync(SetPlayerCapacityRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setGameAttributes)]
-            public virtual Task<NullStruct> SetGameAttributesAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetGameAttributesAsync(SetGameAttributesRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setPlayerAttributes)]
-            public virtual Task<NullStruct> SetPlayerAttributesAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetPlayerAttributesAsync(SetPlayerAttributesRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.joinGame)]
             public virtual Task<JoinGameResponse> JoinGameAsync(JoinGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.updatePlayerConnection)]
             public virtual Task<NullStruct> UpdatePlayerConnectionAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.removePlayer)]
             public virtual Task<NullStruct> RemovePlayerAsync(RemovePlayerRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.startMatchmaking)]
             public virtual Task<StartMatchmakingResponse> StartMatchmakingAsync(StartMatchmakingRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.cancelMatchmaking)]
             public virtual Task<NullStruct> CancelMatchmakingAsync(CancelMatchmakingRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.finalizeGameCreation)]
-            public virtual Task<NullStruct> FinalizeGameCreationAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> FinalizeGameCreationAsync(UpdateGameSessionRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.updateHostConnection)]
             public virtual Task<NullStruct> UpdateHostConnectionAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.listGames)]
             public virtual Task<NullStruct> ListGamesAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setPlayerCustomData)]
-            public virtual Task<NullStruct> SetPlayerCustomDataAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetPlayerCustomDataAsync(SetPlayerCustomDataRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.replayGame)]
-            public virtual Task<NullStruct> ReplayGameAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> ReplayGameAsync(ReplayGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.returnDedicatedServerToPool)]
-            public virtual Task<NullStruct> ReturnDedicatedServerToPoolAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> ReturnDedicatedServerToPoolAsync(ReturnDedicatedServerToPoolRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.joinGameByGroup)]
-            public virtual Task<NullStruct> JoinGameByGroupAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<JoinGameResponse> JoinGameByGroupAsync(JoinGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.leaveGameByGroup)]
-            public virtual Task<NullStruct> LeaveGameByGroupAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> LeaveGameByGroupAsync(RemovePlayerRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.migrateGame)]
-            public virtual Task<NullStruct> MigrateGameAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> MigrateGameAsync(MigrateHostRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.resetDedicatedServer)]
-            public virtual Task<NullStruct> ResetDedicatedServerAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<JoinGameResponse> ResetDedicatedServerAsync(CreateGameRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.updateGameSession)]
             public virtual Task<NullStruct> UpdateGameSessionAsync(UpdateGameSessionRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.banPlayer)]
-            public virtual Task<NullStruct> BanPlayerAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> BanPlayerAsync(BanPlayerRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.matchmakingDedicatedServerOverride)]
             public virtual Task<NullStruct> MatchmakingDedicatedServerOverrideAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.updateMeshConnection)]
             public virtual Task<NullStruct> UpdateMeshConnectionAsync(UpdateMeshConnectionRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.joinGameByUserList)]
             public virtual Task<NullStruct> JoinGameByUserListAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.getGameListSnapshot)]
             public virtual Task<GetGameListResponse> GetGameListSnapshotAsync(GetGameListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.getGameListSubscription)]
             public virtual Task<GetGameListResponse> GetGameListSubscriptionAsync(GetGameListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.destroyGameList)]
             public virtual Task<NullStruct> DestroyGameListAsync(DestroyGameListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.getFullGameData)]
             public virtual Task<GetFullGameDataResponse> GetFullGameDataAsync(GetFullGameDataRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.getMatchmakingConfig)]
-            public virtual Task<NullStruct> GetMatchmakingConfigAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GetMatchmakingConfigResponse> GetMatchmakingConfigAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.getGameDataFromId)]
             public virtual Task<GameBrowserDataList> GetGameDataFromIdAsync(GetGameDataFromIdRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.addAdminPlayer)]
-            public virtual Task<NullStruct> AddAdminPlayerAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> AddAdminPlayerAsync(UpdateAdminListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.removeAdminPlayer)]
-            public virtual Task<NullStruct> RemoveAdminPlayerAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> RemoveAdminPlayerAsync(UpdateAdminListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.setPlayerTeam)]
-            public virtual Task<NullStruct> SetPlayerTeamAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> SetPlayerTeamAsync(SetPlayerTeamRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.changeGameTeamId)]
-            public virtual Task<NullStruct> ChangeGameTeamIdAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> ChangeGameTeamIdAsync(ChangeTeamIdRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.migrateAdminPlayer)]
-            public virtual Task<NullStruct> MigrateAdminPlayerAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> MigrateAdminPlayerAsync(UpdateAdminListRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.registerDynamicDedicatedServerCreator)]
             public virtual Task<NullStruct> RegisterDynamicDedicatedServerCreatorAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
+
             [BlazeCommand((ushort)GameManagerCommand.unregisterDynamicDedicatedServerCreator)]
             public virtual Task<NullStruct> UnregisterDynamicDedicatedServerCreatorAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
-            
-            
-            public static Task NotifyMatchmakingFinishedAsync(BlazeServerConnection connection, NotifyMatchmakingFinished notification)
+
+
+            public static Task NotifyMatchmakingFinishedAsync(BlazeServerConnection connection, NotifyMatchmakingFinished notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingFinished, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingFinished, notification, waitUntilFree);
             }
-            
-            public static Task NotifyMatchmakingAsyncStatusAsync(BlazeServerConnection connection, NotifyMatchmakingAsyncStatus notification)
+
+            public static Task NotifyMatchmakingAsyncStatusAsync(BlazeServerConnection connection, NotifyMatchmakingAsyncStatus notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingAsyncStatus, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyMatchmakingAsyncStatus, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameCreatedAsync(BlazeServerConnection connection, NotifyGameCreated notification)
+
+            public static Task NotifyGameCreatedAsync(BlazeServerConnection connection, NotifyGameCreated notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCreated, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCreated, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameRemovedAsync(BlazeServerConnection connection, NotifyGameRemoved notification)
+
+            public static Task NotifyGameRemovedAsync(BlazeServerConnection connection, NotifyGameRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameRemoved, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameRemoved, notification, waitUntilFree);
             }
-            
-            public static Task NotifyJoinGameAsync(BlazeServerConnection connection, NotifyJoinGame notification)
+
+            public static Task NotifyJoinGameAsync(BlazeServerConnection connection, NotifyJoinGame notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyJoinGame, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyJoinGame, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlayerJoiningAsync(BlazeServerConnection connection, NotifyPlayerJoining notification)
+
+            public static Task NotifyPlayerJoiningAsync(BlazeServerConnection connection, NotifyPlayerJoining notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoining, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoining, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlayerJoinCompletedAsync(BlazeServerConnection connection, NotifyPlayerJoinCompleted notification)
+
+            public static Task NotifyPlayerJoinCompletedAsync(BlazeServerConnection connection, NotifyPlayerJoinCompleted notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoinCompleted, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerJoinCompleted, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGroupPreJoinedGameAsync(BlazeServerConnection connection, NotifyGroupPreJoinedGame notification)
+
+            public static Task NotifyGroupPreJoinedGameAsync(BlazeServerConnection connection, NotifyGroupPreJoinedGame notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGroupPreJoinedGame, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGroupPreJoinedGame, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlayerRemovedAsync(BlazeServerConnection connection, NotifyPlayerRemoved notification)
+
+            public static Task NotifyPlayerRemovedAsync(BlazeServerConnection connection, NotifyPlayerRemoved notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerRemoved, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerRemoved, notification, waitUntilFree);
             }
-            
-            public static Task NotifyQueueChangedAsync(BlazeServerConnection connection, NotifyQueueChanged notification)
+
+            public static Task NotifyQueueChangedAsync(BlazeServerConnection connection, NotifyQueueChanged notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyQueueChanged, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyQueueChanged, notification, waitUntilFree);
             }
-            
-            public static Task NotifyHostMigrationFinishedAsync(BlazeServerConnection connection, NotifyHostMigrationFinished notification)
+
+            public static Task NotifyHostMigrationFinishedAsync(BlazeServerConnection connection, NotifyHostMigrationFinished notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationFinished, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationFinished, notification, waitUntilFree);
             }
-            
-            public static Task NotifyHostMigrationStartAsync(BlazeServerConnection connection, NotifyHostMigrationStart notification)
+
+            public static Task NotifyHostMigrationStartAsync(BlazeServerConnection connection, NotifyHostMigrationStart notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationStart, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyHostMigrationStart, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlatformHostInitializedAsync(BlazeServerConnection connection, NotifyPlatformHostInitialized notification)
+
+            public static Task NotifyPlatformHostInitializedAsync(BlazeServerConnection connection, NotifyPlatformHostInitialized notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlatformHostInitialized, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlatformHostInitialized, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameAttribChangeAsync(BlazeServerConnection connection, NotifyGameAttribChange notification)
+
+            public static Task NotifyGameAttribChangeAsync(BlazeServerConnection connection, NotifyGameAttribChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameAttribChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameAttribChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlayerAttribChangeAsync(BlazeServerConnection connection, NotifyPlayerAttribChange notification)
+
+            public static Task NotifyPlayerAttribChangeAsync(BlazeServerConnection connection, NotifyPlayerAttribChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerAttribChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerAttribChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyPlayerCustomDataChangeAsync(BlazeServerConnection connection, NotifyPlayerCustomDataChange notification)
+
+            public static Task NotifyPlayerCustomDataChangeAsync(BlazeServerConnection connection, NotifyPlayerCustomDataChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerCustomDataChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyPlayerCustomDataChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameStateChangeAsync(BlazeServerConnection connection, NotifyGameStateChange notification)
+
+            public static Task NotifyGameStateChangeAsync(BlazeServerConnection connection, NotifyGameStateChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameStateChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameStateChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameSettingsChangeAsync(BlazeServerConnection connection, NotifyGameSettingsChange notification)
+
+            public static Task NotifyGameSettingsChangeAsync(BlazeServerConnection connection, NotifyGameSettingsChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSettingsChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSettingsChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameCapacityChangeAsync(BlazeServerConnection connection, NotifyGameCapacityChange notification)
+
+            public static Task NotifyGameCapacityChangeAsync(BlazeServerConnection connection, NotifyGameCapacityChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCapacityChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameCapacityChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameResetAsync(BlazeServerConnection connection, NotifyGameReset notification)
+
+            public static Task NotifyGameResetAsync(BlazeServerConnection connection, NotifyGameReset notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReset, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReset, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameReportingIdChangeAsync(BlazeServerConnection connection, NotifyGameReportingIdChange notification)
+
+            public static Task NotifyGameReportingIdChangeAsync(BlazeServerConnection connection, NotifyGameReportingIdChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReportingIdChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameReportingIdChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameSessionUpdatedAsync(BlazeServerConnection connection, GameSessionUpdatedNotification notification)
+
+            public static Task NotifyGameSessionUpdatedAsync(BlazeServerConnection connection, GameSessionUpdatedNotification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSessionUpdated, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameSessionUpdated, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGamePlayerStateChangeAsync(BlazeServerConnection connection, NotifyGamePlayerStateChange notification)
+
+            public static Task NotifyGamePlayerStateChangeAsync(BlazeServerConnection connection, NotifyGamePlayerStateChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerStateChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerStateChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGamePlayerTeamChangeAsync(BlazeServerConnection connection, NotifyGamePlayerTeamChange notification)
+
+            public static Task NotifyGamePlayerTeamChangeAsync(BlazeServerConnection connection, NotifyGamePlayerTeamChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerTeamChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGamePlayerTeamChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameTeamIdChangeAsync(BlazeServerConnection connection, NotifyGameTeamIdChange notification)
+
+            public static Task NotifyGameTeamIdChangeAsync(BlazeServerConnection connection, NotifyGameTeamIdChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameTeamIdChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameTeamIdChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyGameListUpdateAsync(BlazeServerConnection connection, NotifyGameListUpdate notification)
+
+            public static Task NotifyGameListUpdateAsync(BlazeServerConnection connection, NotifyGameListUpdate notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameListUpdate, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyGameListUpdate, notification, waitUntilFree);
             }
-            
-            public static Task NotifyAdminListChangeAsync(BlazeServerConnection connection, NotifyAdminListChange notification)
+
+            public static Task NotifyAdminListChangeAsync(BlazeServerConnection connection, NotifyAdminListChange notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyAdminListChange, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyAdminListChange, notification, waitUntilFree);
             }
-            
-            public static Task NotifyCreateDynamicDedicatedServerGameAsync(BlazeServerConnection connection, NotifyCreateDynamicDedicatedServerGame notification)
+
+            public static Task NotifyCreateDynamicDedicatedServerGameAsync(BlazeServerConnection connection, NotifyCreateDynamicDedicatedServerGame notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyCreateDynamicDedicatedServerGame, notification);
+                return connection.NotifyAsync(GameManagerBase.Id, (ushort)GameManagerNotification.NotifyCreateDynamicDedicatedServerGame, notification, waitUntilFree);
             }
-            
+
             public override Type GetCommandRequestType(GameManagerCommand command) => GameManagerBase.GetCommandRequestType(command);
             public override Type GetCommandResponseType(GameManagerCommand command) => GameManagerBase.GetCommandResponseType(command);
             public override Type GetCommandErrorResponseType(GameManagerCommand command) => GameManagerBase.GetCommandErrorResponseType(command);
             public override Type GetNotificationType(GameManagerNotification notification) => GameManagerBase.GetNotificationType(notification);
-            
+
         }
-        
+
         public class Client : BlazeComponent<GameManagerCommand, GameManagerNotification, Blaze2RpcError>
         {
             public Client() : base(GameManagerBase.Id, GameManagerBase.Name)
             {
-                
+
             }
-            
+
             public override Type GetCommandRequestType(GameManagerCommand command) => GameManagerBase.GetCommandRequestType(command);
             public override Type GetCommandResponseType(GameManagerCommand command) => GameManagerBase.GetCommandResponseType(command);
             public override Type GetCommandErrorResponseType(GameManagerCommand command) => GameManagerBase.GetCommandErrorResponseType(command);
             public override Type GetNotificationType(GameManagerNotification notification) => GameManagerBase.GetNotificationType(notification);
-            
+
         }
-        
+
         public static Type GetCommandRequestType(GameManagerCommand command) => command switch
         {
-            GameManagerCommand.createGame => typeof(NullStruct),
-            GameManagerCommand.destroyGame => typeof(NullStruct),
-            GameManagerCommand.advanceGameState => typeof(NullStruct),
-            GameManagerCommand.setGameSettings => typeof(NullStruct),
-            GameManagerCommand.setPlayerCapacity => typeof(NullStruct),
-            GameManagerCommand.setGameAttributes => typeof(NullStruct),
-            GameManagerCommand.setPlayerAttributes => typeof(NullStruct),
+            GameManagerCommand.createGame => typeof(CreateGameRequest),
+            GameManagerCommand.destroyGame => typeof(DestroyGameRequest),
+            GameManagerCommand.advanceGameState => typeof(AdvanceGameStateRequest),
+            GameManagerCommand.setGameSettings => typeof(SetGameSettingsRequest),
+            GameManagerCommand.setPlayerCapacity => typeof(SetPlayerCapacityRequest),
+            GameManagerCommand.setGameAttributes => typeof(SetGameAttributesRequest),
+            GameManagerCommand.setPlayerAttributes => typeof(SetPlayerAttributesRequest),
             GameManagerCommand.joinGame => typeof(JoinGameRequest),
             GameManagerCommand.updatePlayerConnection => typeof(NullStruct),
             GameManagerCommand.removePlayer => typeof(RemovePlayerRequest),
             GameManagerCommand.startMatchmaking => typeof(StartMatchmakingRequest),
             GameManagerCommand.cancelMatchmaking => typeof(CancelMatchmakingRequest),
-            GameManagerCommand.finalizeGameCreation => typeof(NullStruct),
+            GameManagerCommand.finalizeGameCreation => typeof(UpdateGameSessionRequest),
             GameManagerCommand.updateHostConnection => typeof(NullStruct),
             GameManagerCommand.listGames => typeof(NullStruct),
-            GameManagerCommand.setPlayerCustomData => typeof(NullStruct),
-            GameManagerCommand.replayGame => typeof(NullStruct),
-            GameManagerCommand.returnDedicatedServerToPool => typeof(NullStruct),
-            GameManagerCommand.joinGameByGroup => typeof(NullStruct),
-            GameManagerCommand.leaveGameByGroup => typeof(NullStruct),
-            GameManagerCommand.migrateGame => typeof(NullStruct),
-            GameManagerCommand.resetDedicatedServer => typeof(NullStruct),
+            GameManagerCommand.setPlayerCustomData => typeof(SetPlayerCustomDataRequest),
+            GameManagerCommand.replayGame => typeof(ReplayGameRequest),
+            GameManagerCommand.returnDedicatedServerToPool => typeof(ReturnDedicatedServerToPoolRequest),
+            GameManagerCommand.joinGameByGroup => typeof(JoinGameRequest),
+            GameManagerCommand.leaveGameByGroup => typeof(RemovePlayerRequest),
+            GameManagerCommand.migrateGame => typeof(MigrateHostRequest),
+            GameManagerCommand.resetDedicatedServer => typeof(CreateGameRequest),
             GameManagerCommand.updateGameSession => typeof(UpdateGameSessionRequest),
-            GameManagerCommand.banPlayer => typeof(NullStruct),
+            GameManagerCommand.banPlayer => typeof(BanPlayerRequest),
             GameManagerCommand.matchmakingDedicatedServerOverride => typeof(NullStruct),
             GameManagerCommand.updateMeshConnection => typeof(UpdateMeshConnectionRequest),
             GameManagerCommand.joinGameByUserList => typeof(NullStruct),
@@ -453,20 +453,20 @@ namespace Blaze2SDK.Components
             GameManagerCommand.getFullGameData => typeof(GetFullGameDataRequest),
             GameManagerCommand.getMatchmakingConfig => typeof(NullStruct),
             GameManagerCommand.getGameDataFromId => typeof(GetGameDataFromIdRequest),
-            GameManagerCommand.addAdminPlayer => typeof(NullStruct),
-            GameManagerCommand.removeAdminPlayer => typeof(NullStruct),
-            GameManagerCommand.setPlayerTeam => typeof(NullStruct),
-            GameManagerCommand.changeGameTeamId => typeof(NullStruct),
-            GameManagerCommand.migrateAdminPlayer => typeof(NullStruct),
+            GameManagerCommand.addAdminPlayer => typeof(UpdateAdminListRequest),
+            GameManagerCommand.removeAdminPlayer => typeof(UpdateAdminListRequest),
+            GameManagerCommand.setPlayerTeam => typeof(SetPlayerTeamRequest),
+            GameManagerCommand.changeGameTeamId => typeof(ChangeTeamIdRequest),
+            GameManagerCommand.migrateAdminPlayer => typeof(UpdateAdminListRequest),
             GameManagerCommand.registerDynamicDedicatedServerCreator => typeof(NullStruct),
             GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(NullStruct),
             _ => typeof(NullStruct)
         };
-        
+
         public static Type GetCommandResponseType(GameManagerCommand command) => command switch
         {
-            GameManagerCommand.createGame => typeof(NullStruct),
-            GameManagerCommand.destroyGame => typeof(NullStruct),
+            GameManagerCommand.createGame => typeof(CreateGameResponse),
+            GameManagerCommand.destroyGame => typeof(DestroyGameResponse),
             GameManagerCommand.advanceGameState => typeof(NullStruct),
             GameManagerCommand.setGameSettings => typeof(NullStruct),
             GameManagerCommand.setPlayerCapacity => typeof(NullStruct),
@@ -483,10 +483,10 @@ namespace Blaze2SDK.Components
             GameManagerCommand.setPlayerCustomData => typeof(NullStruct),
             GameManagerCommand.replayGame => typeof(NullStruct),
             GameManagerCommand.returnDedicatedServerToPool => typeof(NullStruct),
-            GameManagerCommand.joinGameByGroup => typeof(NullStruct),
+            GameManagerCommand.joinGameByGroup => typeof(JoinGameResponse),
             GameManagerCommand.leaveGameByGroup => typeof(NullStruct),
             GameManagerCommand.migrateGame => typeof(NullStruct),
-            GameManagerCommand.resetDedicatedServer => typeof(NullStruct),
+            GameManagerCommand.resetDedicatedServer => typeof(JoinGameResponse),
             GameManagerCommand.updateGameSession => typeof(NullStruct),
             GameManagerCommand.banPlayer => typeof(NullStruct),
             GameManagerCommand.matchmakingDedicatedServerOverride => typeof(NullStruct),
@@ -496,7 +496,7 @@ namespace Blaze2SDK.Components
             GameManagerCommand.getGameListSubscription => typeof(GetGameListResponse),
             GameManagerCommand.destroyGameList => typeof(NullStruct),
             GameManagerCommand.getFullGameData => typeof(GetFullGameDataResponse),
-            GameManagerCommand.getMatchmakingConfig => typeof(NullStruct),
+            GameManagerCommand.getMatchmakingConfig => typeof(GetMatchmakingConfigResponse),
             GameManagerCommand.getGameDataFromId => typeof(GameBrowserDataList),
             GameManagerCommand.addAdminPlayer => typeof(NullStruct),
             GameManagerCommand.removeAdminPlayer => typeof(NullStruct),
@@ -507,7 +507,7 @@ namespace Blaze2SDK.Components
             GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(NullStruct),
             _ => typeof(NullStruct)
         };
-        
+
         public static Type GetCommandErrorResponseType(GameManagerCommand command) => command switch
         {
             GameManagerCommand.createGame => typeof(NullStruct),
@@ -528,7 +528,7 @@ namespace Blaze2SDK.Components
             GameManagerCommand.setPlayerCustomData => typeof(NullStruct),
             GameManagerCommand.replayGame => typeof(NullStruct),
             GameManagerCommand.returnDedicatedServerToPool => typeof(NullStruct),
-            GameManagerCommand.joinGameByGroup => typeof(NullStruct),
+            GameManagerCommand.joinGameByGroup => typeof(EntryCriteriaError),
             GameManagerCommand.leaveGameByGroup => typeof(NullStruct),
             GameManagerCommand.migrateGame => typeof(NullStruct),
             GameManagerCommand.resetDedicatedServer => typeof(NullStruct),
@@ -552,7 +552,7 @@ namespace Blaze2SDK.Components
             GameManagerCommand.unregisterDynamicDedicatedServerCreator => typeof(NullStruct),
             _ => typeof(NullStruct)
         };
-        
+
         public static Type GetNotificationType(GameManagerNotification notification) => notification switch
         {
             GameManagerNotification.NotifyMatchmakingFinished => typeof(NotifyMatchmakingFinished),
@@ -585,7 +585,7 @@ namespace Blaze2SDK.Components
             GameManagerNotification.NotifyCreateDynamicDedicatedServerGame => typeof(NotifyCreateDynamicDedicatedServerGame),
             _ => typeof(NullStruct)
         };
-        
+
         public enum GameManagerCommand : ushort
         {
             createGame = 1,
@@ -629,7 +629,7 @@ namespace Blaze2SDK.Components
             registerDynamicDedicatedServerCreator = 150,
             unregisterDynamicDedicatedServerCreator = 151,
         }
-        
+
         public enum GameManagerNotification : ushort
         {
             NotifyMatchmakingFinished = 10,
@@ -661,6 +661,6 @@ namespace Blaze2SDK.Components
             NotifyAdminListChange = 202,
             NotifyCreateDynamicDedicatedServerGame = 220,
         }
-        
+
     }
 }

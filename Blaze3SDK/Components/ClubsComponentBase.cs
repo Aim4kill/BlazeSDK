@@ -310,19 +310,19 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyFindClubsAsyncNotificationAsync(BlazeServerConnection connection, FindClubsAsyncResult notification)
+            public static Task NotifyFindClubsAsyncNotificationAsync(BlazeServerConnection connection, FindClubsAsyncResult notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.FindClubsAsyncNotification, notification);
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.FindClubsAsyncNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyNewClubTickerMessageNotificationAsync(BlazeServerConnection connection, ClubTickerMessage notification)
+            public static Task NotifyNewClubTickerMessageNotificationAsync(BlazeServerConnection connection, ClubTickerMessage notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.NewClubTickerMessageNotification, notification);
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.NewClubTickerMessageNotification, notification, waitUntilFree);
             }
             
-            public static Task NotifyGetMembersAsyncNotificationAsync(BlazeServerConnection connection, GetMembersAsyncResult notification)
+            public static Task NotifyGetMembersAsyncNotificationAsync(BlazeServerConnection connection, GetMembersAsyncResult notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.GetMembersAsyncNotification, notification);
+                return connection.NotifyAsync(ClubsComponentBase.Id, (ushort)ClubsComponentNotification.GetMembersAsyncNotification, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(ClubsComponentCommand command) => ClubsComponentBase.GetCommandRequestType(command);

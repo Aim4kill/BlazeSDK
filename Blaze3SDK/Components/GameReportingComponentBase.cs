@@ -106,9 +106,9 @@ namespace Blaze3SDK.Components
             }
             
             
-            public static Task NotifyResultNotificationAsync(BlazeServerConnection connection, ResultNotification notification)
+            public static Task NotifyResultNotificationAsync(BlazeServerConnection connection, ResultNotification notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(GameReportingComponentBase.Id, (ushort)GameReportingComponentNotification.ResultNotification, notification);
+                return connection.NotifyAsync(GameReportingComponentBase.Id, (ushort)GameReportingComponentNotification.ResultNotification, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandRequestType(command);

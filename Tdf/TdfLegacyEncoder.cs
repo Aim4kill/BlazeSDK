@@ -365,6 +365,14 @@ namespace Tdf
 
         private void WriteTdfArrayWithType(Stream stream, TdfMember tag, object value)
         {
+            IList list = (IList)value;
+            if (list.Count == 0)
+            {
+                // Empty list, we skip encoding it entirely
+                stream.Seek(-TdfMember.TAG_LENGTH, SeekOrigin.Current);
+                return;
+            }
+
             stream.WriteTdfLegacyBaseTypeAndSize(TdfLegacyBaseType.TYPE_ARRAY, 1);
             WriteTdfArray(stream, tag, value);
         }
@@ -399,6 +407,15 @@ namespace Tdf
         private void WriteTdfMap(Stream stream, TdfMember tag, object value)
         {
             ICollection collection = (ICollection)value;
+            IEnumerator enumerator = collection.GetEnumerator();
+
+            if (!enumerator.MoveNext())
+            {
+                // Empty map, we skip encoding it entirely
+                stream.Seek(-TdfMember.TAG_LENGTH, SeekOrigin.Current);
+                return;
+            }
+
             Type[] genericArguments = value.GetType().GetGenericArguments();
             Type keyType = genericArguments[0];
             Type valueType = genericArguments[1];
@@ -414,21 +431,17 @@ namespace Tdf
             if (valueWriter == null)
                 throw new NotSupportedException($"Map value type '{valueType.FullName}' not supported!");
 
-
             //item type KeyValuePair<KeyType, ValueType>
             Type itemType = typeof(KeyValuePair<,>).MakeGenericType(keyType, valueType);
             PropertyInfo keyProperty = itemType.GetProperty("Key")!;
             PropertyInfo valueProperty = itemType.GetProperty("Value")!;
 
-            IEnumerator enumerator = collection.GetEnumerator();
-            if (!enumerator.MoveNext())
-                throw new Exception("empty map");
+
             object item = enumerator.Current;
             object kvpKey = keyProperty.GetValue(item, null)!;
             object kvpValue = valueProperty.GetValue(item, null)!;
 
             stream.WriteTdfLegacyBaseTypeAndSize(TdfLegacyBaseType.TYPE_MAP, collection.Count);
-
             stream.WriteTdfLegacyBaseTypeAndSize(keyBaseType, GetDefaultTypeSize(keyBaseType));
             keyWriter(stream, tag, kvpKey);
             stream.WriteTdfLegacyBaseTypeAndSize(valueBaseType, GetDefaultTypeSize(valueBaseType));

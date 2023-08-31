@@ -64,14 +64,14 @@ namespace Blaze2SDK.Components
             }
             
             
-            public static Task NotifyListMemberUpdatedAsync(BlazeServerConnection connection, MemberInfo notification)
+            public static Task NotifyListMemberUpdatedAsync(BlazeServerConnection connection, MemberInfo notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberUpdated, notification);
+                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberUpdated, notification, waitUntilFree);
             }
             
-            public static Task NotifyListMemberRemovedAsync(BlazeServerConnection connection, AssociationListInfo notification)
+            public static Task NotifyListMemberRemovedAsync(BlazeServerConnection connection, AssociationListInfo notification, bool waitUntilFree = false)
             {
-                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberRemoved, notification);
+                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberRemoved, notification, waitUntilFree);
             }
             
             public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);

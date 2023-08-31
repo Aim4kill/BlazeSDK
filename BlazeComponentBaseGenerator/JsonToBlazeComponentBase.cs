@@ -77,11 +77,11 @@ namespace BlazeComponentBaseGenerator
                     notificationType = component.DefaultNotificationType;
 
                 builder.AppendLine();
-                builder.AppendLine($"public static Task {notificationMethodName}(BlazeServerConnection connection, {notificationType} notification)");
+                builder.AppendLine($"public static Task {notificationMethodName}(BlazeServerConnection connection, {notificationType} notification, bool waitUntilFree = false)");
                 builder.AppendLine($"{{");
                 builder.AddTab();
 
-                builder.AppendLine($"return connection.NotifyAsync({componentBaseName}.Id, (ushort){componentNotificationName}.{notification.Name}, notification);");
+                builder.AppendLine($"return connection.NotifyAsync({componentBaseName}.Id, (ushort){componentNotificationName}.{notification.Name}, notification, waitUntilFree);");
 
                 builder.RemoveTab();
                 builder.AppendLine($"}}");
