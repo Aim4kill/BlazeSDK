@@ -214,19 +214,19 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3CreateAccount)]
-            public virtual Task<NullStruct> Ps3CreateAccountAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<ConsoleCreateAccountResponse> Ps3CreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3AssociateAccount)]
-            public virtual Task<NullStruct> Ps3AssociateAccountAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3Login)]
-            public virtual Task<NullStruct> Ps3LoginAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<ConsoleLoginResponse> Ps3LoginAsync(PS3LoginRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -306,9 +306,9 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3CreateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3Login => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountRequest),
+            AuthenticationComponentCommand.ps3AssociateAccount => typeof(ConsoleAssociateAccountRequest),
+            AuthenticationComponentCommand.ps3Login => typeof(PS3LoginRequest),
             AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
             AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
             AuthenticationComponentCommand.deviceLoginGuest => typeof(DeviceLoginGuestRequest),
@@ -350,9 +350,9 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3CreateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountResponse),
             AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3Login => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),
             AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
             AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
             AuthenticationComponentCommand.deviceLoginGuest => typeof(ConsoleLoginResponse),

@@ -247,22 +247,22 @@
         {
           "Id": 180,
           "Name": "ps3CreateAccount",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "ConsoleCreateAccountRequest",
+          "ResponseType": "ConsoleCreateAccountResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 190,
           "Name": "ps3AssociateAccount",
-          "RequestType": "NullStruct",
+          "RequestType": "ConsoleAssociateAccountRequest",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 200,
           "Name": "ps3Login",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "PS3LoginRequest",
+          "ResponseType": "ConsoleLoginResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
