@@ -7,13 +7,13 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace FixedSsl
 {
-    public static class SslSocket 
+    public static class SslSocket
     {
         static SslSocket()
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
         }
-        
+
         private const int SSLv3 = 0x0300;
         private const int TLSv1 = 0x0301;
         private static SecureProtocol legacyProtocols = SecureProtocol.Ssl3 | SecureProtocol.Tls1;
@@ -33,7 +33,7 @@ namespace FixedSsl
 
             if (version == SSLv3 || version == TLSv1)
             {
-                SecurityOptions options = new SecurityOptions(legacyProtocols, new Certificate(certificate.Handle, true), ConnectionEnd.Server);
+                SecurityOptions options = new SecurityOptions(legacyProtocols, new Certificate(certificate.Handle), ConnectionEnd.Server);
                 SecureSocket ss = new SecureSocket(socket, options);
                 return new SecureNetworkStream(ss, true);
             }
@@ -44,10 +44,10 @@ namespace FixedSsl
 
         public static Stream AuthenticateAsServer(Socket socket, X509Certificate? certificate)
         {
-            
+
             if (certificate == null)
                 return new NetworkStream(socket, true);
-            
+
             //read first 3 bytes (content type (1 byte) and version (2 bytes)), but do not consume them.
             byte[] buffer = new byte[3];
             socket.Receive(buffer, SocketFlags.Peek);
@@ -65,7 +65,7 @@ namespace FixedSsl
             sslStream.AuthenticateAsServer(certificate);
             return sslStream;
         }
-        
+
         public static IAsyncResult BeginAuthenticateAsServer(Socket socket, X509Certificate? certificate, AsyncCallback? callback, object? state)
         {
             return AuthenticateAsServerAsync(socket, certificate).AsApm(callback, state);
