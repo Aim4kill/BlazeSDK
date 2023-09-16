@@ -57,7 +57,7 @@ namespace FixedSsl
 
             if (version == SSLv3 || version == TLSv1)
             {
-                SecurityOptions options = new SecurityOptions(legacyProtocols, new Certificate(certificate.Handle, true), ConnectionEnd.Server);
+                SecurityOptions options = new SecurityOptions(legacyProtocols, Certificate.CreateFromX509Certificate(certificate), ConnectionEnd.Server);
                 SecureSocket ss = new SecureSocket(socket, options);
                 return new SecureNetworkStream(ss, true);
             }
@@ -70,6 +70,7 @@ namespace FixedSsl
         {
             return AuthenticateAsServerAsync(socket, certificate).AsApm(callback, state);
         }
+
         public static Stream EndAuthenticateAsServer(IAsyncResult result)
         {
             return ((Task<Stream>)result).Result;
