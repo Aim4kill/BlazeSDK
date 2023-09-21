@@ -42,7 +42,7 @@
                 IsBusyLock.Exit();
             }
 
-            Utils.LogPacket(component, packet, false);
+            BlazeUtils.LogPacket(component, packet, false);
             await ProtoFireConnection.SendAsync(protoFirePacket).ConfigureAwait(false);
         }
     }

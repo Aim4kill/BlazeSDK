@@ -1,3 +1,4 @@
+using BlazeCommon.PacketDisplayAttributes;
 using Tdf;
 
 namespace Blaze2SDK.Blaze
@@ -7,6 +8,7 @@ namespace Blaze2SDK.Blaze
     {
 
         [TdfMember("IP")]
+        [DisplayAsIpAddress]
         public uint Ip;
 
         [TdfMember("PORT")]

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BlazeCommon.PacketDisplayAttributes;
+using System.Collections;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -66,7 +67,7 @@ namespace BlazeCommon
                     //    TdfUnion union = (TdfUnion)fieldValue;
                     //    unionStr = $"(union : {union.ActiveMember}) ";
                     //}
-                    builder.AppendLine($"{new string(' ', spaces)}{field.Name}({tag}) {unionStr}= {_obj2str(fieldValue, spaces + deltaSpaces, deltaSpaces)}");
+                    builder.AppendLine($"{new string(' ', spaces)}{field.Name}({tag}) {unionStr}= {_obj2str(fieldValue, field, spaces + deltaSpaces, deltaSpaces)}");
                 }
 
             }
@@ -74,7 +75,43 @@ namespace BlazeCommon
             return builder.ToString();
         }
 
-        private string _obj2str(object obj, int spaces, int deltaSpaces)
+        private DateTime ToDateTime(long time, TimeFormat format)
+        {
+            switch (format)
+            {
+                case TimeFormat.UnixSeconds:
+                    return BlazeUtils.DateTimeFromUnixSeconds(time);
+                case TimeFormat.UnixMilliseconds:
+                    return BlazeUtils.DateTimeFromUnixMilliseconds(time);
+                case TimeFormat.UnixMicroseconds:
+                    return BlazeUtils.DateTimeFromUnixMicroseconds(time);
+                default:
+                    throw new InvalidOperationException($"Unknown time format {format}");
+            }
+        }
+
+        private string Uint32ToString(object value, FieldInfo? fieldInfo)
+        {
+            uint val = (uint)value;
+            if (fieldInfo != null)
+            {
+                DisplayAsIpAddress? displayAsIpAttribute = fieldInfo.GetCustomAttribute<DisplayAsIpAddress>();
+                if (displayAsIpAttribute != null)
+                    return $"\"{BlazeUtils.ToIpAddress(val)}\" ({value}) (0x{val:X8})";
+
+                DisplayAsLocale? displayAsLocaleAttribute = fieldInfo.GetCustomAttribute<DisplayAsLocale>();
+                if (displayAsLocaleAttribute != null)
+                    return $"\"{BlazeUtils.ToLocaleString(val)}\" ({value}) (0x{val:X8})";
+
+                DisplayAsDateTime? displayAsDateTimeAttribute = fieldInfo.GetCustomAttribute<DisplayAsDateTime>();
+                if (displayAsDateTimeAttribute != null)
+                    return $"\"{ToDateTime(val, displayAsDateTimeAttribute.Format)}\" ({value}) (0x{val:X8})";
+            }
+
+            return $"{value} (0x{val:X8})";
+        }
+
+        private string _obj2str(object obj, FieldInfo? fieldInfo, int spaces, int deltaSpaces)
         {
             Type type = obj.GetType();
             TypeCode objTypeCode = Type.GetTypeCode(type);
@@ -94,7 +131,7 @@ namespace BlazeCommon
                 case TypeCode.Int32:
                     return $"{obj} (0x{(int)obj:X8})";
                 case TypeCode.UInt32:
-                    return $"{obj} (0x{(uint)obj:X8})";
+                    return Uint32ToString(obj, fieldInfo);
                 case TypeCode.Int64:
                     return $"{obj} (0x{(long)obj:X16})";
                 case TypeCode.UInt64:
@@ -177,7 +214,7 @@ namespace BlazeCommon
                 foreach (object item in collection)
                 {
                     builder.Append(spacesStr1);
-                    builder.AppendLine($"[{i++}] = {_obj2str(item, spaces + deltaSpaces, deltaSpaces)}");
+                    builder.AppendLine($"[{i++}] = {_obj2str(item, null, spaces + deltaSpaces, deltaSpaces)}");
                 }
 
                 builder.Append($"{spacesStr2}]");
@@ -213,7 +250,7 @@ namespace BlazeCommon
                     object kvpValue = valueProperty.GetValue(item, null)!;
 
                     builder.Append(spacesStr1);
-                    builder.AppendLine($"({_obj2str(kvpKey, spaces + deltaSpaces, deltaSpaces)}, {_obj2str(kvpValue, spaces + deltaSpaces, deltaSpaces)})");
+                    builder.AppendLine($"({_obj2str(kvpKey, null, spaces + deltaSpaces, deltaSpaces)}, {_obj2str(kvpValue, null, spaces + deltaSpaces, deltaSpaces)})");
                 }
 
                 builder.Append($"{spacesStr2}]");
@@ -262,7 +299,6 @@ namespace BlazeCommon
                 return ((float)obj).ToString("0.##########", CultureInfo.InvariantCulture);
             }
 
-            ////TODO: TIMEVALUE
 
             return "TODO(" + type.Name + ")";
         }
