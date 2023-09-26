@@ -4,8 +4,8 @@ using Tdf;
 
 namespace BlazeCommon
 {
-    public delegate void ConnectionDelegate(BlazeServerConnection connectionInfo);
-
+    public delegate void ConnectionDelegate(BlazeServerConnection connection);
+    public delegate void ConnectionUnhandledRequestDelegate(BlazeServerConnection connection, ProtoFirePacket packet);
     public class BlazeServerConfiguration
     {
         public string Name { get; }
@@ -18,6 +18,7 @@ namespace BlazeCommon
         public int ErrSystemErrorCode { get; set; }
         public ConnectionDelegate? OnNewConnection { get; set; }
         public ConnectionDelegate? OnDisconnected { get; set; }
+        public ConnectionUnhandledRequestDelegate? OnUnhandledRequest { get; set; }
 
         Dictionary<ushort, IBlazeComponent> _components;
 

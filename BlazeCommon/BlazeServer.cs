@@ -148,14 +148,22 @@ namespace BlazeCommon
             {
                 if (exception is BlazeRpcException rpcException)
                 {
+                    if (rpcException.ErrorCode == Configuration.CommandNotFoundErrorCode || rpcException.ErrorCode == Configuration.ComponentNotFoundErrorCode)
+                        Configuration.OnUnhandledRequest?.Invoke(blazeConnection, packet);
+
                     if (rpcException.InnerException != null)
                         OnProtoFireError(connection, rpcException.InnerException);
+
                     response = GetErrorResponse(blazePacket, rpcException);
                 }
                 else if (exception is TargetInvocationException targException && targException.InnerException is BlazeRpcException rpcException2)
                 {
+                    if (rpcException2.ErrorCode == Configuration.CommandNotFoundErrorCode || rpcException2.ErrorCode == Configuration.ComponentNotFoundErrorCode)
+                        Configuration.OnUnhandledRequest?.Invoke(blazeConnection, packet);
+
                     if (rpcException2.InnerException != null)
                         OnProtoFireError(connection, rpcException2.InnerException);
+
                     response = GetErrorResponse(blazePacket, rpcException2);
                 }
                 else

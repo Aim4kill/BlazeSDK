@@ -18,19 +18,20 @@ namespace Blaze3SDK
             decoder = factory.CreateDecoder(true);
         }
 
-        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null)
+        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null, ConnectionUnhandledRequestDelegate? onUnhandledRequest = null)
         {
-            BlazeServerConfiguration blaze2Settings = new BlazeServerConfiguration(name, endPoint, encoder, decoder)
+            BlazeServerConfiguration blaze3Settings = new BlazeServerConfiguration(name, endPoint, encoder, decoder)
             {
                 Certificate = certificate,
                 ComponentNotFoundErrorCode = (int)Blaze3RpcError.ERR_COMPONENT_NOT_FOUND,
                 CommandNotFoundErrorCode = (int)Blaze3RpcError.ERR_COMMAND_NOT_FOUND,
                 ErrSystemErrorCode = (int)Blaze3RpcError.ERR_SYSTEM,
                 OnNewConnection = onNewConnection,
-                OnDisconnected = onDisconnected
+                OnDisconnected = onDisconnected,
+                OnUnhandledRequest = onUnhandledRequest
             };
 
-            return new BlazeServer(blaze2Settings);
+            return new BlazeServer(blaze3Settings);
         }
     }
 }
