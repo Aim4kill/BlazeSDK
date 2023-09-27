@@ -18,7 +18,7 @@ namespace Blaze2SDK
             decoder = factory.CreateLegacyDecoder();
         }
 
-        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null, ConnectionUnhandledRequestDelegate? onUnhandledRequest = null)
+        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null, ConnectionUnhandledRequestDelegate? onUnhandledRequest = null, ConnectionOnErrorDelegate? onError = null)
         {
             BlazeServerConfiguration blaze2Settings = new BlazeServerConfiguration(name, endPoint, encoder, decoder)
             {
@@ -28,7 +28,8 @@ namespace Blaze2SDK
                 ErrSystemErrorCode = (int)Blaze2RpcError.ERR_SYSTEM,
                 OnNewConnection = onNewConnection,
                 OnDisconnected = onDisconnected,
-                OnUnhandledRequest = onUnhandledRequest
+                OnUnhandledRequest = onUnhandledRequest,
+                OnError = onError
             };
 
             return new BlazeServer(blaze2Settings);

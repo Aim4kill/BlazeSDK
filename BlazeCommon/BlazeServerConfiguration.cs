@@ -6,6 +6,7 @@ namespace BlazeCommon
 {
     public delegate void ConnectionDelegate(BlazeServerConnection connection);
     public delegate void ConnectionUnhandledRequestDelegate(BlazeServerConnection connection, ProtoFirePacket packet);
+    public delegate void ConnectionOnErrorDelegate(BlazeServerConnection connection, Exception exception);
     public class BlazeServerConfiguration
     {
         public string Name { get; }
@@ -19,6 +20,7 @@ namespace BlazeCommon
         public ConnectionDelegate? OnNewConnection { get; set; }
         public ConnectionDelegate? OnDisconnected { get; set; }
         public ConnectionUnhandledRequestDelegate? OnUnhandledRequest { get; set; }
+        public ConnectionOnErrorDelegate? OnError { get; set; }
 
         Dictionary<ushort, IBlazeComponent> _components;
 

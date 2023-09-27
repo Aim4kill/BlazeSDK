@@ -55,6 +55,7 @@ namespace BlazeCommon
         public override void OnProtoFireError(ProtoFireConnection connection, Exception exception)
         {
             _logger.Error(exception, "ProtoFireError occured");
+            Configuration.OnError?.Invoke(GetBlazeConnection(connection), exception);
         }
 
 
