@@ -15,6 +15,7 @@
         LeagueComponent = 13,
         MailComponent = 14,
         MessagingComponent = 15,
+        QosComponent = 16,
         LockerComponent = 20,
         RoomsComponent = 21,
         TournamentsComponent = 23,
