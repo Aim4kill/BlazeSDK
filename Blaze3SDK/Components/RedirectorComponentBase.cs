@@ -1,5 +1,6 @@
 using Blaze3SDK.Blaze.Redirector;
 using BlazeCommon;
+using NLog;
 
 namespace Blaze3SDK.Components
 {
@@ -8,7 +9,7 @@ namespace Blaze3SDK.Components
         public const ushort Id = 5;
         public const string Name = "RedirectorComponent";
         
-        public class Server : BlazeComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
+        public class Server : BlazeServerComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
         {
             public Server() : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
             {
@@ -29,12 +30,49 @@ namespace Blaze3SDK.Components
             
         }
         
-        public class Client : BlazeComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
+        public class Client : BlazeClientComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
         {
-            public Client() : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
+            BlazeClientConnection Connection { get; }
+            private static Logger _logger = LogManager.GetCurrentClassLogger();
+            
+            public Client(BlazeClientConnection connection) : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
+            {
+                Connection = connection;
+                if (!Connection.Config.AddComponent(this))
+                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
+            }
+            
+            
+            public ServerInstanceInfo GetServerInstance(ServerInstanceRequest request)
+            {
+                return Connection.SendRequest<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
+            }
+            public Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request)
+            {
+                return Connection.SendRequestAsync<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
+            }
+            
+            
+            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
+            
+        }
+        
+        public class Proxy : BlazeProxyComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze3RpcError>
+        {
+            public Proxy() : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
             {
                 
             }
+            
+            [BlazeCommand((ushort)RedirectorComponentCommand.getServerInstance)]
+            public virtual Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
+            }
+            
             
             public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
             public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);

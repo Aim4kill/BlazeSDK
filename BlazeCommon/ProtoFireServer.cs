@@ -1,5 +1,6 @@
 ﻿using FixedSsl;
 using NLog;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
@@ -19,7 +20,8 @@ namespace BlazeCommon
 
         private Socket? _listenSocket;
         private long _nextConnectionId;
-        private Dictionary<long, ProtoFireConnection> _connections;
+        private ConcurrentDictionary<long, ProtoFireConnection> _connections;
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ProtoFireServer(string name, IPEndPoint localEP, X509Certificate? cert)
@@ -29,17 +31,35 @@ namespace BlazeCommon
             IsRunning = false;
             Certificate = cert;
 
-            _connections = new Dictionary<long, ProtoFireConnection>();
+            _connections = new ConcurrentDictionary<long, ProtoFireConnection>();
+            _cancellationTokenSource = new CancellationTokenSource();
             _nextConnectionId = 0;
         }
 
-        public async Task Start(int backlog, CancellationToken cancelToken)
+        public void KillConnection(ProtoFireConnection connection)
+        {
+            if (connection.Connected)
+                connection.Disconnect(); //will call this method again after disconnect
+            else
+                OnProtoFireDisconnectInternalAsync(connection).GetAwaiter().GetResult();
+        }
+
+        public void Stop()
+        {
+            IsRunning = false;
+            _cancellationTokenSource.Cancel();
+        }
+
+        public async Task Start(int backlog)
         {
             //check if already running or is cancelled
-            if (IsRunning || cancelToken.IsCancellationRequested)
+            if (IsRunning)
                 return;
 
-            //if not, attempt to start the server
+            if (_cancellationTokenSource.IsCancellationRequested)
+                _cancellationTokenSource = new CancellationTokenSource();
+
+            //server not running, start it
             try
             {
                 _logger.Info($"Starting {(Secure ? "secure" : "insecure")} ProtoFireServer({{Name}}) on port {{Port}}...", Name, LocalEP.Port);
@@ -59,32 +79,27 @@ namespace BlazeCommon
             try
             {
                 //start accepting connections
-                while (!cancelToken.IsCancellationRequested)
+                while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-
-
-                    Socket socket = await _listenSocket.AcceptAsync(cancelToken);
+                    Socket socket = await _listenSocket.AcceptAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
                     long clientId = Interlocked.Increment(ref _nextConnectionId);
 
                     ProtoFireConnection connection = new ProtoFireConnection(clientId, this, socket);
-
-                    _internalConnect(connection);
-
-                    if (Secure)
-                        _logger.Info("Authenticating as server for connection({ClientId}).", clientId);
-                    SslSocket.BeginAuthenticateAsServer(socket, Certificate, AuthenticateAsServerCallback, connection);
+                    await OnProtoFireConnectInternalAsync(connection).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException) { }
+
             IsRunning = false;
 
-            //kill all connections in dictionary
-            lock (_connections)
-                foreach (var connection in _connections.Values)
-                    connection.Disconnect();
+            _listenSocket.Close();
+            _nextConnectionId = 0;
+            //kill all server connections
+            foreach (var connection in _connections.Values)
+                connection.Disconnect();
+            _connections.Clear();
+
         }
-
-
 
         public async void AuthenticateAsServerCallback(IAsyncResult result)
         {
@@ -101,7 +116,7 @@ namespace BlazeCommon
             catch (Exception ex)
             {
                 _logger.Error(ex, "Failed to authenticate as server for connection({ClientId}).", connection.ID);
-                _internalDisconnect(connection);
+                await OnProtoFireDisconnectInternalAsync(connection).ConfigureAwait(false);
             }
 
             while (IsRunning)
@@ -112,58 +127,86 @@ namespace BlazeCommon
                 if (packet == null)
                     break;
 
-                try { OnProtoFirePacketReceived(connection, packet); } catch (Exception ex) { _internalOnError(connection, ex); }
+                try { await OnProtoFirePacketReceivedAsync(connection, packet).ConfigureAwait(false); }
+                catch (Exception ex) { await OnProtoFireErrorInternalAsync(connection, ex).ConfigureAwait(false); }
             }
 
             connection.Disconnect();
         }
 
-        public void KillConnection(ProtoFireConnection connection)
+        public ValueTask KillConnectionAsync(ProtoFireConnection connection)
         {
-            if (connection.Disconnected)
-                _internalDisconnect(connection);
-            else
-                connection.Disconnect(); //will call this method again after disconnect
-        }
-
-
-        private void _internalConnect(ProtoFireConnection connection)
-        {
-            _logger.Info("Connection({ClientId}) accepted from {RemoteEP}.", connection.ID, connection.Socket.RemoteEndPoint);
-            lock (_connections)
-                _connections.Add(connection.ID, connection);
-            try { OnProtoFireConnect(connection); } catch (Exception ex) { _internalOnError(connection, ex); }
-        }
-
-        private void _internalDisconnect(ProtoFireConnection connection)
-        {
-            bool success = false;
-            lock (_connections)
-                success = _connections.Remove(connection.ID);
-
-            if (success)
+            if (connection.Connected)
             {
-                _logger.Info("Connection({ClientId}) disconnected.", connection.ID);
-                try { OnProtoFireDisconnect(connection); } catch (Exception ex) { _internalOnError(connection, ex); }
+                connection.Disconnect(); //will call this method again after disconnect
+                return ValueTask.CompletedTask;
+            }
+
+            return OnProtoFireDisconnectInternalAsync(connection);
+        }
+
+        private async ValueTask OnProtoFireConnectInternalAsync(ProtoFireConnection connection)
+        {
+            if (!_connections.TryAdd(connection.ID, connection))
+            {
+                connection.Disconnect();
+                return;
+            }
+
+            _logger.Info("Connection({ClientId}) accepted from {RemoteEP}.", connection.ID, connection.Socket.RemoteEndPoint);
+
+            try
+            {
+                await OnProtoFireConnectAsync(connection).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await OnProtoFireErrorInternalAsync(connection, ex).ConfigureAwait(false);
+            }
+
+            if (connection.Connected)
+            {
+                if (Secure)
+                    _logger.Info("Authenticating as server for connection({ClientId}).", connection.ID);
+
+                SslSocket.BeginAuthenticateAsServer(connection.Socket, Certificate, AuthenticateAsServerCallback, connection);
             }
         }
 
-        private void _internalOnError(ProtoFireConnection connection, Exception exception)
+        private async ValueTask OnProtoFireDisconnectInternalAsync(ProtoFireConnection connection)
+        {
+            if (!_connections.TryRemove(connection.ID, out _))
+                return;
+
+            _logger.Info("Connection({ClientId}) disconnected.", connection.ID);
+
+            try
+            {
+                await OnProtoFireDisconnectAsync(connection).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                await OnProtoFireErrorInternalAsync(connection, ex).ConfigureAwait(false);
+            }
+        }
+
+
+        private async Task OnProtoFireErrorInternalAsync(ProtoFireConnection connection, Exception exception)
         {
             try
             {
-                OnProtoFireError(connection, exception);
+                await OnProtoFireErrorAsync(connection, exception).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 //an error occured while handling an error, doesnt sound good...
-                _internalOnError(connection, ex);
+                await OnProtoFireErrorInternalAsync(connection, ex).ConfigureAwait(false);
             }
         }
 
-        public abstract void OnProtoFireConnect(ProtoFireConnection connection);
-        public abstract void OnProtoFirePacketReceived(ProtoFireConnection connection, ProtoFirePacket packet);
-        public abstract void OnProtoFireDisconnect(ProtoFireConnection connection);
-        public abstract void OnProtoFireError(ProtoFireConnection connection, Exception exception);
+        public abstract Task OnProtoFireConnectAsync(ProtoFireConnection connection);
+        public abstract Task OnProtoFirePacketReceivedAsync(ProtoFireConnection connection, ProtoFirePacket packet);
+        public abstract Task OnProtoFireDisconnectAsync(ProtoFireConnection connection);
+        public abstract Task OnProtoFireErrorAsync(ProtoFireConnection connection, Exception exception);
     }
 }

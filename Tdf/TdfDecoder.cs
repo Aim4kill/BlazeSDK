@@ -238,7 +238,14 @@ namespace Tdf
         private bool ReadTdfList(Stream stream, ref object? instance, FieldInfo? field)
         {
             Type? listFullType = field?.FieldType;
-            Type? listMemberType = listFullType?.GetGenericArguments()[0];
+            Type? listMemberType = null;
+            if (listFullType != null)
+            {
+                Type[] genericArgTypes = listFullType.GetGenericArguments();
+                if (genericArgTypes.Length > 0)
+                    listMemberType = genericArgTypes[0];
+            }
+
 
             TdfBaseType baseType = stream.ReadTdfBaseType();
             ulong? countNullable = (ulong?)stream.ReadTdfInteger();

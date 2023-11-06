@@ -1,70 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-
-namespace BlazeCommon
+﻿namespace BlazeCommon
 {
     public abstract class BlazeComponent<CommandEnum, NotificationEnum, ErrorEnum> : IBlazeComponent where CommandEnum : Enum where NotificationEnum : Enum where ErrorEnum : Enum
     {
-        Dictionary<ushort, BlazeCommandInfo> _commands;
-
         public ushort Id { get; }
         public string Name { get; }
+
         public BlazeComponent(ushort componentId, string componentName)
         {
             Id = componentId;
             Name = componentName;
-            InitializeComponent();
         }
-
-        [MemberNotNull(nameof(_commands))]
-        void InitializeComponent()
-        {
-            _commands = new Dictionary<ushort, BlazeCommandInfo>();
-
-            Type componentType = GetType();
-
-            MethodInfo[] methods = componentType.GetMethods();
-
-            foreach (MethodInfo method in methods)
-            {
-                BlazeCommand? commandAttr = method.GetCustomAttribute<BlazeCommand>();
-                if (commandAttr == null)
-                    continue;
-
-                ushort commandId = commandAttr.Id;
-                if (_commands.ContainsKey(commandId))
-                    throw new InvalidOperationException($"Blaze command {commandId} seen more than once for component {Id}");
-
-                Type fullReturnType = method.ReturnType;
-                //we need to check if it is Task<Response>
-                if (!fullReturnType.IsGenericType)
-                    continue;
-                if (fullReturnType.GetGenericTypeDefinition() != typeof(Task<>))
-                    continue;
-
-                Type responseType = fullReturnType.GetGenericArguments()[0];
-
-                Type[] parameterTypes = method.GetParameters().Select(x => x.ParameterType).ToArray();
-                if (parameterTypes.Length != 2)
-                    continue;
-
-                if (parameterTypes[1] != typeof(BlazeRpcContext))
-                    continue;
-
-                Type requestType = parameterTypes[0];
-
-
-                BlazeCommandInfo commandInfo = new BlazeCommandInfo(this, commandId, requestType, responseType, method);
-                _commands.Add(commandId, commandInfo);
-            }
-        }
-
-        public BlazeCommandInfo? GetBlazeCommandInfo(ushort commandId)
-        {
-            _commands.TryGetValue(commandId, out BlazeCommandInfo? commandInfo);
-            return commandInfo;
-        }
-
 
         public string GetCommandName(CommandEnum command) => command.ToString();
         public string GetCommandName(ushort commandId) => GetCommandName((CommandEnum)Enum.ToObject(typeof(CommandEnum), commandId));

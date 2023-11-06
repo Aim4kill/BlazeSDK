@@ -1,7 +1,8 @@
 {
   "Usings": [
     "Blaze2SDK.Blaze.Authentication",
-    "BlazeCommon"
+    "BlazeCommon",
+    "NLog"
   ],
   "Namespace": "Blaze2SDK.Components",
   "Components": [

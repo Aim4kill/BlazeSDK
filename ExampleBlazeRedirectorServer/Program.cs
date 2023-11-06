@@ -27,7 +27,7 @@ BlazeServer redirector = Blaze3.CreateBlazeServer("gosredirector.ea.com", new IP
 redirector.AddComponent<RedirectorComponent>();
 
 //Start it!
-await redirector.Start(-1, CancellationToken.None).ConfigureAwait(false);
+await redirector.Start(-1).ConfigureAwait(false);
 
 
 

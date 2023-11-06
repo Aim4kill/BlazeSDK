@@ -8,7 +8,6 @@ namespace BlazeCommon
     {
         public BlazeServerConfiguration Configuration { get; }
 
-
         ConcurrentDictionary<ProtoFireConnection, BlazeServerConnection> _connections;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         public BlazeServer(BlazeServerConfiguration settings) : base(settings.Name, settings.LocalEP, settings.Certificate)
@@ -18,17 +17,17 @@ namespace BlazeCommon
             _connections = new ConcurrentDictionary<ProtoFireConnection, BlazeServerConnection>();
         }
 
-        public bool AddComponent<TComponent>() where TComponent : IBlazeComponent, new()
+        public bool AddComponent<TComponent>() where TComponent : IBlazeServerComponent, new()
         {
             return Configuration.AddComponent<TComponent>();
         }
 
-        public bool RemoveComponent(ushort componentId, out IBlazeComponent? component)
+        public bool RemoveComponent(ushort componentId, out IBlazeServerComponent? component)
         {
             return Configuration.RemoveComponent(componentId, out component);
         }
 
-        public IBlazeComponent? GetComponent(ushort componentId)
+        public IBlazeServerComponent? GetComponent(ushort componentId)
         {
             return Configuration.GetComponent(componentId);
         }
@@ -41,28 +40,35 @@ namespace BlazeCommon
             });
         }
 
-        public override void OnProtoFireConnect(ProtoFireConnection connection)
+        public override Task OnProtoFireConnectAsync(ProtoFireConnection connection)
         {
             Configuration.OnNewConnection?.Invoke(GetBlazeConnection(connection));
+            return Task.CompletedTask;
         }
 
-        public override void OnProtoFireDisconnect(ProtoFireConnection connection)
+        public override Task OnProtoFireDisconnectAsync(ProtoFireConnection connection)
         {
             if (_connections.TryRemove(connection, out BlazeServerConnection? connectionInfo))
                 Configuration.OnDisconnected?.Invoke(connectionInfo);
+            return Task.CompletedTask;
         }
 
-        public override void OnProtoFireError(ProtoFireConnection connection, Exception exception)
+        public override Task OnProtoFireErrorAsync(ProtoFireConnection connection, Exception exception)
+        {
+            OnProtoFireError(connection, exception);
+            return Task.CompletedTask;
+        }
+
+        private void OnProtoFireError(ProtoFireConnection connection, Exception exception)
         {
             _logger.Error(exception, "ProtoFireError occured");
             Configuration.OnError?.Invoke(GetBlazeConnection(connection), exception);
         }
 
-
         IBlazePacket DecodePacket(ProtoFirePacket packet)
         {
             FireFrame frame = packet.Frame;
-            IBlazeComponent? component = Configuration.GetComponent(frame.Component);
+            IBlazeServerComponent? component = Configuration.GetComponent(frame.Component);
             if (component == null)
                 return packet.Decode(typeof(NullStruct), Configuration.Decoder);
 
@@ -106,11 +112,11 @@ namespace BlazeCommon
                 return requestPacket.CreateResponsePacket(exception.ErrorCode);
         }
 
-        public override async void OnProtoFirePacketReceived(ProtoFireConnection connection, ProtoFirePacket packet)
+        public override async Task OnProtoFirePacketReceivedAsync(ProtoFireConnection connection, ProtoFirePacket packet)
         {
             FireFrame frame = packet.Frame;
             IBlazePacket blazePacket = DecodePacket(packet);
-            IBlazeComponent? component = Configuration.GetComponent(frame.Component);
+            IBlazeServerComponent? component = Configuration.GetComponent(frame.Component);
             BlazeUtils.LogPacket(component, blazePacket, true);
 
             if (frame.MsgType != FireFrame.MessageType.MESSAGE)
@@ -127,7 +133,7 @@ namespace BlazeCommon
                 return;
             }
 
-            BlazeCommandInfo? commandInfo = component.GetBlazeCommandInfo(frame.Command);
+            BlazeServerCommandMethodInfo? commandInfo = component.GetBlazeCommandInfo(frame.Command);
             if (commandInfo == null)
             {
                 response = blazePacket.CreateResponsePacket(new NullStruct(), Configuration.CommandNotFoundErrorCode);
@@ -178,5 +184,9 @@ namespace BlazeCommon
             await SendBlazePacket(connection, component, response).ConfigureAwait(false);
             blazeConnection.IsBusyLock.Exit();
         }
+
+
+
+
     }
 }

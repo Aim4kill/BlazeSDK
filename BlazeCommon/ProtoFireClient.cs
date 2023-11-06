@@ -5,26 +5,27 @@ namespace BlazeCommon
     public abstract class ProtoFireClient
     {
         public ProtoFireConnection Connection { get; }
-        ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>> awaitableReplies;
-
         public int RequestTimeout { get; set; }
-        public PacketReceivedFilter Filter { get; set; }
-        public ProtoFireClient(ProtoFireConnection connection, PacketReceivedFilter filter = PacketReceivedFilter.All)
-        {
 
-            if (connection.Disconnected)
+        uint nextReqNum;
+
+        ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>> replyTasks;
+
+        public ProtoFireClient(ProtoFireConnection connection)
+        {
+            if (!connection.Connected)
                 throw new ArgumentException("The connection is disconnected.");
 
-            awaitableReplies = new ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>>();
+            replyTasks = new ConcurrentDictionary<uint, TaskCompletionSource<ProtoFirePacket>>();
             RequestTimeout = 15000;
-            Filter = filter;
             Connection = connection;
+            nextReqNum = 0;
             _ = ReadPacket();
         }
 
         async Task ReadPacket()
         {
-            while (!Connection.Disconnected)
+            while (Connection.Connected)
             {
                 ProtoFirePacket? packet = await Connection.ReadPacketAsync().ConfigureAwait(false);
 
@@ -36,44 +37,39 @@ namespace BlazeCommon
 
                 switch (packet.Frame.MsgType)
                 {
-                    case FireFrame.MessageType.REPLY:
-                        if (Filter.HasFlag(PacketReceivedFilter.Reply))
-                            OnPacketReceived(packet);
-                        HandleReplyPacket(packet);
-                        break;
                     case FireFrame.MessageType.ERROR_REPLY:
-                        if (Filter.HasFlag(PacketReceivedFilter.ErrorReply))
-                            OnPacketReceived(packet);
+                    case FireFrame.MessageType.REPLY:
                         HandleReplyPacket(packet);
-                        break;
-                    case FireFrame.MessageType.MESSAGE:
-                        if (Filter.HasFlag(PacketReceivedFilter.Message))
-                            OnPacketReceived(packet);
-                        break;
-                    case FireFrame.MessageType.NOTIFICATION:
-                        if (Filter.HasFlag(PacketReceivedFilter.Notification))
-                            OnPacketReceived(packet);
-                        break;
-                    default:
-                        if (Filter.HasFlag(PacketReceivedFilter.Unknown))
-                            OnPacketReceived(packet);
                         break;
                 }
+
+                OnPacketReceived(packet);
             }
         }
 
         void HandleReplyPacket(ProtoFirePacket reply)
         {
-            if (awaitableReplies.TryRemove(reply.Frame.MsgNum, out TaskCompletionSource<ProtoFirePacket>? tcs))
+            if (replyTasks.TryRemove(reply.Frame.MsgNum, out TaskCompletionSource<ProtoFirePacket>? tcs))
                 tcs.SetResult(reply);
+        }
+
+        public uint GetNextMsgNum()
+        {
+            return Interlocked.Increment(ref nextReqNum);
         }
 
 
         public ProtoFirePacket SendRequest(ProtoFirePacket packet)
         {
             TaskCompletionSource<ProtoFirePacket> tcs = new TaskCompletionSource<ProtoFirePacket>();
-            awaitableReplies.TryAdd(packet.Frame.MsgNum, tcs);
-            Connection.Send(packet);
+            replyTasks.TryAdd(packet.Frame.MsgNum, tcs);
+
+            if (!Connection.Send(packet))
+            {
+                replyTasks.TryRemove(packet.Frame.MsgNum, out _);
+                throw new Exception("Failed to send packet."); //TODO: better exception
+            }
+
             CancellationTokenSource cts = new CancellationTokenSource(RequestTimeout);
             cts.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
             try { return tcs.Task.GetAwaiter().GetResult(); }
@@ -87,8 +83,14 @@ namespace BlazeCommon
         public async Task<ProtoFirePacket> SendRequestAsync(ProtoFirePacket packet)
         {
             TaskCompletionSource<ProtoFirePacket> tcs = new TaskCompletionSource<ProtoFirePacket>();
-            awaitableReplies.TryAdd(packet.Frame.MsgNum, tcs);
-            await Connection.SendAsync(packet).ConfigureAwait(false);
+            replyTasks.TryAdd(packet.Frame.MsgNum, tcs);
+
+            if (!await Connection.SendAsync(packet).ConfigureAwait(false))
+            {
+                replyTasks.TryRemove(packet.Frame.MsgNum, out _);
+                throw new Exception("Failed to send packet."); //TODO: better exception
+            }
+
             CancellationTokenSource cts = new CancellationTokenSource(RequestTimeout);
             cts.Token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
             try { return await tcs.Task.ConfigureAwait(false); }
@@ -101,19 +103,5 @@ namespace BlazeCommon
 
         public abstract void OnClientDisconnected();
         public abstract void OnPacketReceived(ProtoFirePacket request);
-
     }
-
-    [Flags]
-    public enum PacketReceivedFilter
-    {
-        None = 0,
-        Message = 1,
-        Reply = 2,
-        ErrorReply = 4,
-        Notification = 8,
-        Unknown = 16,
-        All = Message | Reply | ErrorReply | Notification | Unknown
-    }
-
 }

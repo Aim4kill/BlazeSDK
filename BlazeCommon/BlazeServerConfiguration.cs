@@ -22,7 +22,7 @@ namespace BlazeCommon
         public ConnectionUnhandledRequestDelegate? OnUnhandledRequest { get; set; }
         public ConnectionOnErrorDelegate? OnError { get; set; }
 
-        Dictionary<ushort, IBlazeComponent> _components;
+        Dictionary<ushort, IBlazeServerComponent> _components;
 
         public BlazeServerConfiguration(string name, IPEndPoint endPoint, ITdfEncoder encoder, ITdfDecoder decoder)
         {
@@ -30,7 +30,7 @@ namespace BlazeCommon
             LocalEP = endPoint;
             Encoder = encoder;
             Decoder = decoder;
-            _components = new Dictionary<ushort, IBlazeComponent>();
+            _components = new Dictionary<ushort, IBlazeServerComponent>();
 
             //Taken from Blaze 3
             ComponentNotFoundErrorCode = 1073872896;
@@ -39,20 +39,20 @@ namespace BlazeCommon
         }
 
 
-        public bool AddComponent<TComponent>() where TComponent : IBlazeComponent, new()
+        public bool AddComponent<TComponent>() where TComponent : IBlazeServerComponent, new()
         {
             TComponent component = new TComponent();
             return _components.TryAdd(component.Id, component);
         }
 
-        public bool RemoveComponent(ushort componentId, out IBlazeComponent? component)
+        public bool RemoveComponent(ushort componentId, out IBlazeServerComponent? component)
         {
             return _components.Remove(componentId, out component);
         }
 
-        public IBlazeComponent? GetComponent(ushort componentId)
+        public IBlazeServerComponent? GetComponent(ushort componentId)
         {
-            _components.TryGetValue(componentId, out IBlazeComponent? component);
+            _components.TryGetValue(componentId, out IBlazeServerComponent? component);
             return component;
         }
     }

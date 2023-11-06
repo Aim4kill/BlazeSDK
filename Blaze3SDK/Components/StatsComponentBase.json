@@ -1,7 +1,8 @@
 {
   "Usings": [
     "Blaze3SDK.Blaze.Stats",
-    "BlazeCommon"
+    "BlazeCommon",
+    "NLog"
   ],
   "Namespace": "Blaze3SDK.Components",
   "Components": [
@@ -16,8 +17,8 @@
         {
           "Id": 1,
           "Name": "getStatDescs",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "GetStatDescsRequest",
+          "ResponseType": "StatDescs",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -31,7 +32,7 @@
           "Id": 3,
           "Name": "getStatGroupList",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "StatGroupList",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -73,7 +74,7 @@
           "Id": 11,
           "Name": "getLeaderboardFolderGroup",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "LeaderboardFolderGroup",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -101,7 +102,7 @@
           "Id": 15,
           "Name": "getKeyScopesMap",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "KeyScopes",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -129,14 +130,14 @@
           "Id": 19,
           "Name": "getStatCategoryList",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "StatCategoryList",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 20,
           "Name": "getPeriodIds",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "PeriodIds",
           "ErrorResponseType": "NullStruct"
         },
         {

@@ -2,7 +2,8 @@
   "Usings": [
     "Blaze2SDK.Blaze",
     "Blaze2SDK.Blaze.Util",
-    "BlazeCommon"
+    "BlazeCommon",
+    "NLog"
   ],
   "Namespace": "Blaze2SDK.Components",
   "Components": [
@@ -17,8 +18,8 @@
         {
           "Id": 1,
           "Name": "fetchClientConfig",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "FetchClientConfigRequest",
+          "ResponseType": "FetchConfigResponse",
           "ErrorResponseType": "NullStruct"
         },
         {

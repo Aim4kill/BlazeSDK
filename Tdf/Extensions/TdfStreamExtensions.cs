@@ -72,8 +72,16 @@ namespace Tdf.Extensions
             if (data == null)
                 return null;
 
+
             //checking whether we should include last char in the string or not
-            int len = data[data.Length - 1] != 0x00 ? data.Length : data.Length - 1;
+            int len = data.Length;
+            if (len > 0)
+            {
+                int lengthWithoutTrailingByte = len - 1;
+                if (data[lengthWithoutTrailingByte] == 0x00)
+                    len = lengthWithoutTrailingByte;
+            }
+
             return Encoding.UTF8.GetString(data, 0, len);
         }
 
@@ -84,7 +92,14 @@ namespace Tdf.Extensions
                 return null;
 
             //checking whether we should include last char in the string or not
-            int len = data[data.Length - 1] != 0x00 ? data.Length : data.Length - 1;
+            int len = data.Length;
+            if (len > 0)
+            {
+                int lengthWithoutTrailingByte = len - 1;
+                if (data[lengthWithoutTrailingByte] == 0x00)
+                    len = lengthWithoutTrailingByte;
+            }
+
             return Encoding.UTF8.GetString(data, 0, len);
         }
 

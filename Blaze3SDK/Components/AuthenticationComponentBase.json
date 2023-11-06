@@ -1,7 +1,8 @@
 {
   "Usings": [
     "Blaze3SDK.Blaze.Authentication",
-    "BlazeCommon"
+    "BlazeCommon",
+    "NLog"
   ],
   "Namespace": "Blaze3SDK.Components",
   "Components": [
@@ -59,7 +60,7 @@
           "Id": 32,
           "Name": "listEntitlements",
           "RequestType": "ListEntitlementsRequest",
-          "ResponseType": "NullStruct",
+          "ResponseType": "Entitlements",
           "ErrorResponseType": "NullStruct"
         },
         {

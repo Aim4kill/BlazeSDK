@@ -45,5 +45,31 @@
             BlazeUtils.LogPacket(component, packet, false);
             await ProtoFireConnection.SendAsync(protoFirePacket).ConfigureAwait(false);
         }
+
+        public async Task NotifyAsync(IBlazeComponent component, ushort notificationId, object notification, bool waitUntilFree)
+        {
+            FireFrame frame = new FireFrame()
+            {
+                Component = component.Id,
+                Command = notificationId,
+                ErrorCode = 0,
+                MsgNum = 0,
+                MsgType = FireFrame.MessageType.NOTIFICATION
+            };
+
+            Type fullType = typeof(BlazePacket<>).MakeGenericType(notification.GetType());
+            IBlazePacket packet = (IBlazePacket)Activator.CreateInstance(fullType, frame, notification)!;
+            ProtoFirePacket protoFirePacket = packet.ToProtoFirePacket(ServerConfiguration.Encoder);
+
+            //if we have to wait until server finishes some previous request (it is forbidden to await notification task with waitUntilFree true in request handler, it may cause deadlock)
+            if (waitUntilFree)
+            {
+                await IsBusyLock.EnterAsync().ConfigureAwait(false);
+                IsBusyLock.Exit();
+            }
+
+            BlazeUtils.LogPacket(component, packet, false);
+            await ProtoFireConnection.SendAsync(protoFirePacket).ConfigureAwait(false);
+        }
     }
 }

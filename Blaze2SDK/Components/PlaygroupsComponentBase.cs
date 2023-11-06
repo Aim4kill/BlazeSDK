@@ -1,5 +1,6 @@
 using Blaze2SDK.Blaze.Playgroups;
 using BlazeCommon;
+using NLog;
 
 namespace Blaze2SDK.Components
 {
@@ -8,7 +9,7 @@ namespace Blaze2SDK.Components
         public const ushort Id = 6;
         public const string Name = "PlaygroupsComponent";
         
-        public class Server : BlazeComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        public class Server : BlazeServerComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
         {
             public Server() : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
             {
@@ -133,11 +134,313 @@ namespace Blaze2SDK.Components
             
         }
         
-        public class Client : BlazeComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        public class Client : BlazeClientComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
         {
-            public Client() : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
+            BlazeClientConnection Connection { get; }
+            private static Logger _logger = LogManager.GetCurrentClassLogger();
+            
+            public Client(BlazeClientConnection connection) : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
+            {
+                Connection = connection;
+                if (!Connection.Config.AddComponent(this))
+                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
+            }
+            
+            
+            public NullStruct CreatePlaygroup()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, new NullStruct());
+            }
+            public Task<NullStruct> CreatePlaygroupAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, new NullStruct());
+            }
+            
+            public NullStruct DestroyPlaygroup()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, new NullStruct());
+            }
+            public Task<NullStruct> DestroyPlaygroupAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, new NullStruct());
+            }
+            
+            public NullStruct JoinPlaygroup()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, new NullStruct());
+            }
+            public Task<NullStruct> JoinPlaygroupAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, new NullStruct());
+            }
+            
+            public NullStruct LeavePlaygroup()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, new NullStruct());
+            }
+            public Task<NullStruct> LeavePlaygroupAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, new NullStruct());
+            }
+            
+            public NullStruct SetPlaygroupAttributes()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, new NullStruct());
+            }
+            public Task<NullStruct> SetPlaygroupAttributesAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, new NullStruct());
+            }
+            
+            public NullStruct SetMemberAttributes()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, new NullStruct());
+            }
+            public Task<NullStruct> SetMemberAttributesAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, new NullStruct());
+            }
+            
+            public NullStruct KickPlaygroupMember()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, new NullStruct());
+            }
+            public Task<NullStruct> KickPlaygroupMemberAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, new NullStruct());
+            }
+            
+            public NullStruct SetPlaygroupJoinControls()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, new NullStruct());
+            }
+            public Task<NullStruct> SetPlaygroupJoinControlsAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, new NullStruct());
+            }
+            
+            public NullStruct FinalizePlaygroupCreation()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, new NullStruct());
+            }
+            public Task<NullStruct> FinalizePlaygroupCreationAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, new NullStruct());
+            }
+            
+            public NullStruct LookupPlaygroupInfo()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, new NullStruct());
+            }
+            public Task<NullStruct> LookupPlaygroupInfoAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, new NullStruct());
+            }
+            
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup)]
+            public virtual Task OnNotifyDestroyPlaygroupAsync(NotifyDestroyPlaygroup notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyDestroyPlaygroupAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup)]
+            public virtual Task OnNotifyJoinPlaygroupAsync(NotifyJoinPlaygroup notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyJoinPlaygroupAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup)]
+            public virtual Task OnNotifyMemberJoinedPlaygroupAsync(NotifyMemberJoinedPlaygroup notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyMemberJoinedPlaygroupAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup)]
+            public virtual Task OnNotifyMemberRemovedFromPlaygroupAsync(NotifyMemberRemoveFromPlaygroup notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyMemberRemovedFromPlaygroupAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet)]
+            public virtual Task OnNotifyPlaygroupAttributesSetAsync(NotifyPlaygroupAttributesSet notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyPlaygroupAttributesSetAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet)]
+            public virtual Task OnNotifyMemberAttributesSetAsync(NotifyMemberAttributesSet notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyMemberAttributesSetAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyLeaderChange)]
+            public virtual Task OnNotifyLeaderChangeAsync(NotifyLeaderChange notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyLeaderChangeAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange)]
+            public virtual Task OnNotifyMemberPermissionsChangeAsync(NotifyMemberPermissionsChange notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyMemberPermissionsChangeAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange)]
+            public virtual Task OnNotifyJoinControlsChangeAsync(NotifyJoinControlsChange notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyJoinControlsChangeAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo)]
+            public virtual Task OnNotifyXboxSessionInfoAsync(NotifyXboxSessionInfo notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyXboxSessionInfoAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
+            
+        }
+        
+        public class Proxy : BlazeProxyComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        {
+            public Proxy() : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
             {
                 
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.createPlaygroup)]
+            public virtual Task<NullStruct> CreatePlaygroupAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.destroyPlaygroup)]
+            public virtual Task<NullStruct> DestroyPlaygroupAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.joinPlaygroup)]
+            public virtual Task<NullStruct> JoinPlaygroupAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.leavePlaygroup)]
+            public virtual Task<NullStruct> LeavePlaygroupAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupAttributes)]
+            public virtual Task<NullStruct> SetPlaygroupAttributesAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.setMemberAttributes)]
+            public virtual Task<NullStruct> SetMemberAttributesAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.kickPlaygroupMember)]
+            public virtual Task<NullStruct> KickPlaygroupMemberAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls)]
+            public virtual Task<NullStruct> SetPlaygroupJoinControlsAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation)]
+            public virtual Task<NullStruct> FinalizePlaygroupCreationAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, request);
+            }
+            
+            [BlazeCommand((ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo)]
+            public virtual Task<NullStruct> LookupPlaygroupInfoAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, request);
+            }
+            
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup)]
+            public virtual Task<NotifyDestroyPlaygroup> OnNotifyDestroyPlaygroupAsync(NotifyDestroyPlaygroup notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup)]
+            public virtual Task<NotifyJoinPlaygroup> OnNotifyJoinPlaygroupAsync(NotifyJoinPlaygroup notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup)]
+            public virtual Task<NotifyMemberJoinedPlaygroup> OnNotifyMemberJoinedPlaygroupAsync(NotifyMemberJoinedPlaygroup notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup)]
+            public virtual Task<NotifyMemberRemoveFromPlaygroup> OnNotifyMemberRemovedFromPlaygroupAsync(NotifyMemberRemoveFromPlaygroup notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet)]
+            public virtual Task<NotifyPlaygroupAttributesSet> OnNotifyPlaygroupAttributesSetAsync(NotifyPlaygroupAttributesSet notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet)]
+            public virtual Task<NotifyMemberAttributesSet> OnNotifyMemberAttributesSetAsync(NotifyMemberAttributesSet notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyLeaderChange)]
+            public virtual Task<NotifyLeaderChange> OnNotifyLeaderChangeAsync(NotifyLeaderChange notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange)]
+            public virtual Task<NotifyMemberPermissionsChange> OnNotifyMemberPermissionsChangeAsync(NotifyMemberPermissionsChange notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange)]
+            public virtual Task<NotifyJoinControlsChange> OnNotifyJoinControlsChangeAsync(NotifyJoinControlsChange notification)
+            {
+                return Task.FromResult(notification);
+            }
+            
+            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo)]
+            public virtual Task<NotifyXboxSessionInfo> OnNotifyXboxSessionInfoAsync(NotifyXboxSessionInfo notification)
+            {
+                return Task.FromResult(notification);
             }
             
             public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);

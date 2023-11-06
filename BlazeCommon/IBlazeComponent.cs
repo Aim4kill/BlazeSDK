@@ -4,7 +4,6 @@
     {
         ushort Id { get; }
         string Name { get; }
-        BlazeCommandInfo? GetBlazeCommandInfo(ushort commandId);
 
         string GetCommandName(ushort commandId);
         Type GetCommandRequestType(ushort commandId);

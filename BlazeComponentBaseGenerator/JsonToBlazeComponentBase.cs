@@ -19,9 +19,6 @@ namespace BlazeComponentBaseGenerator
             return Encoding.UTF8.GetBytes(str);
         }
 
-
-
-
         void AppendComponentServerMethods(CStringBuilder builder, Data.Component component)
         {
             string componentCommandName = $"{component.Name}Command";
@@ -55,6 +52,110 @@ namespace BlazeComponentBaseGenerator
             }
         }
 
+        void AppendComponentProxyMethods(CStringBuilder builder, Data.Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+
+            foreach (Method method in component.Methods)
+            {
+                string methodName = method.Name;
+                if (methodName.Length != 0)
+                    methodName = char.ToUpper(methodName[0]) + methodName.Substring(1);
+                methodName += "Async";
+
+                string requestType = method.RequestType;
+                if (string.IsNullOrEmpty(requestType))
+                    requestType = component.DefaultRequestType;
+
+                string responseType = method.ResponseType;
+                if (string.IsNullOrEmpty(responseType))
+                    responseType = component.DefaultResponseType;
+
+                string errorResponseType = method.ErrorResponseType;
+                if (string.IsNullOrEmpty(errorResponseType))
+                    errorResponseType = component.DefaultErrorType;
+
+                builder.AppendLine();
+                builder.AppendLine($"[BlazeCommand((ushort){componentCommandName}.{method.Name})]");
+                builder.AppendLine($"public virtual Task<{responseType}> {methodName}({requestType} request, BlazeProxyContext context)");
+                builder.AppendLine($"{{");
+                builder.AddTab();
+
+                builder.AppendLine($"return context.ClientConnection.SendRequestAsync<{requestType}, {responseType}, {errorResponseType}>(this, (ushort){componentCommandName}.{method.Name}, request);");
+
+                builder.RemoveTab();
+                builder.AppendLine($"}}");
+
+            }
+        }
+
+        void AppendComponentClientMethods(CStringBuilder builder, Data.Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+
+            foreach (Method method in component.Methods)
+            {
+                string methodName = method.Name;
+
+                if (methodName.Length != 0)
+                    methodName = char.ToUpper(methodName[0]) + methodName.Substring(1);
+
+                if (methodName.EndsWith("Async"))
+                    methodName += "hronously";
+
+                string methodAsynName = methodName + "Async";
+
+                string requestType = method.RequestType;
+                if (string.IsNullOrEmpty(requestType))
+                    requestType = component.DefaultRequestType;
+
+                string responseType = method.ResponseType;
+                if (string.IsNullOrEmpty(responseType))
+                    responseType = component.DefaultResponseType;
+
+                string errorResponseType = method.ErrorResponseType;
+                if (string.IsNullOrEmpty(errorResponseType))
+                    errorResponseType = component.DefaultErrorType;
+
+                builder.AppendLine();
+
+                if (requestType == "NullStruct")
+                {
+                    builder.AppendLine($"public {responseType} {methodName}()");
+                    builder.AppendLine($"{{");
+                    builder.AddTab();
+                    builder.AppendLine($"return Connection.SendRequest<{requestType}, {responseType}, {errorResponseType}>(this, (ushort){componentCommandName}.{method.Name}, new NullStruct());");
+                    builder.RemoveTab();
+                    builder.AppendLine($"}}");
+
+                    builder.AppendLine($"public Task<{responseType}> {methodAsynName}()");
+                    builder.AppendLine($"{{");
+                    builder.AddTab();
+                    builder.AppendLine($"return Connection.SendRequestAsync<{requestType}, {responseType}, {errorResponseType}>(this, (ushort){componentCommandName}.{method.Name}, new NullStruct());");
+                    builder.RemoveTab();
+                    builder.AppendLine($"}}");
+                }
+                else
+                {
+                    builder.AppendLine($"public {responseType} {methodName}({requestType} request)");
+                    builder.AppendLine($"{{");
+                    builder.AddTab();
+                    builder.AppendLine($"return Connection.SendRequest<{requestType}, {responseType}, {errorResponseType}>(this, (ushort){componentCommandName}.{method.Name}, request);");
+                    builder.RemoveTab();
+                    builder.AppendLine($"}}");
+
+                    builder.AppendLine($"public Task<{responseType}> {methodAsynName}({requestType} request)");
+                    builder.AppendLine($"{{");
+                    builder.AddTab();
+                    builder.AppendLine($"return Connection.SendRequestAsync<{requestType}, {responseType}, {errorResponseType}>(this, (ushort){componentCommandName}.{method.Name}, request);");
+                    builder.RemoveTab();
+                    builder.AppendLine($"}}");
+                }
+
+
+            }
+        }
+
         void AppendComponentServerNotifications(CStringBuilder builder, Data.Component component)
         {
             string componentBaseName = $"{component.Name}Base";
@@ -63,6 +164,7 @@ namespace BlazeComponentBaseGenerator
             foreach (Notification notification in component.Notifications)
             {
                 string notificationMethodName = notification.Name;
+
                 if (notificationMethodName.Length != 0)
                     notificationMethodName = char.ToUpper(notificationMethodName[0]) + notificationMethodName.Substring(1);
 
@@ -80,8 +182,82 @@ namespace BlazeComponentBaseGenerator
                 builder.AppendLine($"public static Task {notificationMethodName}(BlazeServerConnection connection, {notificationType} notification, bool waitUntilFree = false)");
                 builder.AppendLine($"{{");
                 builder.AddTab();
-
                 builder.AppendLine($"return connection.NotifyAsync({componentBaseName}.Id, (ushort){componentNotificationName}.{notification.Name}, notification, waitUntilFree);");
+                builder.RemoveTab();
+                builder.AppendLine($"}}");
+            }
+        }
+
+        void AppendComponentClientNotifications(CStringBuilder builder, Data.Component component)
+        {
+            string componentBaseName = $"{component.Name}Base";
+            string componentNotificationName = $"{component.Name}Notification";
+
+            foreach (Notification notification in component.Notifications)
+            {
+                string notificationMethodName = notification.Name;
+                if (notificationMethodName.Length != 0)
+                    notificationMethodName = char.ToUpper(notificationMethodName[0]) + notificationMethodName.Substring(1);
+
+                if (!notificationMethodName.StartsWith("On"))
+                    notificationMethodName = "On" + notificationMethodName;
+
+                if (!notificationMethodName.EndsWith("Async"))
+                    notificationMethodName += "Async";
+
+                string notificationType = notification.Type;
+                if (string.IsNullOrEmpty(notificationType))
+                    notificationType = component.DefaultNotificationType;
+
+                builder.AppendLine();
+                builder.AppendLine($"[BlazeNotification((ushort){componentNotificationName}.{notification.Name})]");
+
+                if (notificationType != "NullStruct")
+                    builder.AppendLine($"public virtual Task {notificationMethodName}({notificationType} notification)");
+                else
+                    builder.AppendLine($"public virtual Task {notificationMethodName}()");
+
+                builder.AppendLine($"{{");
+                builder.AddTab();
+
+                builder.AppendLine($"_logger.Warn($\"{{GetType().FullName}}: {notificationMethodName} NOT IMPLEMENTED!\");");
+                builder.AppendLine("return Task.CompletedTask;");
+
+                builder.RemoveTab();
+                builder.AppendLine($"}}");
+            }
+        }
+
+        void AppendComponentProxyNotifications(CStringBuilder builder, Data.Component component)
+        {
+            string componentBaseName = $"{component.Name}Base";
+            string componentNotificationName = $"{component.Name}Notification";
+
+            foreach (Notification notification in component.Notifications)
+            {
+                string notificationMethodName = notification.Name;
+                if (notificationMethodName.Length != 0)
+                    notificationMethodName = char.ToUpper(notificationMethodName[0]) + notificationMethodName.Substring(1);
+
+                if (!notificationMethodName.StartsWith("On"))
+                    notificationMethodName = "On" + notificationMethodName;
+
+                if (!notificationMethodName.EndsWith("Async"))
+                    notificationMethodName += "Async";
+
+                string notificationType = notification.Type;
+                if (string.IsNullOrEmpty(notificationType))
+                    notificationType = component.DefaultNotificationType;
+
+                builder.AppendLine();
+                builder.AppendLine($"[BlazeNotification((ushort){componentNotificationName}.{notification.Name})]");
+                builder.AppendLine($"public virtual Task<{notificationType}> {notificationMethodName}({notificationType} notification)");
+
+
+                builder.AppendLine($"{{");
+                builder.AddTab();
+
+                builder.AppendLine("return Task.FromResult(notification);");
 
                 builder.RemoveTab();
                 builder.AppendLine($"}}");
@@ -93,7 +269,7 @@ namespace BlazeComponentBaseGenerator
             string componentCommandName = $"{component.Name}Command";
             string componentCommandNotification = $"{component.Name}Notification";
 
-            builder.AppendLine($"public class Server : BlazeComponent<{componentCommandName}, {componentCommandNotification}, {component.ErrorEnum}>");
+            builder.AppendLine($"public class Server : BlazeServerComponent<{componentCommandName}, {componentCommandNotification}, {component.ErrorEnum}>");
             builder.AppendLine($"{{");
             builder.AddTab();
 
@@ -125,17 +301,65 @@ namespace BlazeComponentBaseGenerator
             string componentCommandName = $"{component.Name}Command";
             string componentCommandNotification = $"{component.Name}Notification";
 
-            builder.AppendLine($"public class Client : BlazeComponent<{componentCommandName}, {componentCommandNotification}, {component.ErrorEnum}>");
+            builder.AppendLine($"public class Client : BlazeClientComponent<{componentCommandName}, {componentCommandNotification}, {component.ErrorEnum}>");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+            builder.AppendLine("BlazeClientConnection Connection { get; }");
+            builder.AppendLine("private static Logger _logger = LogManager.GetCurrentClassLogger();");
+            builder.AppendLine();
+
+            builder.AppendLine($"public Client(BlazeClientConnection connection) : base({component.Name}Base.Id, {component.Name}Base.Name)");
+            builder.AppendLine($"{{");
+            builder.AddTab();
+            builder.AppendLine("Connection = connection;");
+
+            builder.AppendLine("if (!Connection.Config.AddComponent(this))");
+            builder.AddTab();
+            builder.AppendLine("throw new InvalidOperationException($\"A component with Id({Id}) has already been created for the connection.\");");
+            builder.RemoveTab();
+
+            builder.RemoveTab();
+            builder.AppendLine($"}}");
+            builder.AppendLine();
+
+            AppendComponentClientMethods(builder, component);
+            builder.AppendLine();
+
+            AppendComponentClientNotifications(builder, component);
+            builder.AppendLine();
+
+            builder.AppendLine($"public override Type GetCommandRequestType({componentCommandName} command) => {component.Name}Base.GetCommandRequestType(command);");
+            builder.AppendLine($"public override Type GetCommandResponseType({componentCommandName} command) => {component.Name}Base.GetCommandResponseType(command);");
+            builder.AppendLine($"public override Type GetCommandErrorResponseType({componentCommandName} command) => {component.Name}Base.GetCommandErrorResponseType(command);");
+            builder.AppendLine($"public override Type GetNotificationType({componentCommandNotification} notification) => {component.Name}Base.GetNotificationType(notification);");
+            builder.AppendLine();
+
+            builder.RemoveTab();
+            builder.AppendLine($"}}");
+        }
+
+        void AppendComponentProxyBase(CStringBuilder builder, Data.Component component)
+        {
+            string componentCommandName = $"{component.Name}Command";
+            string componentCommandNotification = $"{component.Name}Notification";
+
+            builder.AppendLine($"public class Proxy : BlazeProxyComponent<{componentCommandName}, {componentCommandNotification}, {component.ErrorEnum}>");
             builder.AppendLine($"{{");
             builder.AddTab();
 
-            builder.AppendLine($"public Client() : base({component.Name}Base.Id, {component.Name}Base.Name)");
+            builder.AppendLine($"public Proxy() : base({component.Name}Base.Id, {component.Name}Base.Name)");
             builder.AppendLine($"{{");
             builder.AddTab();
             builder.AppendLine();
             builder.RemoveTab();
             builder.AppendLine($"}}");
+
+            AppendComponentProxyMethods(builder, component);
             builder.AppendLine();
+
+            AppendComponentProxyNotifications(builder, component);
+            builder.AppendLine();
+
 
             builder.AppendLine($"public override Type GetCommandRequestType({componentCommandName} command) => {component.Name}Base.GetCommandRequestType(command);");
             builder.AppendLine($"public override Type GetCommandResponseType({componentCommandName} command) => {component.Name}Base.GetCommandResponseType(command);");
@@ -191,6 +415,9 @@ namespace BlazeComponentBaseGenerator
             builder.AppendLine();
 
             AppendComponentClientBase(builder, component);
+            builder.AppendLine();
+
+            AppendComponentProxyBase(builder, component);
             builder.AppendLine();
 
             AppendGetCommandRequestType(builder, component);

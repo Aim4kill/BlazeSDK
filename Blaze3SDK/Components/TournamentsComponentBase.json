@@ -1,6 +1,7 @@
 {
   "Usings": [
-    "BlazeCommon"
+    "BlazeCommon",
+    "NLog"
   ],
   "Namespace": "Blaze3SDK.Components",
   "Components": [

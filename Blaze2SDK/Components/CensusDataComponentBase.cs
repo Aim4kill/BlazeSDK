@@ -1,5 +1,6 @@
 using Blaze2SDK.Blaze.CensusData;
 using BlazeCommon;
+using NLog;
 
 namespace Blaze2SDK.Components
 {
@@ -8,7 +9,7 @@ namespace Blaze2SDK.Components
         public const ushort Id = 10;
         public const string Name = "CensusDataComponent";
         
-        public class Server : BlazeComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
+        public class Server : BlazeServerComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
         {
             public Server() : base(CensusDataComponentBase.Id, CensusDataComponentBase.Name)
             {
@@ -46,11 +47,91 @@ namespace Blaze2SDK.Components
             
         }
         
-        public class Client : BlazeComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
+        public class Client : BlazeClientComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
         {
-            public Client() : base(CensusDataComponentBase.Id, CensusDataComponentBase.Name)
+            BlazeClientConnection Connection { get; }
+            private static Logger _logger = LogManager.GetCurrentClassLogger();
+            
+            public Client(BlazeClientConnection connection) : base(CensusDataComponentBase.Id, CensusDataComponentBase.Name)
+            {
+                Connection = connection;
+                if (!Connection.Config.AddComponent(this))
+                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
+            }
+            
+            
+            public NullStruct SubscribeToCensusData()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.subscribeToCensusData, new NullStruct());
+            }
+            public Task<NullStruct> SubscribeToCensusDataAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.subscribeToCensusData, new NullStruct());
+            }
+            
+            public NullStruct UnsubscribeFromCensusData()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.unsubscribeFromCensusData, new NullStruct());
+            }
+            public Task<NullStruct> UnsubscribeFromCensusDataAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.unsubscribeFromCensusData, new NullStruct());
+            }
+            
+            public NullStruct GetRegionCounts()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.getRegionCounts, new NullStruct());
+            }
+            public Task<NullStruct> GetRegionCountsAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.getRegionCounts, new NullStruct());
+            }
+            
+            
+            [BlazeNotification((ushort)CensusDataComponentNotification.NotifyServerCensusData)]
+            public virtual Task OnNotifyServerCensusDataAsync(NotifyServerCensusData notification)
+            {
+                _logger.Warn($"{GetType().FullName}: OnNotifyServerCensusDataAsync NOT IMPLEMENTED!");
+                return Task.CompletedTask;
+            }
+            
+            public override Type GetCommandRequestType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(CensusDataComponentNotification notification) => CensusDataComponentBase.GetNotificationType(notification);
+            
+        }
+        
+        public class Proxy : BlazeProxyComponent<CensusDataComponentCommand, CensusDataComponentNotification, Blaze2RpcError>
+        {
+            public Proxy() : base(CensusDataComponentBase.Id, CensusDataComponentBase.Name)
             {
                 
+            }
+            
+            [BlazeCommand((ushort)CensusDataComponentCommand.subscribeToCensusData)]
+            public virtual Task<NullStruct> SubscribeToCensusDataAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.subscribeToCensusData, request);
+            }
+            
+            [BlazeCommand((ushort)CensusDataComponentCommand.unsubscribeFromCensusData)]
+            public virtual Task<NullStruct> UnsubscribeFromCensusDataAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.unsubscribeFromCensusData, request);
+            }
+            
+            [BlazeCommand((ushort)CensusDataComponentCommand.getRegionCounts)]
+            public virtual Task<NullStruct> GetRegionCountsAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CensusDataComponentCommand.getRegionCounts, request);
+            }
+            
+            
+            [BlazeNotification((ushort)CensusDataComponentNotification.NotifyServerCensusData)]
+            public virtual Task<NotifyServerCensusData> OnNotifyServerCensusDataAsync(NotifyServerCensusData notification)
+            {
+                return Task.FromResult(notification);
             }
             
             public override Type GetCommandRequestType(CensusDataComponentCommand command) => CensusDataComponentBase.GetCommandRequestType(command);

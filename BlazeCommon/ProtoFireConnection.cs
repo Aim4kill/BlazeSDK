@@ -12,7 +12,7 @@ namespace BlazeCommon
         public ProtoFireServer? Owner { get; }
         public Socket Socket { get; }
         public Stream? Stream { get; private set; }
-        public bool Disconnected { get; private set; }
+        public bool Connected { get; private set; }
 
         static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
         public ProtoFireConnection(long id, ProtoFireServer owner, Socket socket)
@@ -21,6 +21,7 @@ namespace BlazeCommon
             Owner = owner;
             Socket = socket;
             Stream = null;
+            Connected = true;
         }
 
         public ProtoFireConnection(Socket socket)
@@ -29,7 +30,9 @@ namespace BlazeCommon
             Owner = null;
             Socket = socket;
             Stream = null;
+            Connected = true;
         }
+
         public void SetStream(Stream stream)
         {
             if (Stream != null)
@@ -39,10 +42,10 @@ namespace BlazeCommon
 
         public void Disconnect()
         {
-            if (Disconnected)
+            if (!Connected)
                 return;
 
-            Disconnected = true;
+            Connected = false;
 
             //stream owns the socket, so no need to close the socket
             try { Stream?.Close(); } catch { }
@@ -53,21 +56,24 @@ namespace BlazeCommon
 
         public async Task<ProtoFirePacket?> ReadPacketAsync()
         {
+            if (!Connected)
+                return null;
+
+            if (Stream == null)
+                throw new InvalidOperationException("Stream is not set");
+
             try
             {
-                if (Stream == null)
-                    throw new InvalidOperationException("Stream is not set");
-
                 FireFrame frame = new FireFrame();
-                if (!await ReadAllAsync(frame.Frame, 0, FireFrame.MIN_HEADER_SIZE).ConfigureAwait(false))
+                if (!await Stream.ReadAllAsync(frame.Frame, 0, FireFrame.MIN_HEADER_SIZE).ConfigureAwait(false))
                     return null;
 
                 ushort extraFrameBytesNeeded = frame.ExtraHeaderSize;
-                if (!await ReadAllAsync(frame.Frame, FireFrame.MIN_HEADER_SIZE, extraFrameBytesNeeded).ConfigureAwait(false))
+                if (!await Stream.ReadAllAsync(frame.Frame, FireFrame.MIN_HEADER_SIZE, extraFrameBytesNeeded).ConfigureAwait(false))
                     return null;
 
                 byte[] data = new byte[frame.Size];
-                if (!await ReadAllAsync(data, 0, data.Length).ConfigureAwait(false))
+                if (!await Stream.ReadAllAsync(data, 0, data.Length).ConfigureAwait(false))
                     return null;
 
                 return new ProtoFirePacket(frame, data);
@@ -80,21 +86,25 @@ namespace BlazeCommon
 
         public ProtoFirePacket? ReadPacket()
         {
+            if (!Connected)
+                return null;
+
+            if (Stream == null)
+                throw new InvalidOperationException("Stream is not set");
+
             try
             {
-                if (Stream == null)
-                    throw new InvalidOperationException("Stream is not set");
 
                 FireFrame frame = new FireFrame();
-                if (!ReadAll(frame.Frame, 0, FireFrame.MIN_HEADER_SIZE))
+                if (!Stream.ReadAll(frame.Frame, 0, FireFrame.MIN_HEADER_SIZE))
                     return null;
 
                 ushort extraFrameBytesNeeded = frame.ExtraHeaderSize;
-                if (!ReadAll(frame.Frame, FireFrame.MIN_HEADER_SIZE, extraFrameBytesNeeded))
+                if (!Stream.ReadAll(frame.Frame, FireFrame.MIN_HEADER_SIZE, extraFrameBytesNeeded))
                     return null;
 
                 byte[] data = new byte[frame.Size];
-                if (!ReadAll(data, 0, data.Length))
+                if (!Stream.ReadAll(data, 0, data.Length))
                     return null;
 
                 return new ProtoFirePacket(frame, data);
@@ -106,89 +116,71 @@ namespace BlazeCommon
 
         }
 
-        private async Task<bool> ReadAllAsync(byte[] buffer, int startIndex, int count)
+        public bool Send(ProtoFirePacket packet)
         {
-            if (Stream == null)
+            if (!Connected)
                 return false;
 
-            int offset = 0;
-            while (offset < count)
-            {
-                int readCount = await Stream.ReadAsync(buffer, startIndex + offset, count - offset).ConfigureAwait(false);
-                if (readCount == 0)
-                    return false;
-                offset += readCount;
-            }
-            return true;
-        }
-
-        public void Send(ProtoFirePacket packet)
-        {
             if (Stream == null)
                 throw new InvalidOperationException("Stream is not set");
+
+            bool success = false;
 
             semaphoreSlim.Wait();
             try
             {
                 packet.WriteTo(Stream);
                 Stream.Flush();
+                success = true;
             }
             catch (ObjectDisposedException)
             {
-
+                success = false;
             }
             catch (IOException)
             {
-
+                success = false;
             }
             finally
             {
                 semaphoreSlim.Release();
             }
+            return success;
         }
 
-        public async Task SendAsync(ProtoFirePacket packet)
+        public async Task<bool> SendAsync(ProtoFirePacket packet)
         {
+            if (!Connected)
+                return false;
+
             if (Stream == null)
                 throw new InvalidOperationException("Stream is not set");
 
-
-
+            bool success = false;
             await semaphoreSlim.WaitAsync();
             try
             {
                 await packet.WriteToAsync(Stream).ConfigureAwait(false);
                 await Stream.FlushAsync().ConfigureAwait(false);
+                success = true;
             }
             catch (ObjectDisposedException)
             {
-
+                success = false;
             }
             catch (IOException)
             {
-
+                success = false;
             }
             finally
             {
                 semaphoreSlim.Release();
             }
+            return success;
         }
 
-        private bool ReadAll(byte[] buffer, int startIndex, int count)
-        {
-            if (Stream == null)
-                return false;
 
-            int offset = 0;
-            while (offset < count)
-            {
-                int readCount = Stream.Read(buffer, startIndex + offset, count - offset);
-                if (readCount == 0)
-                    return false;
-                offset += readCount;
-            }
-            return true;
-        }
+
         private static async Task<Socket?> ConnectToAsync(string hostname, int port)
         {
             IPHostEntry host = Dns.GetHostEntry(hostname);
@@ -231,7 +223,7 @@ namespace BlazeCommon
             return ret;
         }
 
-        public static ProtoFireConnection? ConnectSsl3(string hostname, int port, bool ssl = true)
+        public static ProtoFireConnection? ConnectSsl3(string hostname, int port)
         {
             IPHostEntry host = Dns.GetHostEntry(hostname);
             if (host.AddressList.Length == 0)
@@ -239,49 +231,47 @@ namespace BlazeCommon
 
             SecurityOptions options = new SecurityOptions(
                 SecureProtocol.Ssl3 | SecureProtocol.Tls1,  // use SSL3 or TLS1
-                null,                                       // do not use client authentication
+                null!,                                       // do not use client authentication
                 ConnectionEnd.Client,                       // this is the client side
                 CredentialVerification.None,                // do not check the certificate -- this should not be used in a real-life application :-)
-                null,                                       // not used with automatic certificate verification
+                null!,                                       // not used with automatic certificate verification
                 hostname,                        // this is the common name of the Microsoft web server
                 SecurityFlags.Default,                      // use the default security flags
                 SslAlgorithms.ALL,               // only use secure ciphers
-                null);										// do not process certificate requests.
+                null!);										// do not process certificate requests.
 
             SecureSocket s = new SecureSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, options);
             // connect to the remote host
             s.Connect(new IPEndPoint(host.AddressList[0], port));
 
 
-            ProtoFireConnection connection = new ProtoFireConnection(null);
+            ProtoFireConnection connection = new ProtoFireConnection(null!);
             connection.SetStream(new SecureNetworkStream(s));
             return connection;
         }
 
-        public static ProtoFireConnection? ConnectSsl3(long address, int port, bool ssl = true)
+        public static ProtoFireConnection? ConnectSsl3(long address, int port)
         {
             SecurityOptions options = new SecurityOptions(
                 SecureProtocol.Ssl3 | SecureProtocol.Tls1,  // use SSL3 or TLS1
-                null,                                       // do not use client authentication
+                null!,                                       // do not use client authentication
                 ConnectionEnd.Client,                       // this is the client side
                 CredentialVerification.None,                // do not check the certificate -- this should not be used in a real-life application :-)
-                null,                                       // not used with automatic certificate verification
-                null,                        // this is the common name of the Microsoft web server
+                null!,                                       // not used with automatic certificate verification
+                null!,                        // this is the common name of the Microsoft web server
                 SecurityFlags.Default,                      // use the default security flags
                 SslAlgorithms.SECURE_CIPHERS,               // only use secure ciphers
-                null);										// do not process certificate requests.
+                null!);										// do not process certificate requests.
 
             SecureSocket s = new SecureSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, options);
             // connect to the remote host
             s.Connect(new IPEndPoint(address, port));
 
 
-            ProtoFireConnection connection = new ProtoFireConnection(null);
+            ProtoFireConnection connection = new ProtoFireConnection(null!);
             connection.SetStream(new SecureNetworkStream(s));
             return connection;
         }
-
-
 
         private static bool RemoteCertificateVerify(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
         {

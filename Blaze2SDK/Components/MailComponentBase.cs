@@ -1,4 +1,5 @@
 using BlazeCommon;
+using NLog;
 
 namespace Blaze2SDK.Components
 {
@@ -7,7 +8,7 @@ namespace Blaze2SDK.Components
         public const ushort Id = 14;
         public const string Name = "MailComponent";
         
-        public class Server : BlazeComponent<MailComponentCommand, MailComponentNotification, Blaze2RpcError>
+        public class Server : BlazeServerComponent<MailComponentCommand, MailComponentNotification, Blaze2RpcError>
         {
             public Server() : base(MailComponentBase.Id, MailComponentBase.Name)
             {
@@ -34,12 +35,64 @@ namespace Blaze2SDK.Components
             
         }
         
-        public class Client : BlazeComponent<MailComponentCommand, MailComponentNotification, Blaze2RpcError>
+        public class Client : BlazeClientComponent<MailComponentCommand, MailComponentNotification, Blaze2RpcError>
         {
-            public Client() : base(MailComponentBase.Id, MailComponentBase.Name)
+            BlazeClientConnection Connection { get; }
+            private static Logger _logger = LogManager.GetCurrentClassLogger();
+            
+            public Client(BlazeClientConnection connection) : base(MailComponentBase.Id, MailComponentBase.Name)
+            {
+                Connection = connection;
+                if (!Connection.Config.AddComponent(this))
+                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
+            }
+            
+            
+            public NullStruct UpdateMailSettings()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, new NullStruct());
+            }
+            public Task<NullStruct> UpdateMailSettingsAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, new NullStruct());
+            }
+            
+            public NullStruct SendMailToSelf()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, new NullStruct());
+            }
+            public Task<NullStruct> SendMailToSelfAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, new NullStruct());
+            }
+            
+            
+            public override Type GetCommandRequestType(MailComponentCommand command) => MailComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(MailComponentCommand command) => MailComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(MailComponentCommand command) => MailComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(MailComponentNotification notification) => MailComponentBase.GetNotificationType(notification);
+            
+        }
+        
+        public class Proxy : BlazeProxyComponent<MailComponentCommand, MailComponentNotification, Blaze2RpcError>
+        {
+            public Proxy() : base(MailComponentBase.Id, MailComponentBase.Name)
             {
                 
             }
+            
+            [BlazeCommand((ushort)MailComponentCommand.updateMailSettings)]
+            public virtual Task<NullStruct> UpdateMailSettingsAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, request);
+            }
+            
+            [BlazeCommand((ushort)MailComponentCommand.sendMailToSelf)]
+            public virtual Task<NullStruct> SendMailToSelfAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, request);
+            }
+            
             
             public override Type GetCommandRequestType(MailComponentCommand command) => MailComponentBase.GetCommandRequestType(command);
             public override Type GetCommandResponseType(MailComponentCommand command) => MailComponentBase.GetCommandResponseType(command);

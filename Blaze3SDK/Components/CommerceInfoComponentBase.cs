@@ -1,4 +1,5 @@
 using BlazeCommon;
+using NLog;
 
 namespace Blaze3SDK.Components
 {
@@ -7,7 +8,7 @@ namespace Blaze3SDK.Components
         public const ushort Id = 24;
         public const string Name = "CommerceInfoComponent";
         
-        public class Server : BlazeComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        public class Server : BlazeServerComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
         {
             public Server() : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
             {
@@ -58,12 +59,124 @@ namespace Blaze3SDK.Components
             
         }
         
-        public class Client : BlazeComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        public class Client : BlazeClientComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
         {
-            public Client() : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
+            BlazeClientConnection Connection { get; }
+            private static Logger _logger = LogManager.GetCurrentClassLogger();
+            
+            public Client(BlazeClientConnection connection) : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
+            {
+                Connection = connection;
+                if (!Connection.Config.AddComponent(this))
+                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
+            }
+            
+            
+            public NullStruct GetCatalogMap()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, new NullStruct());
+            }
+            public Task<NullStruct> GetCatalogMapAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, new NullStruct());
+            }
+            
+            public NullStruct GetCategoryMap()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, new NullStruct());
+            }
+            public Task<NullStruct> GetCategoryMapAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, new NullStruct());
+            }
+            
+            public NullStruct GetProductList()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, new NullStruct());
+            }
+            public Task<NullStruct> GetProductListAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, new NullStruct());
+            }
+            
+            public NullStruct GetProductAssociation()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, new NullStruct());
+            }
+            public Task<NullStruct> GetProductAssociationAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, new NullStruct());
+            }
+            
+            public NullStruct GetWalletBalance()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, new NullStruct());
+            }
+            public Task<NullStruct> GetWalletBalanceAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, new NullStruct());
+            }
+            
+            public NullStruct CheckoutProducts()
+            {
+                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, new NullStruct());
+            }
+            public Task<NullStruct> CheckoutProductsAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, new NullStruct());
+            }
+            
+            
+            public override Type GetCommandRequestType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandRequestType(command);
+            public override Type GetCommandResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandResponseType(command);
+            public override Type GetCommandErrorResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandErrorResponseType(command);
+            public override Type GetNotificationType(CommerceInfoComponentNotification notification) => CommerceInfoComponentBase.GetNotificationType(notification);
+            
+        }
+        
+        public class Proxy : BlazeProxyComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        {
+            public Proxy() : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
             {
                 
             }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCatalogMap)]
+            public virtual Task<NullStruct> GetCatalogMapAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, request);
+            }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCategoryMap)]
+            public virtual Task<NullStruct> GetCategoryMapAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, request);
+            }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductList)]
+            public virtual Task<NullStruct> GetProductListAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, request);
+            }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductAssociation)]
+            public virtual Task<NullStruct> GetProductAssociationAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, request);
+            }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.getWalletBalance)]
+            public virtual Task<NullStruct> GetWalletBalanceAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, request);
+            }
+            
+            [BlazeCommand((ushort)CommerceInfoComponentCommand.checkoutProducts)]
+            public virtual Task<NullStruct> CheckoutProductsAsync(NullStruct request, BlazeProxyContext context)
+            {
+                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, request);
+            }
+            
             
             public override Type GetCommandRequestType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandRequestType(command);
             public override Type GetCommandResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandResponseType(command);
