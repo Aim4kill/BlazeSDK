@@ -197,7 +197,7 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.xboxCreateAccount)]
-            public virtual Task<NullStruct> XboxCreateAccountAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -209,7 +209,7 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.xboxLogin)]
-            public virtual Task<NullStruct> XboxLoginAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -541,13 +541,13 @@ namespace Blaze2SDK.Components
                 return Connection.SendRequestAsync<ListDeviceAccountsRequest, ListDeviceAccountsResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listDeviceAccounts, request);
             }
             
-            public NullStruct XboxCreateAccount()
+            public ConsoleCreateAccountResponse XboxCreateAccount(ConsoleCreateAccountRequest request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, new NullStruct());
+                return Connection.SendRequest<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
             }
-            public Task<NullStruct> XboxCreateAccountAsync()
+            public Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, new NullStruct());
+                return Connection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
             }
             
             public NullStruct XboxAssociateAccount()
@@ -559,13 +559,13 @@ namespace Blaze2SDK.Components
                 return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxAssociateAccount, new NullStruct());
             }
             
-            public NullStruct XboxLogin()
+            public ConsoleLoginResponse XboxLogin(XboxLoginRequest request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, new NullStruct());
+                return Connection.SendRequest<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
             }
-            public Task<NullStruct> XboxLoginAsync()
+            public Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, new NullStruct());
+                return Connection.SendRequestAsync<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
             }
             
             public ConsoleCreateAccountResponse Ps3CreateAccount(ConsoleCreateAccountRequest request)
@@ -818,9 +818,9 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.xboxCreateAccount)]
-            public virtual Task<NullStruct> XboxCreateAccountAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
+                return context.ClientConnection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.xboxAssociateAccount)]
@@ -830,9 +830,9 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.xboxLogin)]
-            public virtual Task<NullStruct> XboxLoginAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
+                return context.ClientConnection.SendRequestAsync<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3CreateAccount)]
@@ -911,9 +911,9 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
             AuthenticationComponentCommand.disablePersona => typeof(PersonaRequest),
             AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsRequest),
-            AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountRequest),
             AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxLogin => typeof(XboxLoginRequest),
             AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountRequest),
             AuthenticationComponentCommand.ps3AssociateAccount => typeof(ConsoleAssociateAccountRequest),
             AuthenticationComponentCommand.ps3Login => typeof(PS3LoginRequest),
@@ -955,9 +955,9 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
             AuthenticationComponentCommand.disablePersona => typeof(PersonaDetails),
             AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsResponse),
-            AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountResponse),
             AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
+            AuthenticationComponentCommand.xboxLogin => typeof(ConsoleLoginResponse),
             AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountResponse),
             AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),

@@ -117,6 +117,7 @@ namespace BlazeCommon
             {
                 _logger.Error(ex, "Failed to authenticate as server for connection({ClientId}).", connection.ID);
                 await OnProtoFireDisconnectInternalAsync(connection).ConfigureAwait(false);
+                return;
             }
 
             while (IsRunning)
