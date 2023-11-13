@@ -17,21 +17,40 @@ namespace FixedSsl
         private const int SSLv3 = 0x0300;
         private const int TLSv1 = 0x0301;
         private static SecureProtocol legacyProtocols = SecureProtocol.Ssl3 | SecureProtocol.Tls1;
-        public static async Task<Stream> AuthenticateAsServerAsync(Socket socket, X509Certificate? certificate)
+        public static async Task<Stream?> AuthenticateAsServerAsync(Socket socket, X509Certificate? certificate, bool forceSsl)
         {
-
-
+            //no certificate, no ssl
             if (certificate == null)
                 return new NetworkStream(socket, true);
 
-            //read first 3 bytes (content type (1 byte) and version (2 bytes)), but do not consume them.
-            byte[] buffer = new byte[3];
-            await socket.ReceiveAsync(buffer, SocketFlags.Peek).ConfigureAwait(false);
+            //content type - 1 byte
+            //version - 2 bytes
+            //length - 2 bytes
+            //handshake type - 1 byte
+            //length - 3 bytes
+            //max version - 2 bytes (this is the actual ssl version we want to check)
 
-            //FIXME: actual ssl version is not at the beginning of the stream, but later in the stream.
-            int version = buffer[1] << 8 | buffer[2];
+            //total 11 bytes
 
-            if (version == SSLv3 || version == TLSv1)
+            //read first 11 bytes, but do not consume them.
+            byte[] buffer = new byte[11];
+            int received = await socket.ReceiveAsync(buffer, SocketFlags.Peek).ConfigureAwait(false);
+            if (received != buffer.Length)
+                return null;
+
+            //content type needs to be handshake (0x16) and handshake type needs to be client hello (0x01)
+            bool ssl = buffer[0] == 0x16 && buffer[5] == 0x01;
+
+            if (!ssl)
+            {
+                if (forceSsl)
+                    return null;
+                return new NetworkStream(socket, true);
+            }
+
+            int maxSslVersion = buffer[9] << 8 | buffer[10];
+
+            if (maxSslVersion == SSLv3 || maxSslVersion == TLSv1)
             {
                 SecurityOptions options = new SecurityOptions(legacyProtocols, new Certificate(certificate), ConnectionEnd.Server);
                 SecureSocket ss = new SecureSocket(socket, options);
@@ -42,38 +61,59 @@ namespace FixedSsl
             return sslStream;
         }
 
-        public static Stream AuthenticateAsServer(Socket socket, X509Certificate? certificate)
+        public static Stream? AuthenticateAsServer(Socket socket, X509Certificate? certificate, bool forceSsl)
         {
-
+            //no certificate, no ssl
             if (certificate == null)
                 return new NetworkStream(socket, true);
 
-            //read first 3 bytes (content type (1 byte) and version (2 bytes)), but do not consume them.
-            byte[] buffer = new byte[3];
-            socket.Receive(buffer, SocketFlags.Peek);
+            //content type - 1 byte
+            //version - 2 bytes
+            //length - 2 bytes
+            //handshake type - 1 byte
+            //length - 3 bytes
+            //max version - 2 bytes (this is the actual ssl version we want to check)
 
-            //FIXME: actual ssl version is not at the beginning of the stream, but later in the stream.
-            int version = buffer[1] << 8 | buffer[2];
+            //total 11 bytes
 
-            if (version == SSLv3 || version == TLSv1)
+            //read first 11 bytes, but do not consume them.
+            byte[] buffer = new byte[11];
+            int received = socket.Receive(buffer, SocketFlags.Peek);
+            if (received != buffer.Length)
+                return null;
+
+            //content type needs to be handshake (0x16) and handshake type needs to be client hello (0x01)
+            bool ssl = buffer[0] == 0x16 && buffer[5] == 0x01;
+
+            if (!ssl)
+            {
+                if (forceSsl)
+                    return null;
+                return new NetworkStream(socket, true);
+            }
+
+            int maxSslVersion = buffer[9] << 8 | buffer[10];
+
+            if (maxSslVersion == SSLv3 || maxSslVersion == TLSv1)
             {
                 SecurityOptions options = new SecurityOptions(legacyProtocols, new Certificate(certificate), ConnectionEnd.Server);
                 SecureSocket ss = new SecureSocket(socket, options);
                 return new SecureNetworkStream(ss, true);
             }
+
             SslStream sslStream = new SslStream(new NetworkStream(socket, true), false);
             sslStream.AuthenticateAsServer(certificate);
             return sslStream;
         }
 
-        public static IAsyncResult BeginAuthenticateAsServer(Socket socket, X509Certificate? certificate, AsyncCallback? callback, object? state)
+        public static IAsyncResult BeginAuthenticateAsServer(Socket socket, X509Certificate? certificate, bool forceSsl, AsyncCallback? callback, object? state)
         {
-            return AuthenticateAsServerAsync(socket, certificate).AsApm(callback, state);
+            return AuthenticateAsServerAsync(socket, certificate, forceSsl).AsApm(callback, state);
         }
 
-        public static Stream EndAuthenticateAsServer(IAsyncResult result)
+        public static Stream? EndAuthenticateAsServer(IAsyncResult result)
         {
-            return ((Task<Stream>)result).Result;
+            return ((Task<Stream?>)result).Result;
         }
 
         #region Helpers

@@ -10,7 +10,7 @@ namespace BlazeCommon
 
         ConcurrentDictionary<ProtoFireConnection, BlazeServerConnection> _connections;
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        public BlazeServer(BlazeServerConfiguration settings) : base(settings.Name, settings.LocalEP, settings.Certificate)
+        public BlazeServer(BlazeServerConfiguration settings) : base(settings.Name, settings.LocalEP, settings.Certificate, settings.ForceSsl)
         {
             Configuration = settings;
 

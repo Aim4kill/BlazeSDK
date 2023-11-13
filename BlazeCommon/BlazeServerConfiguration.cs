@@ -12,6 +12,7 @@ namespace BlazeCommon
         public string Name { get; }
         public IPEndPoint LocalEP { get; }
         public X509Certificate? Certificate { get; set; }
+        public bool ForceSsl { get; set; }
         public ITdfEncoder Encoder { get; }
         public ITdfDecoder Decoder { get; }
         public int ComponentNotFoundErrorCode { get; set; }

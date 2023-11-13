@@ -14,6 +14,7 @@ namespace BlazeCommon
         public IPEndPoint LocalEP { get; private set; }
         public bool IsRunning { get; private set; }
         public X509Certificate? Certificate { get; private set; }
+        public bool ForceSsl { get; private set; }
 
         [MemberNotNullWhen(true, nameof(Certificate))]
         public bool Secure { get => Certificate != null; }
@@ -24,12 +25,13 @@ namespace BlazeCommon
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ProtoFireServer(string name, IPEndPoint localEP, X509Certificate? cert)
+        public ProtoFireServer(string name, IPEndPoint localEP, X509Certificate? cert, bool forceSsl)
         {
             Name = name;
             LocalEP = localEP;
             IsRunning = false;
             Certificate = cert;
+            ForceSsl = forceSsl;
 
             _connections = new ConcurrentDictionary<long, ProtoFireConnection>();
             _cancellationTokenSource = new CancellationTokenSource();
@@ -107,7 +109,14 @@ namespace BlazeCommon
 
             try
             {
-                Stream stream = SslSocket.EndAuthenticateAsServer(result);
+                Stream? stream = SslSocket.EndAuthenticateAsServer(result);
+                if (stream == null)
+                {
+                    _logger.Info("Failed to authenticate as server for connection({ClientId}).", connection.ID);
+                    connection.Disconnect();
+                    return;
+                }
+
                 connection.SetStream(stream);
 
                 if (Secure)
@@ -116,7 +125,7 @@ namespace BlazeCommon
             catch (Exception ex)
             {
                 _logger.Error(ex, "Failed to authenticate as server for connection({ClientId}).", connection.ID);
-                await OnProtoFireDisconnectInternalAsync(connection).ConfigureAwait(false);
+                connection.Disconnect();
                 return;
             }
 
@@ -170,7 +179,7 @@ namespace BlazeCommon
                 if (Secure)
                     _logger.Info("Authenticating as server for connection({ClientId}).", connection.ID);
 
-                SslSocket.BeginAuthenticateAsServer(connection.Socket, Certificate, AuthenticateAsServerCallback, connection);
+                SslSocket.BeginAuthenticateAsServer(connection.Socket, Certificate, ForceSsl, AuthenticateAsServerCallback, connection);
             }
         }
 
