@@ -35,5 +35,11 @@ namespace Blaze2SDK
 
             return new BlazeServer(blaze2Settings);
         }
+
+        public static BlazeClientConnection CreateBlazeClientConnection(ProtoFireConnection connection)
+        {
+            BlazeClientConfiguration config = new BlazeClientConfiguration(encoder, decoder);
+            return new BlazeClientConnection(connection, config);
+        }
     }
 }
