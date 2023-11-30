@@ -46,42 +46,42 @@
           "Id": 5,
           "Name": "getGameReportQueriesList",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "GameReportQueriesList",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 6,
           "Name": "getGameReports",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "GetGameReports",
+          "ResponseType": "GameReportsList",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 7,
           "Name": "getGameReportView",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "GetGameReportViewRequest",
+          "ResponseType": "GetGameReportViewResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 8,
           "Name": "getGameReportViewInfo",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "GetGameReportViewInfo",
+          "ResponseType": "GameReportViewInfo",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 9,
           "Name": "getGameReportViewInfoList",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "GameReportViewInfosList",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 10,
           "Name": "getGameReportTypes",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "GetGameReportTypesResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
@@ -94,15 +94,15 @@
         {
           "Id": 12,
           "Name": "getGameReportColumnInfo",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "GetGameReportColumnInfo",
+          "ResponseType": "GameReportColumnInfoResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 13,
           "Name": "getGameReportColumnValues",
           "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "ResponseType": "GetGameReportColumnValuesResponse",
           "ErrorResponseType": "NullStruct"
         },
         {

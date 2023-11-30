@@ -79,7 +79,7 @@ namespace BlazeCommon
                 return (TResponse)responseBlazePacket.DataObj;
 
             TErrorResponse errorResponse = (TErrorResponse)responseBlazePacket.DataObj;
-            throw new BlazeRpcException(responsePacket.Frame.ErrorCode, errorResponse);
+            throw new BlazeRpcException(responsePacket.Frame.FullErrorCode, errorResponse);
         }
 
         public async Task<TResponse> SendRequestAsync<TRequest, TResponse, TErrorResponse>(IBlazeComponent component, ushort commandId, TRequest request) where TRequest : notnull where TResponse : notnull where TErrorResponse : notnull
@@ -108,7 +108,7 @@ namespace BlazeCommon
                 return (TResponse)responseBlazePacket.DataObj;
 
             TErrorResponse errorResponse = (TErrorResponse)responseBlazePacket.DataObj;
-            throw new BlazeRpcException(responsePacket.Frame.ErrorCode, errorResponse);
+            throw new BlazeRpcException(responsePacket.Frame.FullErrorCode, errorResponse);
         }
     }
 }

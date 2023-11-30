@@ -66,14 +66,14 @@
         {
           "Id": 10,
           "Name": "getLeaderboardGroup",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
+          "RequestType": "LeaderboardGroupRequest",
+          "ResponseType": "LeaderboardGroupResponse",
           "ErrorResponseType": "NullStruct"
         },
         {
           "Id": 11,
           "Name": "getLeaderboardFolderGroup",
-          "RequestType": "NullStruct",
+          "RequestType": "LeaderboardFolderGroupRequest",
           "ResponseType": "LeaderboardFolderGroup",
           "ErrorResponseType": "NullStruct"
         },

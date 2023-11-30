@@ -41,37 +41,37 @@ namespace Blaze3SDK.Components
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQueriesList)]
-            public virtual Task<NullStruct> GetGameReportQueriesListAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GameReportQueriesList> GetGameReportQueriesListAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReports)]
-            public virtual Task<NullStruct> GetGameReportsAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GameReportsList> GetGameReportsAsync(GetGameReports request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportView)]
-            public virtual Task<NullStruct> GetGameReportViewAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfo)]
-            public virtual Task<NullStruct> GetGameReportViewInfoAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<NullStruct> GetGameReportViewInfoListAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GameReportViewInfosList> GetGameReportViewInfoListAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportTypes)]
-            public virtual Task<NullStruct> GetGameReportTypesAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GetGameReportTypesResponse> GetGameReportTypesAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -83,13 +83,13 @@ namespace Blaze3SDK.Components
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnInfo)]
-            public virtual Task<NullStruct> GetGameReportColumnInfoAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnValues)]
-            public virtual Task<NullStruct> GetGameReportColumnValuesAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync(NullStruct request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -168,58 +168,58 @@ namespace Blaze3SDK.Components
                 return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQuery, new NullStruct());
             }
             
-            public NullStruct GetGameReportQueriesList()
+            public GameReportQueriesList GetGameReportQueriesList()
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
+                return Connection.SendRequest<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
             }
-            public Task<NullStruct> GetGameReportQueriesListAsync()
+            public Task<GameReportQueriesList> GetGameReportQueriesListAsync()
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
-            }
-            
-            public NullStruct GetGameReports()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, new NullStruct());
+                return Connection.SendRequestAsync<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
             }
             
-            public NullStruct GetGameReportView()
+            public GameReportsList GetGameReports(GetGameReports request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, new NullStruct());
+                return Connection.SendRequest<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
             }
-            public Task<NullStruct> GetGameReportViewAsync()
+            public Task<GameReportsList> GetGameReportsAsync(GetGameReports request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, new NullStruct());
-            }
-            
-            public NullStruct GetGameReportViewInfo()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportViewInfoAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, new NullStruct());
+                return Connection.SendRequestAsync<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
             }
             
-            public NullStruct GetGameReportViewInfoList()
+            public GetGameReportViewResponse GetGameReportView(GetGameReportViewRequest request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
+                return Connection.SendRequest<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
             }
-            public Task<NullStruct> GetGameReportViewInfoListAsync()
+            public Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
+                return Connection.SendRequestAsync<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
             }
             
-            public NullStruct GetGameReportTypes()
+            public GameReportViewInfo GetGameReportViewInfo(GetGameReportViewInfo request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
+                return Connection.SendRequest<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
             }
-            public Task<NullStruct> GetGameReportTypesAsync()
+            public Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
+                return Connection.SendRequestAsync<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
+            }
+            
+            public GameReportViewInfosList GetGameReportViewInfoList()
+            {
+                return Connection.SendRequest<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
+            }
+            public Task<GameReportViewInfosList> GetGameReportViewInfoListAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
+            }
+            
+            public GetGameReportTypesResponse GetGameReportTypes()
+            {
+                return Connection.SendRequest<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
+            }
+            public Task<GetGameReportTypesResponse> GetGameReportTypesAsync()
+            {
+                return Connection.SendRequestAsync<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
             }
             
             public NullStruct UpdateMetric()
@@ -231,22 +231,22 @@ namespace Blaze3SDK.Components
                 return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.updateMetric, new NullStruct());
             }
             
-            public NullStruct GetGameReportColumnInfo()
+            public GameReportColumnInfoResponse GetGameReportColumnInfo(GetGameReportColumnInfo request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, new NullStruct());
+                return Connection.SendRequest<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
             }
-            public Task<NullStruct> GetGameReportColumnInfoAsync()
+            public Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, new NullStruct());
+                return Connection.SendRequestAsync<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
             }
             
-            public NullStruct GetGameReportColumnValues()
+            public GetGameReportColumnValuesResponse GetGameReportColumnValues()
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
+                return Connection.SendRequest<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
             }
-            public Task<NullStruct> GetGameReportColumnValuesAsync()
+            public Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync()
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
+                return Connection.SendRequestAsync<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
             }
             
             public NullStruct SubmitTrustedMidGameReport()
@@ -314,39 +314,39 @@ namespace Blaze3SDK.Components
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQueriesList)]
-            public virtual Task<NullStruct> GetGameReportQueriesListAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GameReportQueriesList> GetGameReportQueriesListAsync(NullStruct request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, request);
+                return context.ClientConnection.SendRequestAsync<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReports)]
-            public virtual Task<NullStruct> GetGameReportsAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GameReportsList> GetGameReportsAsync(GetGameReports request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
+                return context.ClientConnection.SendRequestAsync<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportView)]
-            public virtual Task<NullStruct> GetGameReportViewAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
+                return context.ClientConnection.SendRequestAsync<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfo)]
-            public virtual Task<NullStruct> GetGameReportViewInfoAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
+                return context.ClientConnection.SendRequestAsync<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<NullStruct> GetGameReportViewInfoListAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GameReportViewInfosList> GetGameReportViewInfoListAsync(NullStruct request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, request);
+                return context.ClientConnection.SendRequestAsync<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportTypes)]
-            public virtual Task<NullStruct> GetGameReportTypesAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GetGameReportTypesResponse> GetGameReportTypesAsync(NullStruct request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, request);
+                return context.ClientConnection.SendRequestAsync<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.updateMetric)]
@@ -356,15 +356,15 @@ namespace Blaze3SDK.Components
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnInfo)]
-            public virtual Task<NullStruct> GetGameReportColumnInfoAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
+                return context.ClientConnection.SendRequestAsync<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnValues)]
-            public virtual Task<NullStruct> GetGameReportColumnValuesAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync(NullStruct request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, request);
+                return context.ClientConnection.SendRequestAsync<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, request);
             }
             
             [BlazeCommand((ushort)GameReportingComponentCommand.submitTrustedMidGameReport)]
@@ -400,13 +400,13 @@ namespace Blaze3SDK.Components
             GameReportingComponentCommand.submitGameEvents => typeof(NullStruct),
             GameReportingComponentCommand.getGameReportQuery => typeof(NullStruct),
             GameReportingComponentCommand.getGameReportQueriesList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportViewInfo => typeof(NullStruct),
+            GameReportingComponentCommand.getGameReports => typeof(GetGameReports),
+            GameReportingComponentCommand.getGameReportView => typeof(GetGameReportViewRequest),
+            GameReportingComponentCommand.getGameReportViewInfo => typeof(GetGameReportViewInfo),
             GameReportingComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
             GameReportingComponentCommand.getGameReportTypes => typeof(NullStruct),
             GameReportingComponentCommand.updateMetric => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnInfo => typeof(NullStruct),
+            GameReportingComponentCommand.getGameReportColumnInfo => typeof(GetGameReportColumnInfo),
             GameReportingComponentCommand.getGameReportColumnValues => typeof(NullStruct),
             GameReportingComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
             GameReportingComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
@@ -419,15 +419,15 @@ namespace Blaze3SDK.Components
             GameReportingComponentCommand.submitOfflineGameReport => typeof(NullStruct),
             GameReportingComponentCommand.submitGameEvents => typeof(NullStruct),
             GameReportingComponentCommand.getGameReportQuery => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQueriesList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportViewInfo => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportTypes => typeof(NullStruct),
+            GameReportingComponentCommand.getGameReportQueriesList => typeof(GameReportQueriesList),
+            GameReportingComponentCommand.getGameReports => typeof(GameReportsList),
+            GameReportingComponentCommand.getGameReportView => typeof(GetGameReportViewResponse),
+            GameReportingComponentCommand.getGameReportViewInfo => typeof(GameReportViewInfo),
+            GameReportingComponentCommand.getGameReportViewInfoList => typeof(GameReportViewInfosList),
+            GameReportingComponentCommand.getGameReportTypes => typeof(GetGameReportTypesResponse),
             GameReportingComponentCommand.updateMetric => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnInfo => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnValues => typeof(NullStruct),
+            GameReportingComponentCommand.getGameReportColumnInfo => typeof(GameReportColumnInfoResponse),
+            GameReportingComponentCommand.getGameReportColumnValues => typeof(GetGameReportColumnValuesResponse),
             GameReportingComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
             GameReportingComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
             _ => typeof(NullStruct)
