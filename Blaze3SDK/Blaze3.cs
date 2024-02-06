@@ -18,7 +18,7 @@ namespace Blaze3SDK
             decoder = factory.CreateDecoder(true);
         }
 
-        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, bool forceSsl = true, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null, ConnectionUnhandledRequestDelegate? onUnhandledRequest = null, ConnectionOnErrorDelegate? onError = null)
+        public static BlazeServer CreateBlazeServer(string name, IPEndPoint endPoint, X509Certificate? certificate = null, bool forceSsl = true, ConnectionDelegate? onNewConnection = null, ConnectionDelegate? onDisconnected = null, ConnectionOnRequestDelegate? onRequest = null, ConnectionOnErrorDelegate? onError = null)
         {
             BlazeServerConfiguration blaze3Settings = new BlazeServerConfiguration(name, endPoint, encoder, decoder)
             {
@@ -29,7 +29,7 @@ namespace Blaze3SDK
                 ErrSystemErrorCode = (int)Blaze3RpcError.ERR_SYSTEM,
                 OnNewConnection = onNewConnection,
                 OnDisconnected = onDisconnected,
-                OnUnhandledRequest = onUnhandledRequest,
+                OnRequest = onRequest,
                 OnError = onError
             };
 

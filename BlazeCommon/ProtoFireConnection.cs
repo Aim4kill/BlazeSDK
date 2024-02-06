@@ -210,7 +210,7 @@ namespace BlazeCommon
             if (sock == null)
                 return null;
 
-            Stream stream = new NetworkStream(sock);
+            Stream stream = new NetworkStream(sock, true);
             if (ssl)
             {
                 SslStream sslStream = new SslStream(stream, false, RemoteCertificateVerify);
@@ -246,7 +246,7 @@ namespace BlazeCommon
 
 
             ProtoFireConnection connection = new ProtoFireConnection(null!);
-            connection.SetStream(new SecureNetworkStream(s));
+            connection.SetStream(new SecureNetworkStream(s, true));
             return connection;
         }
 
@@ -269,7 +269,7 @@ namespace BlazeCommon
 
 
             ProtoFireConnection connection = new ProtoFireConnection(null!);
-            connection.SetStream(new SecureNetworkStream(s));
+            connection.SetStream(new SecureNetworkStream(s, true));
             return connection;
         }
 

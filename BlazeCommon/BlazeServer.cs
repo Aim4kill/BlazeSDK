@@ -112,6 +112,7 @@ namespace BlazeCommon
                 return requestPacket.CreateResponsePacket(exception.ErrorCode);
         }
 
+        //TODO: Rewrite this method
         public override async Task OnProtoFirePacketReceivedAsync(ProtoFireConnection connection, ProtoFirePacket packet)
         {
             FireFrame frame = packet.Frame;
@@ -141,6 +142,7 @@ namespace BlazeCommon
                 return;
             }
 
+            bool unhandled = false;
             BlazeServerConnection blazeConnection = GetBlazeConnection(connection);
             //marking that blaze connection is busy with some kind of request
             await blazeConnection.IsBusyLock.EnterAsync().ConfigureAwait(false);
@@ -156,7 +158,7 @@ namespace BlazeCommon
                 if (exception is BlazeRpcException rpcException)
                 {
                     if (rpcException.ErrorCode == Configuration.CommandNotFoundErrorCode || rpcException.ErrorCode == Configuration.ComponentNotFoundErrorCode)
-                        Configuration.OnUnhandledRequest?.Invoke(blazeConnection, packet);
+                        unhandled = true;
 
                     if (rpcException.InnerException != null)
                         OnProtoFireError(connection, rpcException.InnerException);
@@ -166,7 +168,7 @@ namespace BlazeCommon
                 else if (exception is TargetInvocationException targException && targException.InnerException is BlazeRpcException rpcException2)
                 {
                     if (rpcException2.ErrorCode == Configuration.CommandNotFoundErrorCode || rpcException2.ErrorCode == Configuration.ComponentNotFoundErrorCode)
-                        Configuration.OnUnhandledRequest?.Invoke(blazeConnection, packet);
+                        unhandled = true;
 
                     if (rpcException2.InnerException != null)
                         OnProtoFireError(connection, rpcException2.InnerException);
@@ -180,6 +182,8 @@ namespace BlazeCommon
                 }
             }
 
+            try { Configuration.OnRequest?.Invoke(blazeConnection, packet, unhandled); }
+            catch { }
 
             await SendBlazePacket(connection, component, response).ConfigureAwait(false);
             blazeConnection.IsBusyLock.Exit();

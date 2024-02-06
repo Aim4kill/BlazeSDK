@@ -41,7 +41,7 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement)]
-            public virtual Task<NullStruct> GrantEntitlementAsync(NullStruct request, BlazeRpcContext context)
+            public virtual Task<NullStruct> GrantEntitlementAsync(Entitlement request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -307,13 +307,13 @@ namespace Blaze2SDK.Components
                 return Connection.SendRequestAsync<NullStruct, AccountInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAccount, new NullStruct());
             }
             
-            public NullStruct GrantEntitlement()
+            public NullStruct GrantEntitlement(Entitlement request)
             {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, new NullStruct());
+                return Connection.SendRequest<Entitlement, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, request);
             }
-            public Task<NullStruct> GrantEntitlementAsync()
+            public Task<NullStruct> GrantEntitlementAsync(Entitlement request)
             {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, new NullStruct());
+                return Connection.SendRequestAsync<Entitlement, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, request);
             }
             
             public Entitlements GetEntitlements(ListEntitlementsRequest request)
@@ -662,9 +662,9 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement)]
-            public virtual Task<NullStruct> GrantEntitlementAsync(NullStruct request, BlazeProxyContext context)
+            public virtual Task<NullStruct> GrantEntitlementAsync(Entitlement request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, request);
+                return context.ClientConnection.SendRequestAsync<Entitlement, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, request);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.getEntitlements)]
@@ -885,7 +885,7 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.updateAccount => typeof(UpdateAccountRequest),
             AuthenticationComponentCommand.updateParentalEmail => typeof(UpdateAccountRequest),
             AuthenticationComponentCommand.getAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
+            AuthenticationComponentCommand.grantEntitlement => typeof(Entitlement),
             AuthenticationComponentCommand.getEntitlements => typeof(ListEntitlementsRequest),
             AuthenticationComponentCommand.hasEntitlement => typeof(HasEntitlementRequest),
             AuthenticationComponentCommand.getUseCount => typeof(NullStruct),

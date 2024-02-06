@@ -45,7 +45,7 @@
         {
           "Id": 31,
           "Name": "grantEntitlement",
-          "RequestType": "NullStruct",
+          "RequestType": "Entitlement",
           "ResponseType": "NullStruct",
           "ErrorResponseType": "NullStruct"
         },
