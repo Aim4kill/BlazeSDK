@@ -256,7 +256,7 @@
           "Id": 190,
           "Name": "ps3AssociateAccount",
           "RequestType": "ConsoleAssociateAccountRequest",
-          "ResponseType": "NullStruct",
+          "ResponseType": "SessionInfo",
           "ErrorResponseType": "NullStruct"
         },
         {

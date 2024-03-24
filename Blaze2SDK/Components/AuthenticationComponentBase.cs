@@ -221,7 +221,7 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3AssociateAccount)]
-            public virtual Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
+            public virtual Task<SessionInfo> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
             {
                 throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
             }
@@ -577,13 +577,13 @@ namespace Blaze2SDK.Components
                 return Connection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3CreateAccount, request);
             }
             
-            public NullStruct Ps3AssociateAccount(ConsoleAssociateAccountRequest request)
+            public SessionInfo Ps3AssociateAccount(ConsoleAssociateAccountRequest request)
             {
-                return Connection.SendRequest<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
+                return Connection.SendRequest<ConsoleAssociateAccountRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
             }
-            public Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request)
+            public Task<SessionInfo> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request)
             {
-                return Connection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
+                return Connection.SendRequestAsync<ConsoleAssociateAccountRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
             }
             
             public ConsoleLoginResponse Ps3Login(PS3LoginRequest request)
@@ -842,9 +842,9 @@ namespace Blaze2SDK.Components
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3AssociateAccount)]
-            public virtual Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeProxyContext context)
+            public virtual Task<SessionInfo> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeProxyContext context)
             {
-                return context.ClientConnection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
+                return context.ClientConnection.SendRequestAsync<ConsoleAssociateAccountRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
             }
             
             [BlazeCommand((ushort)AuthenticationComponentCommand.ps3Login)]
@@ -959,7 +959,7 @@ namespace Blaze2SDK.Components
             AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
             AuthenticationComponentCommand.xboxLogin => typeof(ConsoleLoginResponse),
             AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountResponse),
-            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
+            AuthenticationComponentCommand.ps3AssociateAccount => typeof(SessionInfo),
             AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),
             AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
             AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
