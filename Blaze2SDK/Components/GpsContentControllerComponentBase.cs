@@ -1,166 +1,111 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class GpsContentControllerComponentBase
 {
-    public static class GpsContentControllerComponentBase
+    public const ushort Id = 27;
+    public const string Name = "GpsContentControllerComponent";
+    
+    public enum Error : ushort {
+        GPSCONTENTCONTROLLER_ERR_CONTENT_NOT_FOUND = 1,
+    }
+    
+    public enum GpsContentControllerComponentCommand : ushort
     {
-        public const ushort Id = 27;
-        public const string Name = "GpsContentControllerComponent";
+        filePetition = 1,
+        fetchContent = 2,
+        showContent = 3,
+    }
+    
+    public enum GpsContentControllerComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => GpsContentControllerComponentBase.Id;
+        public override string Name => GpsContentControllerComponentBase.Name;
         
-        public class Server : BlazeServerComponent<GpsContentControllerComponentCommand, GpsContentControllerComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(GpsContentControllerComponentCommand command) => false;
+        
+        public class GpsContentControllerException : BlazeRpcException
         {
-            public Server() : base(GpsContentControllerComponentBase.Id, GpsContentControllerComponentBase.Name)
+            public GpsContentControllerException(Error error) : base((ushort)error, null) { }
+            public GpsContentControllerException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public GpsContentControllerException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public GpsContentControllerException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public GpsContentControllerException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public GpsContentControllerException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public GpsContentControllerException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public GpsContentControllerException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)GpsContentControllerComponentCommand.filePetition,
+                Name = "filePetition",
+                IsSupported = IsCommandSupported(GpsContentControllerComponentCommand.filePetition),
+                Func = async (req, ctx) => await FilePetitionAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.filePetition)]
-            public virtual Task<NullStruct> FilePetitionAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GpsContentControllerComponentCommand.fetchContent,
+                Name = "fetchContent",
+                IsSupported = IsCommandSupported(GpsContentControllerComponentCommand.fetchContent),
+                Func = async (req, ctx) => await FetchContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.fetchContent)]
-            public virtual Task<NullStruct> FetchContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.showContent)]
-            public virtual Task<NullStruct> ShowContentAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GpsContentControllerComponentNotification notification) => GpsContentControllerComponentBase.GetNotificationType(notification);
+                Id = (ushort)GpsContentControllerComponentCommand.showContent,
+                Name = "showContent",
+                IsSupported = IsCommandSupported(GpsContentControllerComponentCommand.showContent),
+                Func = async (req, ctx) => await ShowContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<GpsContentControllerComponentCommand, GpsContentControllerComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(GpsContentControllerComponentBase.Id, GpsContentControllerComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct FilePetition()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.filePetition, new NullStruct());
-            }
-            public Task<NullStruct> FilePetitionAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.filePetition, new NullStruct());
-            }
-            
-            public NullStruct FetchContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.fetchContent, new NullStruct());
-            }
-            public Task<NullStruct> FetchContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.fetchContent, new NullStruct());
-            }
-            
-            public NullStruct ShowContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.showContent, new NullStruct());
-            }
-            public Task<NullStruct> ShowContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.showContent, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GpsContentControllerComponentNotification notification) => GpsContentControllerComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<GpsContentControllerComponentCommand, GpsContentControllerComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>GpsContentControllerComponent::filePetition</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FilePetitionAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(GpsContentControllerComponentBase.Id, GpsContentControllerComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.filePetition)]
-            public virtual Task<NullStruct> FilePetitionAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.filePetition, request);
-            }
-            
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.fetchContent)]
-            public virtual Task<NullStruct> FetchContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.fetchContent, request);
-            }
-            
-            [BlazeCommand((ushort)GpsContentControllerComponentCommand.showContent)]
-            public virtual Task<NullStruct> ShowContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GpsContentControllerComponentCommand.showContent, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => GpsContentControllerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GpsContentControllerComponentNotification notification) => GpsContentControllerComponentBase.GetNotificationType(notification);
-            
+            throw new GpsContentControllerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(GpsContentControllerComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>GpsContentControllerComponent::fetchContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FetchContentAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
-            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
-            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(GpsContentControllerComponentCommand command) => command switch
-        {
-            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
-            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
-            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(GpsContentControllerComponentCommand command) => command switch
-        {
-            GpsContentControllerComponentCommand.filePetition => typeof(NullStruct),
-            GpsContentControllerComponentCommand.fetchContent => typeof(NullStruct),
-            GpsContentControllerComponentCommand.showContent => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(GpsContentControllerComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum GpsContentControllerComponentCommand : ushort
-        {
-            filePetition = 1,
-            fetchContent = 2,
-            showContent = 3,
+            throw new GpsContentControllerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum GpsContentControllerComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>GpsContentControllerComponent::showContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ShowContentAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new GpsContentControllerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

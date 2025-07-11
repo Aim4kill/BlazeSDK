@@ -1,132 +1,150 @@
 {
   "Usings": [
-    "Blaze3SDK.Blaze.GameReporting",
-    "BlazeCommon",
-    "NLog"
+    "Blaze3SDK.Blaze.GameReporting"
   ],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 28,
+  "Name": "GameReportingComponent",
+  "ShortName": "GameReporting",
+  "ErrorCodes": {
+    "1": "GAMEREPORTING_ERR_UNEXPECTED_REPORT",
+    "100": "GAMEREPORTING_COLLATION_ERR_NO_VALID_REPORTS",
+    "101": "GAMEREPORTING_COLLATION_ERR_NO_REPORTS",
+    "102": "GAMEREPORTING_COLLATION_REPORTS_INCONSISTENT",
+    "103": "GAMEREPORTING_COLLATION_ERR_MISSING_GAME_ATTRIBUTE",
+    "104": "GAMEREPORTING_COLLATION_ERR_INVALID_GAME_ATTRIBUTE",
+    "200": "GAMEREPORTING_CUSTOM_ERR_PROCESSING_FAILED",
+    "201": "GAMEREPORTING_CONFIG_ERR_MISSING_PROCESSOR_ATTRIBUTE",
+    "202": "GAMEREPORTING_CONFIG_ERR_INVALID_PROCESSOR_ATTRIBUTE",
+    "203": "GAMEREPORTING_CONFIG_ERR_STAT_UPDATE_FAILED",
+    "204": "GAMEREPORTING_CUSTOM_ERR_PROCESS_UPDATED_STATS_FAILED",
+    "205": "GAMEREPORTING_ERR_INVALID_GAME_TYPE",
+    "301": "GAMEREPORTING_OFFLINE_ERR_INVALID_GAME_TYPE",
+    "302": "GAMEREPORTING_OFFLINE_ERR_REPORT_INVALID",
+    "401": "GAMEREPORTING_TRUSTED_ERR_INVALID_GAME_TYPE",
+    "402": "GAMEREPORTING_TRUSTED_ERR_REPORT_INVALID",
+    "403": "GAMEREPORTING_TRUSTED_ERR_CLIENT_NOT_TRUSTED",
+    "501": "GAMEHISTORY_ERR_UNKNOWN_QUERY",
+    "502": "GAMEHISTORY_ERR_INVALID_COLUMNKEY",
+    "503": "GAMEHISTORY_ERR_INVALID_FILTER",
+    "504": "GAMEHISTORY_ERR_INVALID_GAMETYPE",
+    "505": "GAMEHISTORY_ERR_UNKNOWN_VIEW",
+    "506": "GAMEHISTORY_ERR_INVALID_QUERY",
+    "507": "GAMEHISTORY_ERR_MISSING_QVARS",
+    "508": "GAMEHISTORY_ERR_INVALID_QVARS"
+  },
+  "Methods": [
     {
-      "Id": 28,
-      "Name": "GameReportingComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "submitGameReport",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "submitOfflineGameReport",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "submitGameEvents",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "getGameReportQuery",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "getGameReportQueriesList",
-          "RequestType": "NullStruct",
-          "ResponseType": "GameReportQueriesList",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 6,
-          "Name": "getGameReports",
-          "RequestType": "GetGameReports",
-          "ResponseType": "GameReportsList",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 7,
-          "Name": "getGameReportView",
-          "RequestType": "GetGameReportViewRequest",
-          "ResponseType": "GetGameReportViewResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 8,
-          "Name": "getGameReportViewInfo",
-          "RequestType": "GetGameReportViewInfo",
-          "ResponseType": "GameReportViewInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 9,
-          "Name": "getGameReportViewInfoList",
-          "RequestType": "NullStruct",
-          "ResponseType": "GameReportViewInfosList",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 10,
-          "Name": "getGameReportTypes",
-          "RequestType": "NullStruct",
-          "ResponseType": "GetGameReportTypesResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 11,
-          "Name": "updateMetric",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 12,
-          "Name": "getGameReportColumnInfo",
-          "RequestType": "GetGameReportColumnInfo",
-          "ResponseType": "GameReportColumnInfoResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 13,
-          "Name": "getGameReportColumnValues",
-          "RequestType": "NullStruct",
-          "ResponseType": "GetGameReportColumnValuesResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 100,
-          "Name": "submitTrustedMidGameReport",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 101,
-          "Name": "submitTrustedEndGameReport",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 114,
-          "Name": "ResultNotification",
-          "Type": "ResultNotification"
-        }
-      ]
+      "Id": 1,
+      "Name": "submitGameReport",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "submitOfflineGameReport",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "submitGameEvents",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "getGameReportQuery",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "getGameReportQueriesList",
+      "RequestType": null,
+      "ResponseType": "GameReportQueriesList",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 6,
+      "Name": "getGameReports",
+      "RequestType": "GetGameReports",
+      "ResponseType": "GameReportsList",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 7,
+      "Name": "getGameReportView",
+      "RequestType": "GetGameReportViewRequest",
+      "ResponseType": "GetGameReportViewResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 8,
+      "Name": "getGameReportViewInfo",
+      "RequestType": "GetGameReportViewInfo",
+      "ResponseType": "GameReportViewInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 9,
+      "Name": "getGameReportViewInfoList",
+      "RequestType": null,
+      "ResponseType": "GameReportViewInfosList",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 10,
+      "Name": "getGameReportTypes",
+      "RequestType": null,
+      "ResponseType": "GetGameReportTypesResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 11,
+      "Name": "updateMetric",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 12,
+      "Name": "getGameReportColumnInfo",
+      "RequestType": "GetGameReportColumnInfo",
+      "ResponseType": "GameReportColumnInfoResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 13,
+      "Name": "getGameReportColumnValues",
+      "RequestType": null,
+      "ResponseType": "GetGameReportColumnValuesResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 100,
+      "Name": "submitTrustedMidGameReport",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 101,
+      "Name": "submitTrustedEndGameReport",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 114,
+      "Name": "ResultNotification",
+      "Type": "ResultNotification"
     }
   ]
 }

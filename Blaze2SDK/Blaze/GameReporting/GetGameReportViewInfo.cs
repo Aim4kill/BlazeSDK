@@ -1,18 +1,37 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameReporting
+namespace Blaze2SDK.Blaze.GameReporting;
+
+public class GetGameReportViewInfo : Tdf
 {
-    [TdfStruct]
-    public struct GetGameReportViewInfo
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Name", "mName", 0xDAE86D00, TdfType.String, 0, true), // VNAM
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _name = new(__typeInfos[0]);
+
+    public GetGameReportViewInfo()
     {
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("VNAM")]
-        [StringLength(64)]
-        public string mName;
-        
+        __members = [
+            _name,
+        ];
     }
+
+    public override Tdf CreateNew() => new GetGameReportViewInfo();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetGameReportViewInfo";
+    public override string GetFullClassName() => "Blaze::GameReporting::GetGameReportViewInfo";
+
+    public string Name
+    {
+        get => _name.Value;
+        set => _name.Value = value;
+    }
+
 }
+

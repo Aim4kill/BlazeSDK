@@ -1,21 +1,46 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.CommerceInfo
+namespace Blaze2SDK.Blaze.CommerceInfo;
+
+public class CheckoutProducts : Tdf
 {
-    [TdfStruct]
-    public struct CheckoutProducts
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("CheckoutProducts", "mCheckoutProducts", 0xC24B3300, TdfType.List, 0, true), // PDLS
+        new TdfMemberInfo("WalletName", "mWalletName", 0xDECBAD00, TdfType.String, 1, true), // WLNM
+    ];
+    private ITdfMember[] __members;
+
+    private TdfList<Blaze2SDK.Blaze.CommerceInfo.CheckoutProduct> _checkoutProducts = new(__typeInfos[0]);
+    private TdfString _walletName = new(__typeInfos[1]);
+
+    public CheckoutProducts()
     {
-        
-        [TdfMember("PDLS")]
-        public List<CheckoutProduct> mCheckoutProducts;
-        
-        /// <summary>
-        /// Max String Length: 255
-        /// </summary>
-        [TdfMember("WLNM")]
-        [StringLength(255)]
-        public string mWalletName;
-        
+        __members = [
+            _checkoutProducts,
+            _walletName,
+        ];
     }
+
+    public override Tdf CreateNew() => new CheckoutProducts();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "CheckoutProducts";
+    public override string GetFullClassName() => "Blaze::CommerceInfo::CheckoutProducts";
+
+    public IList<Blaze2SDK.Blaze.CommerceInfo.CheckoutProduct> mCheckoutProducts
+    {
+        get => _checkoutProducts.Value;
+        set => _checkoutProducts.Value = value;
+    }
+
+    public string WalletName
+    {
+        get => _walletName.Value;
+        set => _walletName.Value = value;
+    }
+
 }
+

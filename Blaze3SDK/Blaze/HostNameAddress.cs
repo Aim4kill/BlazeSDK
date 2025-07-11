@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze
+namespace Blaze3SDK.Blaze;
+
+public class HostNameAddress : Tdf
 {
-	[TdfStruct]
-	public struct HostNameAddress
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("HostName", "mHostName", 0xBA1B6500, TdfType.String, 0, true), // NAME
+        new TdfMemberInfo("Port", "mPort", 0xC2FCB400, TdfType.UInt16, 1, true), // PORT
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("NAME")]
-		public string mHostName;
+    private TdfString _hostName = new(__typeInfos[0]);
+    private TdfUInt16 _port = new(__typeInfos[1]);
 
-		[TdfMember("PORT")]
-		public ushort mPort;
+    public HostNameAddress()
+    {
+        __members = [
+            _hostName,
+            _port,
+        ];
+    }
 
-	}
+    public override Tdf CreateNew() => new HostNameAddress();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "HostNameAddress";
+    public override string GetFullClassName() => "Blaze::HostNameAddress";
+
+    public string HostName
+    {
+        get => _hostName.Value;
+        set => _hostName.Value = value;
+    }
+
+    public ushort Port
+    {
+        get => _port.Value;
+        set => _port.Value = value;
+    }
+
 }
+

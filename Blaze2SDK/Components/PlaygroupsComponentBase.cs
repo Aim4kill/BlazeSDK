@@ -1,542 +1,482 @@
+using Blaze.Core;
 using Blaze2SDK.Blaze.Playgroups;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class PlaygroupsComponentBase
 {
-    public static class PlaygroupsComponentBase
+    public const ushort Id = 6;
+    public const string Name = "PlaygroupsComponent";
+    
+    public enum Error : ushort {
+        PLAYGROUPS_ERR_NOT_IN_GROUP = 1,
+        PLAYGROUPS_ERR_NOT_AUTHORIZED = 2,
+        PLAYGROUPS_ERR_GROUP_FULL = 3,
+        PLAYGROUPS_ERR_INVALID_ENTITY = 4,
+        PLAYGROUPS_ERR_GROUP_NOT_FOUND = 5,
+        PLAYGROUPS_ERR_GROUP_CLOSED = 6,
+        PLAYGROUPS_ERR_USER_NOT_IN_ANY_GROUP = 7,
+        PLAYGROUPS_ERR_GROUP_ALREADY_EXISTS = 8,
+    }
+    
+    public enum PlaygroupsComponentCommand : ushort
     {
-        public const ushort Id = 6;
-        public const string Name = "PlaygroupsComponent";
+        createPlaygroup = 1,
+        destroyPlaygroup = 2,
+        joinPlaygroup = 3,
+        leavePlaygroup = 4,
+        setPlaygroupAttributes = 5,
+        setMemberAttributes = 6,
+        kickPlaygroupMember = 7,
+        setPlaygroupJoinControls = 8,
+        finalizePlaygroupCreation = 9,
+        lookupPlaygroupInfo = 10,
+    }
+    
+    public enum PlaygroupsComponentNotification : ushort
+    {
+        NotifyDestroyPlaygroup = 50,
+        NotifyJoinPlaygroup = 51,
+        NotifyMemberJoinedPlaygroup = 52,
+        NotifyMemberRemovedFromPlaygroup = 53,
+        NotifyPlaygroupAttributesSet = 54,
+        NotifyMemberAttributesSet = 75,
+        NotifyLeaderChange = 79,
+        NotifyMemberPermissionsChange = 80,
+        NotifyJoinControlsChange = 85,
+        NotifyXboxSessionInfo = 86,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => PlaygroupsComponentBase.Id;
+        public override string Name => PlaygroupsComponentBase.Name;
         
-        public class Server : BlazeServerComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(PlaygroupsComponentCommand command) => false;
+        
+        public class PlaygroupsException : BlazeRpcException
         {
-            public Server() : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
+            public PlaygroupsException(Error error) : base((ushort)error, null) { }
+            public PlaygroupsException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public PlaygroupsException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public PlaygroupsException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public PlaygroupsException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public PlaygroupsException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public PlaygroupsException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public PlaygroupsException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)PlaygroupsComponentCommand.createPlaygroup,
+                Name = "createPlaygroup",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.createPlaygroup),
+                Func = async (req, ctx) => await CreatePlaygroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.createPlaygroup)]
-            public virtual Task<NullStruct> CreatePlaygroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.destroyPlaygroup,
+                Name = "destroyPlaygroup",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.destroyPlaygroup),
+                Func = async (req, ctx) => await DestroyPlaygroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.destroyPlaygroup)]
-            public virtual Task<NullStruct> DestroyPlaygroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.joinPlaygroup,
+                Name = "joinPlaygroup",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.joinPlaygroup),
+                Func = async (req, ctx) => await JoinPlaygroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.joinPlaygroup)]
-            public virtual Task<NullStruct> JoinPlaygroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.leavePlaygroup,
+                Name = "leavePlaygroup",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.leavePlaygroup),
+                Func = async (req, ctx) => await LeavePlaygroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.leavePlaygroup)]
-            public virtual Task<NullStruct> LeavePlaygroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes,
+                Name = "setPlaygroupAttributes",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.setPlaygroupAttributes),
+                Func = async (req, ctx) => await SetPlaygroupAttributesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupAttributes)]
-            public virtual Task<NullStruct> SetPlaygroupAttributesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.setMemberAttributes,
+                Name = "setMemberAttributes",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.setMemberAttributes),
+                Func = async (req, ctx) => await SetMemberAttributesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setMemberAttributes)]
-            public virtual Task<NullStruct> SetMemberAttributesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.kickPlaygroupMember,
+                Name = "kickPlaygroupMember",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.kickPlaygroupMember),
+                Func = async (req, ctx) => await KickPlaygroupMemberAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.kickPlaygroupMember)]
-            public virtual Task<NullStruct> KickPlaygroupMemberAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls,
+                Name = "setPlaygroupJoinControls",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.setPlaygroupJoinControls),
+                Func = async (req, ctx) => await SetPlaygroupJoinControlsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls)]
-            public virtual Task<NullStruct> SetPlaygroupJoinControlsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation,
+                Name = "finalizePlaygroupCreation",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.finalizePlaygroupCreation),
+                Func = async (req, ctx) => await FinalizePlaygroupCreationAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation)]
-            public virtual Task<NullStruct> FinalizePlaygroupCreationAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo)]
-            public virtual Task<NullStruct> LookupPlaygroupInfoAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyDestroyPlaygroupAsync(BlazeServerConnection connection, NotifyDestroyPlaygroup notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyJoinPlaygroupAsync(BlazeServerConnection connection, NotifyJoinPlaygroup notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyMemberJoinedPlaygroupAsync(BlazeServerConnection connection, NotifyMemberJoinedPlaygroup notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyMemberRemovedFromPlaygroupAsync(BlazeServerConnection connection, NotifyMemberRemoveFromPlaygroup notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyPlaygroupAttributesSetAsync(BlazeServerConnection connection, NotifyPlaygroupAttributesSet notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyMemberAttributesSetAsync(BlazeServerConnection connection, NotifyMemberAttributesSet notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyLeaderChangeAsync(BlazeServerConnection connection, NotifyLeaderChange notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyLeaderChange, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyMemberPermissionsChangeAsync(BlazeServerConnection connection, NotifyMemberPermissionsChange notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyJoinControlsChangeAsync(BlazeServerConnection connection, NotifyJoinControlsChange notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyXboxSessionInfoAsync(BlazeServerConnection connection, NotifyXboxSessionInfo notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(PlaygroupsComponentBase.Id, (ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
+                Id = (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo,
+                Name = "lookupPlaygroupInfo",
+                IsSupported = IsCommandSupported(PlaygroupsComponentCommand.lookupPlaygroupInfo),
+                Func = async (req, ctx) => await LookupPlaygroupInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct CreatePlaygroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, new NullStruct());
-            }
-            public Task<NullStruct> CreatePlaygroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, new NullStruct());
-            }
-            
-            public NullStruct DestroyPlaygroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, new NullStruct());
-            }
-            public Task<NullStruct> DestroyPlaygroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, new NullStruct());
-            }
-            
-            public NullStruct JoinPlaygroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, new NullStruct());
-            }
-            public Task<NullStruct> JoinPlaygroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, new NullStruct());
-            }
-            
-            public NullStruct LeavePlaygroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, new NullStruct());
-            }
-            public Task<NullStruct> LeavePlaygroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, new NullStruct());
-            }
-            
-            public NullStruct SetPlaygroupAttributes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, new NullStruct());
-            }
-            public Task<NullStruct> SetPlaygroupAttributesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, new NullStruct());
-            }
-            
-            public NullStruct SetMemberAttributes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, new NullStruct());
-            }
-            public Task<NullStruct> SetMemberAttributesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, new NullStruct());
-            }
-            
-            public NullStruct KickPlaygroupMember()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, new NullStruct());
-            }
-            public Task<NullStruct> KickPlaygroupMemberAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, new NullStruct());
-            }
-            
-            public NullStruct SetPlaygroupJoinControls()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, new NullStruct());
-            }
-            public Task<NullStruct> SetPlaygroupJoinControlsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, new NullStruct());
-            }
-            
-            public NullStruct FinalizePlaygroupCreation()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, new NullStruct());
-            }
-            public Task<NullStruct> FinalizePlaygroupCreationAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, new NullStruct());
-            }
-            
-            public NullStruct LookupPlaygroupInfo()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, new NullStruct());
-            }
-            public Task<NullStruct> LookupPlaygroupInfoAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup)]
-            public virtual Task OnNotifyDestroyPlaygroupAsync(NotifyDestroyPlaygroup notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyDestroyPlaygroupAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup)]
-            public virtual Task OnNotifyJoinPlaygroupAsync(NotifyJoinPlaygroup notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyJoinPlaygroupAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup)]
-            public virtual Task OnNotifyMemberJoinedPlaygroupAsync(NotifyMemberJoinedPlaygroup notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyMemberJoinedPlaygroupAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup)]
-            public virtual Task OnNotifyMemberRemovedFromPlaygroupAsync(NotifyMemberRemoveFromPlaygroup notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyMemberRemovedFromPlaygroupAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet)]
-            public virtual Task OnNotifyPlaygroupAttributesSetAsync(NotifyPlaygroupAttributesSet notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyPlaygroupAttributesSetAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet)]
-            public virtual Task OnNotifyMemberAttributesSetAsync(NotifyMemberAttributesSet notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyMemberAttributesSetAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyLeaderChange)]
-            public virtual Task OnNotifyLeaderChangeAsync(NotifyLeaderChange notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyLeaderChangeAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange)]
-            public virtual Task OnNotifyMemberPermissionsChangeAsync(NotifyMemberPermissionsChange notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyMemberPermissionsChangeAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange)]
-            public virtual Task OnNotifyJoinControlsChangeAsync(NotifyJoinControlsChange notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyJoinControlsChangeAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo)]
-            public virtual Task OnNotifyXboxSessionInfoAsync(NotifyXboxSessionInfo notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyXboxSessionInfoAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<PlaygroupsComponentCommand, PlaygroupsComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::createPlaygroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreatePlaygroupAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(PlaygroupsComponentBase.Id, PlaygroupsComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.createPlaygroup)]
-            public virtual Task<NullStruct> CreatePlaygroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.createPlaygroup, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.destroyPlaygroup)]
-            public virtual Task<NullStruct> DestroyPlaygroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.destroyPlaygroup, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.joinPlaygroup)]
-            public virtual Task<NullStruct> JoinPlaygroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.joinPlaygroup, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.leavePlaygroup)]
-            public virtual Task<NullStruct> LeavePlaygroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.leavePlaygroup, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupAttributes)]
-            public virtual Task<NullStruct> SetPlaygroupAttributesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupAttributes, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setMemberAttributes)]
-            public virtual Task<NullStruct> SetMemberAttributesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setMemberAttributes, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.kickPlaygroupMember)]
-            public virtual Task<NullStruct> KickPlaygroupMemberAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.kickPlaygroupMember, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls)]
-            public virtual Task<NullStruct> SetPlaygroupJoinControlsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.setPlaygroupJoinControls, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation)]
-            public virtual Task<NullStruct> FinalizePlaygroupCreationAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.finalizePlaygroupCreation, request);
-            }
-            
-            [BlazeCommand((ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo)]
-            public virtual Task<NullStruct> LookupPlaygroupInfoAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)PlaygroupsComponentCommand.lookupPlaygroupInfo, request);
-            }
-            
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup)]
-            public virtual Task<NotifyDestroyPlaygroup> OnNotifyDestroyPlaygroupAsync(NotifyDestroyPlaygroup notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup)]
-            public virtual Task<NotifyJoinPlaygroup> OnNotifyJoinPlaygroupAsync(NotifyJoinPlaygroup notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup)]
-            public virtual Task<NotifyMemberJoinedPlaygroup> OnNotifyMemberJoinedPlaygroupAsync(NotifyMemberJoinedPlaygroup notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup)]
-            public virtual Task<NotifyMemberRemoveFromPlaygroup> OnNotifyMemberRemovedFromPlaygroupAsync(NotifyMemberRemoveFromPlaygroup notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet)]
-            public virtual Task<NotifyPlaygroupAttributesSet> OnNotifyPlaygroupAttributesSetAsync(NotifyPlaygroupAttributesSet notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet)]
-            public virtual Task<NotifyMemberAttributesSet> OnNotifyMemberAttributesSetAsync(NotifyMemberAttributesSet notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyLeaderChange)]
-            public virtual Task<NotifyLeaderChange> OnNotifyLeaderChangeAsync(NotifyLeaderChange notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange)]
-            public virtual Task<NotifyMemberPermissionsChange> OnNotifyMemberPermissionsChangeAsync(NotifyMemberPermissionsChange notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange)]
-            public virtual Task<NotifyJoinControlsChange> OnNotifyJoinControlsChangeAsync(NotifyJoinControlsChange notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo)]
-            public virtual Task<NotifyXboxSessionInfo> OnNotifyXboxSessionInfoAsync(NotifyXboxSessionInfo notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => PlaygroupsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(PlaygroupsComponentNotification notification) => PlaygroupsComponentBase.GetNotificationType(notification);
-            
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(PlaygroupsComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::destroyPlaygroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DestroyPlaygroupAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
-            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
-            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(PlaygroupsComponentCommand command) => command switch
-        {
-            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
-            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
-            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(PlaygroupsComponentCommand command) => command switch
-        {
-            PlaygroupsComponentCommand.createPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.destroyPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.joinPlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.leavePlaygroup => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.setMemberAttributes => typeof(NullStruct),
-            PlaygroupsComponentCommand.kickPlaygroupMember => typeof(NullStruct),
-            PlaygroupsComponentCommand.setPlaygroupJoinControls => typeof(NullStruct),
-            PlaygroupsComponentCommand.finalizePlaygroupCreation => typeof(NullStruct),
-            PlaygroupsComponentCommand.lookupPlaygroupInfo => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(PlaygroupsComponentNotification notification) => notification switch
-        {
-            PlaygroupsComponentNotification.NotifyDestroyPlaygroup => typeof(NotifyDestroyPlaygroup),
-            PlaygroupsComponentNotification.NotifyJoinPlaygroup => typeof(NotifyJoinPlaygroup),
-            PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup => typeof(NotifyMemberJoinedPlaygroup),
-            PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup => typeof(NotifyMemberRemoveFromPlaygroup),
-            PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet => typeof(NotifyPlaygroupAttributesSet),
-            PlaygroupsComponentNotification.NotifyMemberAttributesSet => typeof(NotifyMemberAttributesSet),
-            PlaygroupsComponentNotification.NotifyLeaderChange => typeof(NotifyLeaderChange),
-            PlaygroupsComponentNotification.NotifyMemberPermissionsChange => typeof(NotifyMemberPermissionsChange),
-            PlaygroupsComponentNotification.NotifyJoinControlsChange => typeof(NotifyJoinControlsChange),
-            PlaygroupsComponentNotification.NotifyXboxSessionInfo => typeof(NotifyXboxSessionInfo),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum PlaygroupsComponentCommand : ushort
-        {
-            createPlaygroup = 1,
-            destroyPlaygroup = 2,
-            joinPlaygroup = 3,
-            leavePlaygroup = 4,
-            setPlaygroupAttributes = 5,
-            setMemberAttributes = 6,
-            kickPlaygroupMember = 7,
-            setPlaygroupJoinControls = 8,
-            finalizePlaygroupCreation = 9,
-            lookupPlaygroupInfo = 10,
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum PlaygroupsComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::joinPlaygroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> JoinPlaygroupAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            NotifyDestroyPlaygroup = 50,
-            NotifyJoinPlaygroup = 51,
-            NotifyMemberJoinedPlaygroup = 52,
-            NotifyMemberRemovedFromPlaygroup = 53,
-            NotifyPlaygroupAttributesSet = 54,
-            NotifyMemberAttributesSet = 75,
-            NotifyLeaderChange = 79,
-            NotifyMemberPermissionsChange = 80,
-            NotifyJoinControlsChange = 85,
-            NotifyXboxSessionInfo = 86,
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::leavePlaygroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LeavePlaygroupAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::setPlaygroupAttributes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetPlaygroupAttributesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::setMemberAttributes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetMemberAttributesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::kickPlaygroupMember</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> KickPlaygroupMemberAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::setPlaygroupJoinControls</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetPlaygroupJoinControlsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::finalizePlaygroupCreation</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FinalizePlaygroupCreationAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>PlaygroupsComponent::lookupPlaygroupInfo</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LookupPlaygroupInfoAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new PlaygroupsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyDestroyPlaygroup</b> notification.<br/>
+        /// Notification type: <see cref="NotifyDestroyPlaygroup"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyDestroyPlaygroupAsync(BlazeRpcConnection connection, NotifyDestroyPlaygroup notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyDestroyPlaygroup;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyJoinPlaygroup</b> notification.<br/>
+        /// Notification type: <see cref="NotifyJoinPlaygroup"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyJoinPlaygroupAsync(BlazeRpcConnection connection, NotifyJoinPlaygroup notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyJoinPlaygroup;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyMemberJoinedPlaygroup</b> notification.<br/>
+        /// Notification type: <see cref="NotifyMemberJoinedPlaygroup"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyMemberJoinedPlaygroupAsync(BlazeRpcConnection connection, NotifyMemberJoinedPlaygroup notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyMemberJoinedPlaygroup;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyMemberRemovedFromPlaygroup</b> notification.<br/>
+        /// Notification type: <see cref="NotifyMemberRemoveFromPlaygroup"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyMemberRemovedFromPlaygroupAsync(BlazeRpcConnection connection, NotifyMemberRemoveFromPlaygroup notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyMemberRemovedFromPlaygroup;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyPlaygroupAttributesSet</b> notification.<br/>
+        /// Notification type: <see cref="NotifyPlaygroupAttributesSet"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyPlaygroupAttributesSetAsync(BlazeRpcConnection connection, NotifyPlaygroupAttributesSet notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyPlaygroupAttributesSet;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyMemberAttributesSet</b> notification.<br/>
+        /// Notification type: <see cref="NotifyMemberAttributesSet"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyMemberAttributesSetAsync(BlazeRpcConnection connection, NotifyMemberAttributesSet notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyMemberAttributesSet;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyLeaderChange</b> notification.<br/>
+        /// Notification type: <see cref="NotifyLeaderChange"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyLeaderChangeAsync(BlazeRpcConnection connection, NotifyLeaderChange notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyLeaderChange;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyMemberPermissionsChange</b> notification.<br/>
+        /// Notification type: <see cref="NotifyMemberPermissionsChange"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyMemberPermissionsChangeAsync(BlazeRpcConnection connection, NotifyMemberPermissionsChange notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyMemberPermissionsChange;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyJoinControlsChange</b> notification.<br/>
+        /// Notification type: <see cref="NotifyJoinControlsChange"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyJoinControlsChangeAsync(BlazeRpcConnection connection, NotifyJoinControlsChange notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyJoinControlsChange;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>PlaygroupsComponent::NotifyXboxSessionInfo</b> notification.<br/>
+        /// Notification type: <see cref="NotifyXboxSessionInfo"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyXboxSessionInfoAsync(BlazeRpcConnection connection, NotifyXboxSessionInfo notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = PlaygroupsComponentBase.Id;
+                frame.Command = (ushort)PlaygroupsComponentNotification.NotifyXboxSessionInfo;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

@@ -1,9 +1,9 @@
-﻿namespace Blaze2SDK.Blaze
+namespace Blaze2SDK.Blaze;
+
+[Flags]
+public enum HardwareFlags : int
 {
-    [Flags]
-    public enum HardwareFlags
-    {
-        None = 0,
-        VoipHeadsetStatus = 0x1
-    }
+    None = 0,
+    VoipHeadsetStatus = 1,
 }
+

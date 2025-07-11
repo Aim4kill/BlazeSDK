@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Locker
+namespace Blaze3SDK.Blaze.Locker;
+
+public class ConfirmationRequest : Tdf
 {
-	[TdfStruct]
-	public struct ConfirmationRequest
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ContentInfo", "mContentInfo", 0xA6E9AF00, TdfType.Struct, 0, true), // INFO
+        new TdfMemberInfo("UploadStatus", "mUploadStatus", 0xCF4CF400, TdfType.Enum, 1, true), // STST
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("INFO")]
-		public ContentInfo mContentInfo;
+    private TdfStruct<Blaze3SDK.Blaze.Locker.ContentInfo?> _contentInfo = new(__typeInfos[0]);
+    private TdfEnum<Blaze3SDK.Blaze.Locker.UploadStatus> _uploadStatus = new(__typeInfos[1]);
 
-		[TdfMember("STST")]
-		public UploadStatus mUploadStatus;
+    public ConfirmationRequest()
+    {
+        __members = [
+            _contentInfo,
+            _uploadStatus,
+        ];
+    }
 
-	}
+    public override Tdf CreateNew() => new ConfirmationRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "ConfirmationRequest";
+    public override string GetFullClassName() => "Blaze::Locker::ConfirmationRequest";
+
+    public Blaze3SDK.Blaze.Locker.ContentInfo? ContentInfo
+    {
+        get => _contentInfo.Value;
+        set => _contentInfo.Value = value;
+    }
+
+    public Blaze3SDK.Blaze.Locker.UploadStatus UploadStatus
+    {
+        get => _uploadStatus.Value;
+        set => _uploadStatus.Value = value;
+    }
+
 }
+

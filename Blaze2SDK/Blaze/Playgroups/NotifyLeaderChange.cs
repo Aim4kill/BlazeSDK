@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Playgroups
+namespace Blaze2SDK.Blaze.Playgroups;
+
+public class NotifyLeaderChange : Tdf
 {
-    [TdfStruct]
-    public struct NotifyLeaderChange
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("NewHostSlotId", "mNewHostSlotId", 0xA33A6400, TdfType.UInt8, 0, true), // HSID
+        new TdfMemberInfo("NewLeaderId", "mNewLeaderId", 0xB2990000, TdfType.UInt32, 1, true), // LID
+        new TdfMemberInfo("PlaygroupId", "mPlaygroupId", 0xC27A6400, TdfType.UInt32, 2, true), // PGID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt8 _newHostSlotId = new(__typeInfos[0]);
+    private TdfUInt32 _newLeaderId = new(__typeInfos[1]);
+    private TdfUInt32 _playgroupId = new(__typeInfos[2]);
+
+    public NotifyLeaderChange()
     {
-        
-        [TdfMember("HSID")]
-        public byte mNewHostSlotId;
-        
-        [TdfMember("LID")]
-        public uint mNewLeaderId;
-        
-        [TdfMember("PGID")]
-        public uint mPlaygroupId;
-        
+        __members = [
+            _newHostSlotId,
+            _newLeaderId,
+            _playgroupId,
+        ];
     }
+
+    public override Tdf CreateNew() => new NotifyLeaderChange();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "NotifyLeaderChange";
+    public override string GetFullClassName() => "Blaze::Playgroups::NotifyLeaderChange";
+
+    public byte NewHostSlotId
+    {
+        get => _newHostSlotId.Value;
+        set => _newHostSlotId.Value = value;
+    }
+
+    public uint NewLeaderId
+    {
+        get => _newLeaderId.Value;
+        set => _newLeaderId.Value = value;
+    }
+
+    public uint PlaygroupId
+    {
+        get => _playgroupId.Value;
+        set => _playgroupId.Value = value;
+    }
+
 }
+

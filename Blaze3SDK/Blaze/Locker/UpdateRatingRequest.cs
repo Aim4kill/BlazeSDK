@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Locker
+namespace Blaze3SDK.Blaze.Locker;
+
+public class UpdateRatingRequest : Tdf
 {
-	[TdfStruct]
-	public struct UpdateRatingRequest
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ContentCategory", "mContentCategory", 0x8E387400, TdfType.String, 0, true), // CCAT
+        new TdfMemberInfo("ContentId", "mContentId", 0x8E990000, TdfType.Int32, 1, true), // CID
+        new TdfMemberInfo("Rating", "mRating", 0xCA1D2500, TdfType.UInt32, 2, true), // RATE
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("CCAT")]
-		public string mContentCategory;
+    private TdfString _contentCategory = new(__typeInfos[0]);
+    private TdfInt32 _contentId = new(__typeInfos[1]);
+    private TdfUInt32 _rating = new(__typeInfos[2]);
 
-		[TdfMember("CID")]
-		public int mContentId;
+    public UpdateRatingRequest()
+    {
+        __members = [
+            _contentCategory,
+            _contentId,
+            _rating,
+        ];
+    }
 
-		[TdfMember("RATE")]
-		public uint mRating;
+    public override Tdf CreateNew() => new UpdateRatingRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "UpdateRatingRequest";
+    public override string GetFullClassName() => "Blaze::Locker::UpdateRatingRequest";
 
-	}
+    public string ContentCategory
+    {
+        get => _contentCategory.Value;
+        set => _contentCategory.Value = value;
+    }
+
+    public int ContentId
+    {
+        get => _contentId.Value;
+        set => _contentId.Value = value;
+    }
+
+    public uint Rating
+    {
+        get => _rating.Value;
+        set => _rating.Value = value;
+    }
+
 }
+

@@ -1,18 +1,37 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class MatchmakingCriteriaError : Tdf
 {
-    [TdfStruct]
-    public struct MatchmakingCriteriaError
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ErrMessage", "mErrMessage", 0xB739C000, TdfType.String, 0, true), // MSG
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _errMessage = new(__typeInfos[0]);
+
+    public MatchmakingCriteriaError()
     {
-        
-        /// <summary>
-        /// Max String Length: 160
-        /// </summary>
-        [TdfMember("MSG")]
-        [StringLength(160)]
-        public string mErrMessage;
-        
+        __members = [
+            _errMessage,
+        ];
     }
+
+    public override Tdf CreateNew() => new MatchmakingCriteriaError();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "MatchmakingCriteriaError";
+    public override string GetFullClassName() => "Blaze::GameManager::MatchmakingCriteriaError";
+
+    public string ErrMessage
+    {
+        get => _errMessage.Value;
+        set => _errMessage.Value = value;
+    }
+
 }
+

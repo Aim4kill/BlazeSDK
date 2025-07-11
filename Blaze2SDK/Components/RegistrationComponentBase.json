@@ -1,90 +1,86 @@
 {
-  "Usings": [
-    "BlazeCommon",
-    "NLog"
-  ],
+  "Usings": [],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 22,
+  "Name": "RegistrationComponent",
+  "ShortName": "Registration",
+  "ErrorCodes": {
+    "1": "REGISTRATION_ERR_UNKNOWN",
+    "3": "REGISTRATION_ERR_INVALID_ARGUMENTS",
+    "4": "REGISTRATION_ERR_NO_UPDATE",
+    "5": "REGISTRATION_ERR_USER_NOT_EXIST"
+  },
+  "Methods": [
     {
-      "Id": 22,
-      "Name": "RegistrationComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 2,
-          "Name": "check",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "addrow",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "ban",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "remrow",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 9,
-          "Name": "returnusers",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 10,
-          "Name": "numusers",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 13,
-          "Name": "updatenote",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 14,
-          "Name": "wipestats",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 15,
-          "Name": "updateflags",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 16,
-          "Name": "getDbCredentials",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 2,
+      "Name": "check",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "addrow",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "ban",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "remrow",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 9,
+      "Name": "returnusers",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 10,
+      "Name": "numusers",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 13,
+      "Name": "updatenote",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 14,
+      "Name": "wipestats",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 15,
+      "Name": "updateflags",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 16,
+      "Name": "getDbCredentials",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

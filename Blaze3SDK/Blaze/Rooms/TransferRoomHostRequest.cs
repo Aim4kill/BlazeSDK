@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Rooms
+namespace Blaze3SDK.Blaze.Rooms;
+
+public class TransferRoomHostRequest : Tdf
 {
-	[TdfStruct]
-	public struct TransferRoomHostRequest
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("UserId", "mUserId", 0x8BAA6400, TdfType.Int64, 0, true), // BZID
+        new TdfMemberInfo("RoomId", "mRoomId", 0xCADA6400, TdfType.UInt32, 1, true), // RMID
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("RMID")]
-		public uint mRoomId;
+    private TdfInt64 _userId = new(__typeInfos[0]);
+    private TdfUInt32 _roomId = new(__typeInfos[1]);
 
-		[TdfMember("BZID")]
-		public long mUserId;
+    public TransferRoomHostRequest()
+    {
+        __members = [
+            _userId,
+            _roomId,
+        ];
+    }
 
-	}
+    public override Tdf CreateNew() => new TransferRoomHostRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "TransferRoomHostRequest";
+    public override string GetFullClassName() => "Blaze::Rooms::TransferRoomHostRequest";
+
+    public long UserId
+    {
+        get => _userId.Value;
+        set => _userId.Value = value;
+    }
+
+    public uint RoomId
+    {
+        get => _roomId.Value;
+        set => _roomId.Value = value;
+    }
+
 }
+

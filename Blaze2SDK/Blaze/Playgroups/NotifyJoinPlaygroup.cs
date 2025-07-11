@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Playgroups
+namespace Blaze2SDK.Blaze.Playgroups;
+
+public class NotifyJoinPlaygroup : Tdf
 {
-    [TdfStruct]
-    public struct NotifyJoinPlaygroup
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("PlaygroupInfo", "mPlaygroupInfo", 0xA6E9AF00, TdfType.Struct, 0, true), // INFO
+        new TdfMemberInfo("PlaygroupMemberInfos", "mPlaygroupMemberInfos", 0xB6CCF400, TdfType.List, 1, true), // MLST
+        new TdfMemberInfo("JoiningBlazeId", "mJoiningBlazeId", 0xD7397200, TdfType.UInt32, 2, true), // USER
+    ];
+    private ITdfMember[] __members;
+
+    private TdfStruct<Blaze2SDK.Blaze.Playgroups.PlaygroupInfo?> _playgroupInfo = new(__typeInfos[0]);
+    private TdfList<Blaze2SDK.Blaze.Playgroups.PlaygroupMemberInfo> _playgroupMemberInfos = new(__typeInfos[1]);
+    private TdfUInt32 _joiningBlazeId = new(__typeInfos[2]);
+
+    public NotifyJoinPlaygroup()
     {
-        
-        [TdfMember("INFO")]
-        public PlaygroupInfo mPlaygroupInfo;
-        
-        [TdfMember("MLST")]
-        public List<PlaygroupMemberInfo> mPlaygroupMemberInfos;
-        
-        [TdfMember("USER")]
-        public uint mJoiningBlazeId;
-        
+        __members = [
+            _playgroupInfo,
+            _playgroupMemberInfos,
+            _joiningBlazeId,
+        ];
     }
+
+    public override Tdf CreateNew() => new NotifyJoinPlaygroup();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "NotifyJoinPlaygroup";
+    public override string GetFullClassName() => "Blaze::Playgroups::NotifyJoinPlaygroup";
+
+    public Blaze2SDK.Blaze.Playgroups.PlaygroupInfo? PlaygroupInfo
+    {
+        get => _playgroupInfo.Value;
+        set => _playgroupInfo.Value = value;
+    }
+
+    public IList<Blaze2SDK.Blaze.Playgroups.PlaygroupMemberInfo> PlaygroupMemberInfos
+    {
+        get => _playgroupMemberInfos.Value;
+        set => _playgroupMemberInfos.Value = value;
+    }
+
+    public uint JoiningBlazeId
+    {
+        get => _joiningBlazeId.Value;
+        set => _joiningBlazeId.Value = value;
+    }
+
 }
+

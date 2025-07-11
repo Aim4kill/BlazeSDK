@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class RemovePlayerMasterResponse : Tdf
 {
-    [TdfStruct]
-    public struct RemovePlayerMasterResponse
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("GameId", "mGameId", 0x9E990000, TdfType.UInt32, 0, true), // GID
+        new TdfMemberInfo("player", "player", 0x9F0B3900, TdfType.Struct, 1, true), // GPLY
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt32 _gameId = new(__typeInfos[0]);
+    private TdfStruct<Blaze2SDK.Blaze.GameManager.ReplicatedGamePlayer?> _player = new(__typeInfos[1]);
+
+    public RemovePlayerMasterResponse()
     {
-        
-        [TdfMember("GID")]
-        public uint mGameId;
-        
-        [TdfMember("GPLY")]
-        public ReplicatedGamePlayer player;
-        
+        __members = [
+            _gameId,
+            _player,
+        ];
     }
+
+    public override Tdf CreateNew() => new RemovePlayerMasterResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "RemovePlayerMasterResponse";
+    public override string GetFullClassName() => "Blaze::GameManager::RemovePlayerMasterResponse";
+
+    public uint GameId
+    {
+        get => _gameId.Value;
+        set => _gameId.Value = value;
+    }
+
+    public Blaze2SDK.Blaze.GameManager.ReplicatedGamePlayer? player
+    {
+        get => _player.Value;
+        set => _player.Value = value;
+    }
+
 }
+

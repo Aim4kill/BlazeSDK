@@ -1,592 +1,495 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class UserSessionsBase
 {
-    public static class UserSessionsBase
+    public const ushort Id = 30722;
+    public const string Name = "UserSessions";
+    
+    public enum Error : ushort {
+        USER_ERR_USER_NOT_FOUND = 1,
+        USER_ERR_SESSION_NOT_FOUND = 2,
+        USER_ERR_DUPLICATE_SESSION = 3,
+        USER_ERR_NO_EXTENDED_DATA = 4,
+        USER_ERR_MAX_DATA_REACHED = 5,
+        USER_ERR_KEY_NOT_FOUND = 6,
+        USER_ERR_INVALID_SESSION_INSTANCE = 7,
+        USER_ERR_INVALID_PARAM = 8,
+        USER_ERR_MINIMUM_CHARACTERS = 9,
+        ACCESS_GROUP_ERR_INVALID_GROUP = 10,
+        ACCESS_GROUP_ERR_DEFAULT_GROUP = 11,
+        ACCESS_GROUP_ERR_NOT_CURRENT_GROUP = 12,
+        ACCESS_GROUP_ERR_CURRENT_GROUP = 13,
+        ACCESS_GROUP_ERR_NO_GROUP_FOUND = 14,
+        GEOIP_INCOMPLETE_PARAMETERS = 15,
+        GEOIP_UNABLE_TO_RESOLVE = 16,
+        ERR_ENTITY_TYPE_NOT_FOUND = 17,
+        ERR_ENTITY_NOT_FOUND = 18,
+        ERR_NOT_SUPPORTED = 19,
+        USER_ERR_EXISTS = 20,
+        USER_ERR_RESUMABLE_SESSION_CONNECTION_INVALID = 21,
+        USER_ERR_RESUMABLE_SESSION_NOT_FOUND = 22,
+    }
+    
+    public enum UserSessionsCommand : ushort
     {
-        public const ushort Id = 30722;
-        public const string Name = "UserSessions";
+        fetchExtendedData = 3,
+        updateExtendedDataAttribute = 5,
+        updateHardwareFlags = 8,
+        lookupUser = 12,
+        lookupUsers = 13,
+        lookupUsersByPrefix = 14,
+        updateNetworkInfo = 20,
+        lookupUserGeoIPData = 23,
+        overrideUserGeoIPData = 24,
+        updateUserSessionClientData = 25,
+        setUserInfoAttribute = 26,
+        resetUserGeoIPData = 27,
+        lookupUserSessionId = 32,
+        fetchLastLocaleUsedAndAuthError = 33,
+        fetchUserFirstLastAuthTime = 34,
+        resumeSession = 35,
+    }
+    
+    public enum UserSessionsNotification : ushort
+    {
+        UserSessionExtendedDataUpdate = 1,
+        UserAdded = 2,
+        UserRemoved = 3,
+        UserSessionDisconnected = 4,
+        UserUpdated = 5,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => UserSessionsBase.Id;
+        public override string Name => UserSessionsBase.Name;
         
-        public class Server : BlazeServerComponent<UserSessionsCommand, UserSessionsNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(UserSessionsCommand command) => false;
+        
+        public class UserSessionsException : BlazeRpcException
         {
-            public Server() : base(UserSessionsBase.Id, UserSessionsBase.Name)
+            public UserSessionsException(Error error) : base((ushort)error, null) { }
+            public UserSessionsException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public UserSessionsException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public UserSessionsException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public UserSessionsException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public UserSessionsException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public UserSessionsException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public UserSessionsException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)UserSessionsCommand.fetchExtendedData,
+                Name = "fetchExtendedData",
+                IsSupported = IsCommandSupported(UserSessionsCommand.fetchExtendedData),
+                Func = async (req, ctx) => await FetchExtendedDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.fetchExtendedData)]
-            public virtual Task<NullStruct> FetchExtendedDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.updateExtendedDataAttribute,
+                Name = "updateExtendedDataAttribute",
+                IsSupported = IsCommandSupported(UserSessionsCommand.updateExtendedDataAttribute),
+                Func = async (req, ctx) => await UpdateExtendedDataAttributeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.updateExtendedDataAttribute)]
-            public virtual Task<NullStruct> UpdateExtendedDataAttributeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<UpdateHardwareFlagsRequest, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.updateHardwareFlags,
+                Name = "updateHardwareFlags",
+                IsSupported = IsCommandSupported(UserSessionsCommand.updateHardwareFlags),
+                Func = async (req, ctx) => await UpdateHardwareFlagsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.updateHardwareFlags)]
-            public virtual Task<NullStruct> UpdateHardwareFlagsAsync(UpdateHardwareFlagsRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.lookupUser,
+                Name = "lookupUser",
+                IsSupported = IsCommandSupported(UserSessionsCommand.lookupUser),
+                Func = async (req, ctx) => await LookupUserAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUser)]
-            public virtual Task<NullStruct> LookupUserAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<LookupUsersRequest, UserDataResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.lookupUsers,
+                Name = "lookupUsers",
+                IsSupported = IsCommandSupported(UserSessionsCommand.lookupUsers),
+                Func = async (req, ctx) => await LookupUsersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUsers)]
-            public virtual Task<UserDataResponse> LookupUsersAsync(LookupUsersRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<LookupUsersByPrefixRequest, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.lookupUsersByPrefix,
+                Name = "lookupUsersByPrefix",
+                IsSupported = IsCommandSupported(UserSessionsCommand.lookupUsersByPrefix),
+                Func = async (req, ctx) => await LookupUsersByPrefixAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUsersByPrefix)]
-            public virtual Task<NullStruct> LookupUsersByPrefixAsync(LookupUsersByPrefixRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<NetworkInfo, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.updateNetworkInfo,
+                Name = "updateNetworkInfo",
+                IsSupported = IsCommandSupported(UserSessionsCommand.updateNetworkInfo),
+                Func = async (req, ctx) => await UpdateNetworkInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.updateNetworkInfo)]
-            public virtual Task<NullStruct> UpdateNetworkInfoAsync(NetworkInfo request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.lookupUserGeoIPData,
+                Name = "lookupUserGeoIPData",
+                IsSupported = IsCommandSupported(UserSessionsCommand.lookupUserGeoIPData),
+                Func = async (req, ctx) => await LookupUserGeoIPDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUserGeoIPData)]
-            public virtual Task<NullStruct> LookupUserGeoIPDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.overrideUserGeoIPData,
+                Name = "overrideUserGeoIPData",
+                IsSupported = IsCommandSupported(UserSessionsCommand.overrideUserGeoIPData),
+                Func = async (req, ctx) => await OverrideUserGeoIPDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.overrideUserGeoIPData)]
-            public virtual Task<NullStruct> OverrideUserGeoIPDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.updateUserSessionClientData,
+                Name = "updateUserSessionClientData",
+                IsSupported = IsCommandSupported(UserSessionsCommand.updateUserSessionClientData),
+                Func = async (req, ctx) => await UpdateUserSessionClientDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.updateUserSessionClientData)]
-            public virtual Task<NullStruct> UpdateUserSessionClientDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.setUserInfoAttribute,
+                Name = "setUserInfoAttribute",
+                IsSupported = IsCommandSupported(UserSessionsCommand.setUserInfoAttribute),
+                Func = async (req, ctx) => await SetUserInfoAttributeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.setUserInfoAttribute)]
-            public virtual Task<NullStruct> SetUserInfoAttributeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.resetUserGeoIPData,
+                Name = "resetUserGeoIPData",
+                IsSupported = IsCommandSupported(UserSessionsCommand.resetUserGeoIPData),
+                Func = async (req, ctx) => await ResetUserGeoIPDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.resetUserGeoIPData)]
-            public virtual Task<NullStruct> ResetUserGeoIPDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.lookupUserSessionId,
+                Name = "lookupUserSessionId",
+                IsSupported = IsCommandSupported(UserSessionsCommand.lookupUserSessionId),
+                Func = async (req, ctx) => await LookupUserSessionIdAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUserSessionId)]
-            public virtual Task<NullStruct> LookupUserSessionIdAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError,
+                Name = "fetchLastLocaleUsedAndAuthError",
+                IsSupported = IsCommandSupported(UserSessionsCommand.fetchLastLocaleUsedAndAuthError),
+                Func = async (req, ctx) => await FetchLastLocaleUsedAndAuthErrorAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError)]
-            public virtual Task<NullStruct> FetchLastLocaleUsedAndAuthErrorAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UserSessionsCommand.fetchUserFirstLastAuthTime,
+                Name = "fetchUserFirstLastAuthTime",
+                IsSupported = IsCommandSupported(UserSessionsCommand.fetchUserFirstLastAuthTime),
+                Func = async (req, ctx) => await FetchUserFirstLastAuthTimeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UserSessionsCommand.fetchUserFirstLastAuthTime)]
-            public virtual Task<NullStruct> FetchUserFirstLastAuthTimeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.resumeSession)]
-            public virtual Task<NullStruct> ResumeSessionAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyUserSessionExtendedDataUpdateAsync(BlazeServerConnection connection, UserSessionExtendedDataUpdate notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionExtendedDataUpdate, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyUserAddedAsync(BlazeServerConnection connection, NotifyUserAdded notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserAdded, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyUserRemovedAsync(BlazeServerConnection connection, NotifyUserRemoved notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserRemoved, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyUserSessionDisconnectedAsync(BlazeServerConnection connection, UserSessionDisconnectReason notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserSessionDisconnected, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyUserUpdatedAsync(BlazeServerConnection connection, UserStatus notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(UserSessionsBase.Id, (ushort)UserSessionsNotification.UserUpdated, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UserSessionsNotification notification) => UserSessionsBase.GetNotificationType(notification);
+                Id = (ushort)UserSessionsCommand.resumeSession,
+                Name = "resumeSession",
+                IsSupported = IsCommandSupported(UserSessionsCommand.resumeSession),
+                Func = async (req, ctx) => await ResumeSessionAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<UserSessionsCommand, UserSessionsNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(UserSessionsBase.Id, UserSessionsBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct FetchExtendedData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchExtendedData, new NullStruct());
-            }
-            public Task<NullStruct> FetchExtendedDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchExtendedData, new NullStruct());
-            }
-            
-            public NullStruct UpdateExtendedDataAttribute()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateExtendedDataAttribute, new NullStruct());
-            }
-            public Task<NullStruct> UpdateExtendedDataAttributeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateExtendedDataAttribute, new NullStruct());
-            }
-            
-            public NullStruct UpdateHardwareFlags(UpdateHardwareFlagsRequest request)
-            {
-                return Connection.SendRequest<UpdateHardwareFlagsRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateHardwareFlags, request);
-            }
-            public Task<NullStruct> UpdateHardwareFlagsAsync(UpdateHardwareFlagsRequest request)
-            {
-                return Connection.SendRequestAsync<UpdateHardwareFlagsRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateHardwareFlags, request);
-            }
-            
-            public NullStruct LookupUser()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUser, new NullStruct());
-            }
-            public Task<NullStruct> LookupUserAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUser, new NullStruct());
-            }
-            
-            public UserDataResponse LookupUsers(LookupUsersRequest request)
-            {
-                return Connection.SendRequest<LookupUsersRequest, UserDataResponse, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsers, request);
-            }
-            public Task<UserDataResponse> LookupUsersAsync(LookupUsersRequest request)
-            {
-                return Connection.SendRequestAsync<LookupUsersRequest, UserDataResponse, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsers, request);
-            }
-            
-            public NullStruct LookupUsersByPrefix(LookupUsersByPrefixRequest request)
-            {
-                return Connection.SendRequest<LookupUsersByPrefixRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsersByPrefix, request);
-            }
-            public Task<NullStruct> LookupUsersByPrefixAsync(LookupUsersByPrefixRequest request)
-            {
-                return Connection.SendRequestAsync<LookupUsersByPrefixRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsersByPrefix, request);
-            }
-            
-            public NullStruct UpdateNetworkInfo(NetworkInfo request)
-            {
-                return Connection.SendRequest<NetworkInfo, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateNetworkInfo, request);
-            }
-            public Task<NullStruct> UpdateNetworkInfoAsync(NetworkInfo request)
-            {
-                return Connection.SendRequestAsync<NetworkInfo, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateNetworkInfo, request);
-            }
-            
-            public NullStruct LookupUserGeoIPData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserGeoIPData, new NullStruct());
-            }
-            public Task<NullStruct> LookupUserGeoIPDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserGeoIPData, new NullStruct());
-            }
-            
-            public NullStruct OverrideUserGeoIPData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.overrideUserGeoIPData, new NullStruct());
-            }
-            public Task<NullStruct> OverrideUserGeoIPDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.overrideUserGeoIPData, new NullStruct());
-            }
-            
-            public NullStruct UpdateUserSessionClientData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateUserSessionClientData, new NullStruct());
-            }
-            public Task<NullStruct> UpdateUserSessionClientDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateUserSessionClientData, new NullStruct());
-            }
-            
-            public NullStruct SetUserInfoAttribute()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.setUserInfoAttribute, new NullStruct());
-            }
-            public Task<NullStruct> SetUserInfoAttributeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.setUserInfoAttribute, new NullStruct());
-            }
-            
-            public NullStruct ResetUserGeoIPData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resetUserGeoIPData, new NullStruct());
-            }
-            public Task<NullStruct> ResetUserGeoIPDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resetUserGeoIPData, new NullStruct());
-            }
-            
-            public NullStruct LookupUserSessionId()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserSessionId, new NullStruct());
-            }
-            public Task<NullStruct> LookupUserSessionIdAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserSessionId, new NullStruct());
-            }
-            
-            public NullStruct FetchLastLocaleUsedAndAuthError()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError, new NullStruct());
-            }
-            public Task<NullStruct> FetchLastLocaleUsedAndAuthErrorAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError, new NullStruct());
-            }
-            
-            public NullStruct FetchUserFirstLastAuthTime()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchUserFirstLastAuthTime, new NullStruct());
-            }
-            public Task<NullStruct> FetchUserFirstLastAuthTimeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchUserFirstLastAuthTime, new NullStruct());
-            }
-            
-            public NullStruct ResumeSession()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resumeSession, new NullStruct());
-            }
-            public Task<NullStruct> ResumeSessionAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resumeSession, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserSessionExtendedDataUpdate)]
-            public virtual Task OnUserSessionExtendedDataUpdateAsync(UserSessionExtendedDataUpdate notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnUserSessionExtendedDataUpdateAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserAdded)]
-            public virtual Task OnUserAddedAsync(NotifyUserAdded notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnUserAddedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserRemoved)]
-            public virtual Task OnUserRemovedAsync(NotifyUserRemoved notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnUserRemovedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserSessionDisconnected)]
-            public virtual Task OnUserSessionDisconnectedAsync(UserSessionDisconnectReason notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnUserSessionDisconnectedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserUpdated)]
-            public virtual Task OnUserUpdatedAsync(UserStatus notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnUserUpdatedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UserSessionsNotification notification) => UserSessionsBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<UserSessionsCommand, UserSessionsNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::fetchExtendedData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FetchExtendedDataAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(UserSessionsBase.Id, UserSessionsBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.fetchExtendedData)]
-            public virtual Task<NullStruct> FetchExtendedDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchExtendedData, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.updateExtendedDataAttribute)]
-            public virtual Task<NullStruct> UpdateExtendedDataAttributeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateExtendedDataAttribute, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.updateHardwareFlags)]
-            public virtual Task<NullStruct> UpdateHardwareFlagsAsync(UpdateHardwareFlagsRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateHardwareFlagsRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateHardwareFlags, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUser)]
-            public virtual Task<NullStruct> LookupUserAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUser, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUsers)]
-            public virtual Task<UserDataResponse> LookupUsersAsync(LookupUsersRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<LookupUsersRequest, UserDataResponse, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsers, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUsersByPrefix)]
-            public virtual Task<NullStruct> LookupUsersByPrefixAsync(LookupUsersByPrefixRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<LookupUsersByPrefixRequest, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUsersByPrefix, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.updateNetworkInfo)]
-            public virtual Task<NullStruct> UpdateNetworkInfoAsync(NetworkInfo request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NetworkInfo, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateNetworkInfo, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUserGeoIPData)]
-            public virtual Task<NullStruct> LookupUserGeoIPDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserGeoIPData, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.overrideUserGeoIPData)]
-            public virtual Task<NullStruct> OverrideUserGeoIPDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.overrideUserGeoIPData, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.updateUserSessionClientData)]
-            public virtual Task<NullStruct> UpdateUserSessionClientDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.updateUserSessionClientData, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.setUserInfoAttribute)]
-            public virtual Task<NullStruct> SetUserInfoAttributeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.setUserInfoAttribute, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.resetUserGeoIPData)]
-            public virtual Task<NullStruct> ResetUserGeoIPDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resetUserGeoIPData, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.lookupUserSessionId)]
-            public virtual Task<NullStruct> LookupUserSessionIdAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.lookupUserSessionId, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError)]
-            public virtual Task<NullStruct> FetchLastLocaleUsedAndAuthErrorAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchLastLocaleUsedAndAuthError, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.fetchUserFirstLastAuthTime)]
-            public virtual Task<NullStruct> FetchUserFirstLastAuthTimeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.fetchUserFirstLastAuthTime, request);
-            }
-            
-            [BlazeCommand((ushort)UserSessionsCommand.resumeSession)]
-            public virtual Task<NullStruct> ResumeSessionAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UserSessionsCommand.resumeSession, request);
-            }
-            
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserSessionExtendedDataUpdate)]
-            public virtual Task<UserSessionExtendedDataUpdate> OnUserSessionExtendedDataUpdateAsync(UserSessionExtendedDataUpdate notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserAdded)]
-            public virtual Task<NotifyUserAdded> OnUserAddedAsync(NotifyUserAdded notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserRemoved)]
-            public virtual Task<NotifyUserRemoved> OnUserRemovedAsync(NotifyUserRemoved notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserSessionDisconnected)]
-            public virtual Task<UserSessionDisconnectReason> OnUserSessionDisconnectedAsync(UserSessionDisconnectReason notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)UserSessionsNotification.UserUpdated)]
-            public virtual Task<UserStatus> OnUserUpdatedAsync(UserStatus notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(UserSessionsCommand command) => UserSessionsBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UserSessionsCommand command) => UserSessionsBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UserSessionsNotification notification) => UserSessionsBase.GetNotificationType(notification);
-            
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(UserSessionsCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::updateExtendedDataAttribute</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateExtendedDataAttributeAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
-            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
-            UserSessionsCommand.updateHardwareFlags => typeof(UpdateHardwareFlagsRequest),
-            UserSessionsCommand.lookupUser => typeof(NullStruct),
-            UserSessionsCommand.lookupUsers => typeof(LookupUsersRequest),
-            UserSessionsCommand.lookupUsersByPrefix => typeof(LookupUsersByPrefixRequest),
-            UserSessionsCommand.updateNetworkInfo => typeof(NetworkInfo),
-            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
-            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
-            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
-            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
-            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
-            UserSessionsCommand.resumeSession => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(UserSessionsCommand command) => command switch
-        {
-            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
-            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
-            UserSessionsCommand.updateHardwareFlags => typeof(NullStruct),
-            UserSessionsCommand.lookupUser => typeof(NullStruct),
-            UserSessionsCommand.lookupUsers => typeof(UserDataResponse),
-            UserSessionsCommand.lookupUsersByPrefix => typeof(NullStruct),
-            UserSessionsCommand.updateNetworkInfo => typeof(NullStruct),
-            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
-            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
-            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
-            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
-            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
-            UserSessionsCommand.resumeSession => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(UserSessionsCommand command) => command switch
-        {
-            UserSessionsCommand.fetchExtendedData => typeof(NullStruct),
-            UserSessionsCommand.updateExtendedDataAttribute => typeof(NullStruct),
-            UserSessionsCommand.updateHardwareFlags => typeof(NullStruct),
-            UserSessionsCommand.lookupUser => typeof(NullStruct),
-            UserSessionsCommand.lookupUsers => typeof(NullStruct),
-            UserSessionsCommand.lookupUsersByPrefix => typeof(NullStruct),
-            UserSessionsCommand.updateNetworkInfo => typeof(NullStruct),
-            UserSessionsCommand.lookupUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.overrideUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.updateUserSessionClientData => typeof(NullStruct),
-            UserSessionsCommand.setUserInfoAttribute => typeof(NullStruct),
-            UserSessionsCommand.resetUserGeoIPData => typeof(NullStruct),
-            UserSessionsCommand.lookupUserSessionId => typeof(NullStruct),
-            UserSessionsCommand.fetchLastLocaleUsedAndAuthError => typeof(NullStruct),
-            UserSessionsCommand.fetchUserFirstLastAuthTime => typeof(NullStruct),
-            UserSessionsCommand.resumeSession => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(UserSessionsNotification notification) => notification switch
-        {
-            UserSessionsNotification.UserSessionExtendedDataUpdate => typeof(UserSessionExtendedDataUpdate),
-            UserSessionsNotification.UserAdded => typeof(NotifyUserAdded),
-            UserSessionsNotification.UserRemoved => typeof(NotifyUserRemoved),
-            UserSessionsNotification.UserSessionDisconnected => typeof(UserSessionDisconnectReason),
-            UserSessionsNotification.UserUpdated => typeof(UserStatus),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum UserSessionsCommand : ushort
-        {
-            fetchExtendedData = 3,
-            updateExtendedDataAttribute = 5,
-            updateHardwareFlags = 8,
-            lookupUser = 12,
-            lookupUsers = 13,
-            lookupUsersByPrefix = 14,
-            updateNetworkInfo = 20,
-            lookupUserGeoIPData = 23,
-            overrideUserGeoIPData = 24,
-            updateUserSessionClientData = 25,
-            setUserInfoAttribute = 26,
-            resetUserGeoIPData = 27,
-            lookupUserSessionId = 32,
-            fetchLastLocaleUsedAndAuthError = 33,
-            fetchUserFirstLastAuthTime = 34,
-            resumeSession = 35,
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum UserSessionsNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::updateHardwareFlags</b> command.<br/>
+        /// Request type: <see cref="UpdateHardwareFlagsRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateHardwareFlagsAsync(UpdateHardwareFlagsRequest request, BlazeRpcContext context)
         {
-            UserSessionExtendedDataUpdate = 1,
-            UserAdded = 2,
-            UserRemoved = 3,
-            UserSessionDisconnected = 4,
-            UserUpdated = 5,
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::lookupUser</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LookupUserAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::lookupUsers</b> command.<br/>
+        /// Request type: <see cref="LookupUsersRequest"/><br/>
+        /// Response type: <see cref="UserDataResponse"/><br/>
+        /// </summary>
+        public virtual Task<UserDataResponse> LookupUsersAsync(LookupUsersRequest request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::lookupUsersByPrefix</b> command.<br/>
+        /// Request type: <see cref="LookupUsersByPrefixRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LookupUsersByPrefixAsync(LookupUsersByPrefixRequest request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::updateNetworkInfo</b> command.<br/>
+        /// Request type: <see cref="NetworkInfo"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateNetworkInfoAsync(NetworkInfo request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::lookupUserGeoIPData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LookupUserGeoIPDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::overrideUserGeoIPData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> OverrideUserGeoIPDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::updateUserSessionClientData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateUserSessionClientDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::setUserInfoAttribute</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetUserInfoAttributeAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::resetUserGeoIPData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ResetUserGeoIPDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::lookupUserSessionId</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LookupUserSessionIdAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::fetchLastLocaleUsedAndAuthError</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FetchLastLocaleUsedAndAuthErrorAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::fetchUserFirstLastAuthTime</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FetchUserFirstLastAuthTimeAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UserSessions::resumeSession</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ResumeSessionAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UserSessionsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>UserSessions::UserSessionExtendedDataUpdate</b> notification.<br/>
+        /// Notification type: <see cref="UserSessionExtendedDataUpdate"/><br/>
+        /// </summary>
+        public static Task NotifyUserSessionExtendedDataUpdateAsync(BlazeRpcConnection connection, UserSessionExtendedDataUpdate notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = UserSessionsBase.Id;
+                frame.Command = (ushort)UserSessionsNotification.UserSessionExtendedDataUpdate;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>UserSessions::UserAdded</b> notification.<br/>
+        /// Notification type: <see cref="NotifyUserAdded"/><br/>
+        /// </summary>
+        public static Task NotifyUserAddedAsync(BlazeRpcConnection connection, NotifyUserAdded notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = UserSessionsBase.Id;
+                frame.Command = (ushort)UserSessionsNotification.UserAdded;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>UserSessions::UserRemoved</b> notification.<br/>
+        /// Notification type: <see cref="NotifyUserRemoved"/><br/>
+        /// </summary>
+        public static Task NotifyUserRemovedAsync(BlazeRpcConnection connection, NotifyUserRemoved notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = UserSessionsBase.Id;
+                frame.Command = (ushort)UserSessionsNotification.UserRemoved;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>UserSessions::UserSessionDisconnected</b> notification.<br/>
+        /// Notification type: <see cref="UserSessionDisconnectReason"/><br/>
+        /// </summary>
+        public static Task NotifyUserSessionDisconnectedAsync(BlazeRpcConnection connection, UserSessionDisconnectReason notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = UserSessionsBase.Id;
+                frame.Command = (ushort)UserSessionsNotification.UserSessionDisconnected;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>UserSessions::UserUpdated</b> notification.<br/>
+        /// Notification type: <see cref="UserStatus"/><br/>
+        /// </summary>
+        public static Task NotifyUserUpdatedAsync(BlazeRpcConnection connection, UserStatus notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = UserSessionsBase.Id;
+                frame.Command = (ushort)UserSessionsNotification.UserUpdated;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

@@ -1,8 +1,8 @@
-﻿namespace Blaze2SDK.Blaze.Clubs
+namespace Blaze2SDK.Blaze.Clubs;
+
+[Flags]
+public enum ClubAcceptanceFlags : int
 {
-    [Flags]
-    public enum ClubAcceptanceFlags
-    {
-        None = 0,
-    }
+    None = 0,
 }
+

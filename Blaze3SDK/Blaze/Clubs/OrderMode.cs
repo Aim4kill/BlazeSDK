@@ -1,8 +1,8 @@
-namespace Blaze3SDK.Blaze.Clubs
+namespace Blaze3SDK.Blaze.Clubs;
+
+public enum OrderMode : int
 {
-	public enum OrderMode : int
-	{
-		ASC_ORDER = 0,
-		DESC_ORDER = 1,
-	}
+    ASC_ORDER = 0,
+    DESC_ORDER = 1,
 }
+

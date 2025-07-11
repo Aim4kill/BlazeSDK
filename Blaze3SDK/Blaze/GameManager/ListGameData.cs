@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.GameManager
+namespace Blaze3SDK.Blaze.GameManager;
+
+public class ListGameData : Tdf
 {
-	[TdfStruct]
-	public struct ListGameData
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Game", "mGame", 0x9E1B6500, TdfType.Struct, 0, true), // GAME
+        new TdfMemberInfo("GameRoster", "mGameRoster", 0xC32BF300, TdfType.List, 1, true), // PROS
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("GAME")]
-		public ReplicatedGameData mGame;
+    private TdfStruct<Blaze3SDK.Blaze.GameManager.ReplicatedGameData?> _game = new(__typeInfos[0]);
+    private TdfList<Blaze3SDK.Blaze.GameManager.ReplicatedGamePlayer> _gameRoster = new(__typeInfos[1]);
 
-		[TdfMember("PROS")]
-		public List<ReplicatedGamePlayer> mGameRoster;
+    public ListGameData()
+    {
+        __members = [
+            _game,
+            _gameRoster,
+        ];
+    }
 
-	}
+    public override Tdf CreateNew() => new ListGameData();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "ListGameData";
+    public override string GetFullClassName() => "Blaze::GameManager::ListGameData";
+
+    public Blaze3SDK.Blaze.GameManager.ReplicatedGameData? Game
+    {
+        get => _game.Value;
+        set => _game.Value = value;
+    }
+
+    public IList<Blaze3SDK.Blaze.GameManager.ReplicatedGamePlayer> GameRoster
+    {
+        get => _gameRoster.Value;
+        set => _gameRoster.Value = value;
+    }
+
 }
+

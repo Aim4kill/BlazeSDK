@@ -1,24 +1,54 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze
+namespace Blaze2SDK.Blaze;
+
+public class LookupUsersRequest : Tdf
 {
-    [TdfStruct]
-    public struct LookupUsersRequest
+    public enum LookupType : int
     {
-        
-        [TdfMember("LTYP")]
-        public LookupType mLookupType;
-        
-        [TdfMember("ULST")]
-        public List<UserIdentification> mUserIdentificationList;
-        
-        public enum LookupType : int
-        {
-            BLAZE_ID = 0x0,
-            PERSONA_NAME = 0x1,
-            EXTERNAL_ID = 0x2,
-            ACCOUNT_ID = 0x3,
-        }
-        
+        BLAZE_ID = 0,
+        PERSONA_NAME = 1,
+        EXTERNAL_ID = 2,
+        ACCOUNT_ID = 3,
     }
+    
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("LookupType", "mLookupType", 0xB34E7000, TdfType.Enum, 0, true), // LTYP
+        new TdfMemberInfo("UserIdentificationList", "mUserIdentificationList", 0xD6CCF400, TdfType.List, 1, true), // ULST
+    ];
+    private ITdfMember[] __members;
+
+    private TdfEnum<Blaze2SDK.Blaze.LookupUsersRequest.LookupType> _lookupType = new(__typeInfos[0]);
+    private TdfList<Blaze2SDK.Blaze.UserIdentification> _userIdentificationList = new(__typeInfos[1]);
+
+    public LookupUsersRequest()
+    {
+        __members = [
+            _lookupType,
+            _userIdentificationList,
+        ];
+    }
+
+    public override Tdf CreateNew() => new LookupUsersRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "LookupUsersRequest";
+    public override string GetFullClassName() => "Blaze::LookupUsersRequest";
+
+    public Blaze2SDK.Blaze.LookupUsersRequest.LookupType mLookupType
+    {
+        get => _lookupType.Value;
+        set => _lookupType.Value = value;
+    }
+
+    public IList<Blaze2SDK.Blaze.UserIdentification> UserIdentificationList
+    {
+        get => _userIdentificationList.Value;
+        set => _userIdentificationList.Value = value;
+    }
+
 }
+

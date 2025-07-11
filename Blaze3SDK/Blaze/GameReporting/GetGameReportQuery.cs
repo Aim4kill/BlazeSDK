@@ -1,13 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.GameReporting
+namespace Blaze3SDK.Blaze.GameReporting;
+
+public class GetGameReportQuery : Tdf
 {
-	[TdfStruct]
-	public struct GetGameReportQuery
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Name", "mName", 0xC6E86D00, TdfType.String, 0, true), // QNAM
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("QNAM")]
-		public string mName;
+    private TdfString _name = new(__typeInfos[0]);
 
-	}
+    public GetGameReportQuery()
+    {
+        __members = [
+            _name,
+        ];
+    }
+
+    public override Tdf CreateNew() => new GetGameReportQuery();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetGameReportQuery";
+    public override string GetFullClassName() => "Blaze::GameReporting::GetGameReportQuery";
+
+    public string Name
+    {
+        get => _name.Value;
+        set => _name.Value = value;
+    }
+
 }
+

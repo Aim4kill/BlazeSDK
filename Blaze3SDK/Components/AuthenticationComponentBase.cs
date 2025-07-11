@@ -1,1392 +1,1132 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.Authentication;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class AuthenticationComponentBase
 {
-    public static class AuthenticationComponentBase
-    {
-        public const ushort Id = 1;
-        public const string Name = "AuthenticationComponent";
-
-        public class Server : BlazeServerComponent<AuthenticationComponentCommand, AuthenticationComponentNotification, Blaze3RpcError>
-        {
-            public Server() : base(AuthenticationComponentBase.Id, AuthenticationComponentBase.Name)
-            {
-
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createAccount)]
-            public virtual Task<CreateAccountResponse> CreateAccountAsync(CreateAccountParameters request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.updateAccount)]
-            public virtual Task<UpdateAccountResponse> UpdateAccountAsync(UpdateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.updateParentalEmail)]
-            public virtual Task<NullStruct> UpdateParentalEmailAsync(UpdateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listUserEntitlements2)]
-            public virtual Task<Entitlements> ListUserEntitlements2Async(ListUserEntitlements2Request request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getAccount)]
-            public virtual Task<AccountInfo> GetAccountAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement)]
-            public virtual Task<NullStruct> GrantEntitlementAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listEntitlements)]
-            public virtual Task<Entitlements> ListEntitlementsAsync(ListEntitlementsRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.hasEntitlement)]
-            public virtual Task<NullStruct> HasEntitlementAsync(HasEntitlementRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getUseCount)]
-            public virtual Task<UseCount> GetUseCountAsync(GetUseCountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.decrementUseCount)]
-            public virtual Task<DecrementUseCount> DecrementUseCountAsync(DecrementUseCountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getAuthToken)]
-            public virtual Task<GetAuthTokenResponse> GetAuthTokenAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getHandoffToken)]
-            public virtual Task<GetHandoffTokenResponse> GetHandoffTokenAsync(GetHandoffTokenRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPasswordRules)]
-            public virtual Task<PasswordRulesInfo> GetPasswordRulesAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement2)]
-            public virtual Task<GrantEntitlement2Response> GrantEntitlement2Async(GrantEntitlement2Request request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.login)]
-            public virtual Task<LoginResponse> LoginAsync(LoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.acceptTos)]
-            public virtual Task<NullStruct> AcceptTosAsync(AcceptTosRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTosInfo)]
-            public virtual Task<GetTosInfoResponse> GetTosInfoAsync(GetTosInfoRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.modifyEntitlement2)]
-            public virtual Task<NullStruct> ModifyEntitlement2Async(ModifyEntitlement2Request request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.consumecode)]
-            public virtual Task<ConsumecodeResponse> ConsumecodeAsync(ConsumecodeRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.passwordForgot)]
-            public virtual Task<NullStruct> PasswordForgotAsync(PasswordForgotRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTermsAndConditionsContent)]
-            public virtual Task<NullStruct> GetTermsAndConditionsContentAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPrivacyPolicyContent)]
-            public virtual Task<GetLegalDocContentResponse> GetPrivacyPolicyContentAsync(GetLegalDocContentRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listPersonaEntitlements2)]
-            public virtual Task<NullStruct> ListPersonaEntitlements2Async(ListPersonaEntitlements2Request request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.silentLogin)]
-            public virtual Task<FullLoginResponse> SilentLoginAsync(SilentLoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.checkAgeReq)]
-            public virtual Task<CheckAgeReqResponse> CheckAgeReqAsync(CheckAgeReqRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getOptIn)]
-            public virtual Task<OptInValue> GetOptInAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.enableOptIn)]
-            public virtual Task<NullStruct> EnableOptInAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.disableOptIn)]
-            public virtual Task<NullStruct> DisableOptInAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.expressLogin)]
-            public virtual Task<FullLoginResponse> ExpressLoginAsync(ExpressLoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.logout)]
-            public virtual Task<NullStruct> LogoutAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createPersona)]
-            public virtual Task<PersonaDetails> CreatePersonaAsync(CreatePersonaRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPersona)]
-            public virtual Task<GetPersonaResponse> GetPersonaAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listPersonas)]
-            public virtual Task<ListPersonasResponse> ListPersonasAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.loginPersona)]
-            public virtual Task<SessionInfo> LoginPersonaAsync(LoginPersonaRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.logoutPersona)]
-            public virtual Task<NullStruct> LogoutPersonaAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.deletePersona)]
-            public virtual Task<NullStruct> DeletePersonaAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.disablePersona)]
-            public virtual Task<NullStruct> DisablePersonaAsync(PersonaRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listDeviceAccounts)]
-            public virtual Task<ListDeviceAccountsResponse> ListDeviceAccountsAsync(ListDeviceAccountsRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxCreateAccount)]
-            public virtual Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.originLogin)]
-            public virtual Task<FullLoginResponse> OriginLoginAsync(OriginLoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxAssociateAccount)]
-            public virtual Task<NullStruct> XboxAssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxLogin)]
-            public virtual Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3CreateAccount)]
-            public virtual Task<ConsoleCreateAccountResponse> Ps3CreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3AssociateAccount)]
-            public virtual Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3Login)]
-            public virtual Task<ConsoleLoginResponse> Ps3LoginAsync(PS3LoginRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.validateSessionKey)]
-            public virtual Task<NullStruct> ValidateSessionKeyAsync(ValidateSessionKeyRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createWalUserSession)]
-            public virtual Task<NullStruct> CreateWalUserSessionAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.acceptLegalDocs)]
-            public virtual Task<NullStruct> AcceptLegalDocsAsync(AcceptLegalDocsRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getLegalDocsInfo)]
-            public virtual Task<GetLegalDocsInfoResponse> GetLegalDocsInfoAsync(GetLegalDocsInfoRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTermsOfServiceContent)]
-            public virtual Task<GetLegalDocContentResponse> GetTermsOfServiceContentAsync(GetLegalDocContentRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.deviceLoginGuest)]
-            public virtual Task<ConsoleLoginResponse> DeviceLoginGuestAsync(DeviceLoginGuestRequest request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.checkSinglePlayerLogin)]
-            public virtual Task<NullStruct> CheckSinglePlayerLoginAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-
-            public override Type GetCommandRequestType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AuthenticationComponentNotification notification) => AuthenticationComponentBase.GetNotificationType(notification);
-
-        }
-
-        public class Client : BlazeClientComponent<AuthenticationComponentCommand, AuthenticationComponentNotification, Blaze3RpcError>
-        {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-
-            public Client(BlazeClientConnection connection) : base(AuthenticationComponentBase.Id, AuthenticationComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-
-
-            public CreateAccountResponse CreateAccount(CreateAccountParameters request)
-            {
-                return Connection.SendRequest<CreateAccountParameters, CreateAccountResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createAccount, request);
-            }
-            public Task<CreateAccountResponse> CreateAccountAsync(CreateAccountParameters request)
-            {
-                return Connection.SendRequestAsync<CreateAccountParameters, CreateAccountResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createAccount, request);
-            }
-
-            public UpdateAccountResponse UpdateAccount(UpdateAccountRequest request)
-            {
-                return Connection.SendRequest<UpdateAccountRequest, UpdateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateAccount, request);
-            }
-            public Task<UpdateAccountResponse> UpdateAccountAsync(UpdateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<UpdateAccountRequest, UpdateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateAccount, request);
-            }
-
-            public NullStruct UpdateParentalEmail(UpdateAccountRequest request)
-            {
-                return Connection.SendRequest<UpdateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateParentalEmail, request);
-            }
-            public Task<NullStruct> UpdateParentalEmailAsync(UpdateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<UpdateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateParentalEmail, request);
-            }
-
-            public Entitlements ListUserEntitlements2(ListUserEntitlements2Request request)
-            {
-                return Connection.SendRequest<ListUserEntitlements2Request, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listUserEntitlements2, request);
-            }
-            public Task<Entitlements> ListUserEntitlements2Async(ListUserEntitlements2Request request)
-            {
-                return Connection.SendRequestAsync<ListUserEntitlements2Request, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listUserEntitlements2, request);
-            }
-
-            public AccountInfo GetAccount()
-            {
-                return Connection.SendRequest<NullStruct, AccountInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAccount, new NullStruct());
-            }
-            public Task<AccountInfo> GetAccountAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, AccountInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAccount, new NullStruct());
-            }
-
-            public NullStruct GrantEntitlement()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, new NullStruct());
-            }
-            public Task<NullStruct> GrantEntitlementAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, new NullStruct());
-            }
-
-            public Entitlements ListEntitlements(ListEntitlementsRequest request)
-            {
-                return Connection.SendRequest<ListEntitlementsRequest, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listEntitlements, request);
-            }
-            public Task<Entitlements> ListEntitlementsAsync(ListEntitlementsRequest request)
-            {
-                return Connection.SendRequestAsync<ListEntitlementsRequest, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listEntitlements, request);
-            }
-
-            public NullStruct HasEntitlement(HasEntitlementRequest request)
-            {
-                return Connection.SendRequest<HasEntitlementRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.hasEntitlement, request);
-            }
-            public Task<NullStruct> HasEntitlementAsync(HasEntitlementRequest request)
-            {
-                return Connection.SendRequestAsync<HasEntitlementRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.hasEntitlement, request);
-            }
-
-            public UseCount GetUseCount(GetUseCountRequest request)
-            {
-                return Connection.SendRequest<GetUseCountRequest, UseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.getUseCount, request);
-            }
-            public Task<UseCount> GetUseCountAsync(GetUseCountRequest request)
-            {
-                return Connection.SendRequestAsync<GetUseCountRequest, UseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.getUseCount, request);
-            }
-
-            public DecrementUseCount DecrementUseCount(DecrementUseCountRequest request)
-            {
-                return Connection.SendRequest<DecrementUseCountRequest, DecrementUseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.decrementUseCount, request);
-            }
-            public Task<DecrementUseCount> DecrementUseCountAsync(DecrementUseCountRequest request)
-            {
-                return Connection.SendRequestAsync<DecrementUseCountRequest, DecrementUseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.decrementUseCount, request);
-            }
-
-            public GetAuthTokenResponse GetAuthToken()
-            {
-                return Connection.SendRequest<NullStruct, GetAuthTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAuthToken, new NullStruct());
-            }
-            public Task<GetAuthTokenResponse> GetAuthTokenAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GetAuthTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAuthToken, new NullStruct());
-            }
-
-            public GetHandoffTokenResponse GetHandoffToken(GetHandoffTokenRequest request)
-            {
-                return Connection.SendRequest<GetHandoffTokenRequest, GetHandoffTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getHandoffToken, request);
-            }
-            public Task<GetHandoffTokenResponse> GetHandoffTokenAsync(GetHandoffTokenRequest request)
-            {
-                return Connection.SendRequestAsync<GetHandoffTokenRequest, GetHandoffTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getHandoffToken, request);
-            }
-
-            public PasswordRulesInfo GetPasswordRules()
-            {
-                return Connection.SendRequest<NullStruct, PasswordRulesInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPasswordRules, new NullStruct());
-            }
-            public Task<PasswordRulesInfo> GetPasswordRulesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, PasswordRulesInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPasswordRules, new NullStruct());
-            }
-
-            public GrantEntitlement2Response GrantEntitlement2(GrantEntitlement2Request request)
-            {
-                return Connection.SendRequest<GrantEntitlement2Request, GrantEntitlement2Response, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement2, request);
-            }
-            public Task<GrantEntitlement2Response> GrantEntitlement2Async(GrantEntitlement2Request request)
-            {
-                return Connection.SendRequestAsync<GrantEntitlement2Request, GrantEntitlement2Response, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement2, request);
-            }
-
-            public LoginResponse Login(LoginRequest request)
-            {
-                return Connection.SendRequest<LoginRequest, LoginResponse, CreateAccountResponse>(this, (ushort)AuthenticationComponentCommand.login, request);
-            }
-            public Task<LoginResponse> LoginAsync(LoginRequest request)
-            {
-                return Connection.SendRequestAsync<LoginRequest, LoginResponse, CreateAccountResponse>(this, (ushort)AuthenticationComponentCommand.login, request);
-            }
-
-            public NullStruct AcceptTos(AcceptTosRequest request)
-            {
-                return Connection.SendRequest<AcceptTosRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptTos, request);
-            }
-            public Task<NullStruct> AcceptTosAsync(AcceptTosRequest request)
-            {
-                return Connection.SendRequestAsync<AcceptTosRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptTos, request);
-            }
-
-            public GetTosInfoResponse GetTosInfo(GetTosInfoRequest request)
-            {
-                return Connection.SendRequest<GetTosInfoRequest, GetTosInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTosInfo, request);
-            }
-            public Task<GetTosInfoResponse> GetTosInfoAsync(GetTosInfoRequest request)
-            {
-                return Connection.SendRequestAsync<GetTosInfoRequest, GetTosInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTosInfo, request);
-            }
-
-            public NullStruct ModifyEntitlement2(ModifyEntitlement2Request request)
-            {
-                return Connection.SendRequest<ModifyEntitlement2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.modifyEntitlement2, request);
-            }
-            public Task<NullStruct> ModifyEntitlement2Async(ModifyEntitlement2Request request)
-            {
-                return Connection.SendRequestAsync<ModifyEntitlement2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.modifyEntitlement2, request);
-            }
-
-            public ConsumecodeResponse Consumecode(ConsumecodeRequest request)
-            {
-                return Connection.SendRequest<ConsumecodeRequest, ConsumecodeResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.consumecode, request);
-            }
-            public Task<ConsumecodeResponse> ConsumecodeAsync(ConsumecodeRequest request)
-            {
-                return Connection.SendRequestAsync<ConsumecodeRequest, ConsumecodeResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.consumecode, request);
-            }
-
-            public NullStruct PasswordForgot(PasswordForgotRequest request)
-            {
-                return Connection.SendRequest<PasswordForgotRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.passwordForgot, request);
-            }
-            public Task<NullStruct> PasswordForgotAsync(PasswordForgotRequest request)
-            {
-                return Connection.SendRequestAsync<PasswordForgotRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.passwordForgot, request);
-            }
-
-            public NullStruct GetTermsAndConditionsContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsAndConditionsContent, new NullStruct());
-            }
-            public Task<NullStruct> GetTermsAndConditionsContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsAndConditionsContent, new NullStruct());
-            }
-
-            public GetLegalDocContentResponse GetPrivacyPolicyContent(GetLegalDocContentRequest request)
-            {
-                return Connection.SendRequest<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPrivacyPolicyContent, request);
-            }
-            public Task<GetLegalDocContentResponse> GetPrivacyPolicyContentAsync(GetLegalDocContentRequest request)
-            {
-                return Connection.SendRequestAsync<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPrivacyPolicyContent, request);
-            }
-
-            public NullStruct ListPersonaEntitlements2(ListPersonaEntitlements2Request request)
-            {
-                return Connection.SendRequest<ListPersonaEntitlements2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonaEntitlements2, request);
-            }
-            public Task<NullStruct> ListPersonaEntitlements2Async(ListPersonaEntitlements2Request request)
-            {
-                return Connection.SendRequestAsync<ListPersonaEntitlements2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonaEntitlements2, request);
-            }
-
-            public FullLoginResponse SilentLogin(SilentLoginRequest request)
-            {
-                return Connection.SendRequest<SilentLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.silentLogin, request);
-            }
-            public Task<FullLoginResponse> SilentLoginAsync(SilentLoginRequest request)
-            {
-                return Connection.SendRequestAsync<SilentLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.silentLogin, request);
-            }
-
-            public CheckAgeReqResponse CheckAgeReq(CheckAgeReqRequest request)
-            {
-                return Connection.SendRequest<CheckAgeReqRequest, CheckAgeReqResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.checkAgeReq, request);
-            }
-            public Task<CheckAgeReqResponse> CheckAgeReqAsync(CheckAgeReqRequest request)
-            {
-                return Connection.SendRequestAsync<CheckAgeReqRequest, CheckAgeReqResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.checkAgeReq, request);
-            }
-
-            public OptInValue GetOptIn()
-            {
-                return Connection.SendRequest<NullStruct, OptInValue, NullStruct>(this, (ushort)AuthenticationComponentCommand.getOptIn, new NullStruct());
-            }
-            public Task<OptInValue> GetOptInAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, OptInValue, NullStruct>(this, (ushort)AuthenticationComponentCommand.getOptIn, new NullStruct());
-            }
-
-            public NullStruct EnableOptIn()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.enableOptIn, new NullStruct());
-            }
-            public Task<NullStruct> EnableOptInAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.enableOptIn, new NullStruct());
-            }
-
-            public NullStruct DisableOptIn()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disableOptIn, new NullStruct());
-            }
-            public Task<NullStruct> DisableOptInAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disableOptIn, new NullStruct());
-            }
-
-            public FullLoginResponse ExpressLogin(ExpressLoginRequest request)
-            {
-                return Connection.SendRequest<ExpressLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.expressLogin, request);
-            }
-            public Task<FullLoginResponse> ExpressLoginAsync(ExpressLoginRequest request)
-            {
-                return Connection.SendRequestAsync<ExpressLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.expressLogin, request);
-            }
-
-            public NullStruct Logout()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logout, new NullStruct());
-            }
-            public Task<NullStruct> LogoutAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logout, new NullStruct());
-            }
-
-            public PersonaDetails CreatePersona(CreatePersonaRequest request)
-            {
-                return Connection.SendRequest<CreatePersonaRequest, PersonaDetails, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createPersona, request);
-            }
-            public Task<PersonaDetails> CreatePersonaAsync(CreatePersonaRequest request)
-            {
-                return Connection.SendRequestAsync<CreatePersonaRequest, PersonaDetails, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createPersona, request);
-            }
-
-            public GetPersonaResponse GetPersona()
-            {
-                return Connection.SendRequest<NullStruct, GetPersonaResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPersona, new NullStruct());
-            }
-            public Task<GetPersonaResponse> GetPersonaAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GetPersonaResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPersona, new NullStruct());
-            }
-
-            public ListPersonasResponse ListPersonas()
-            {
-                return Connection.SendRequest<NullStruct, ListPersonasResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonas, new NullStruct());
-            }
-            public Task<ListPersonasResponse> ListPersonasAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, ListPersonasResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonas, new NullStruct());
-            }
-
-            public SessionInfo LoginPersona(LoginPersonaRequest request)
-            {
-                return Connection.SendRequest<LoginPersonaRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.loginPersona, request);
-            }
-            public Task<SessionInfo> LoginPersonaAsync(LoginPersonaRequest request)
-            {
-                return Connection.SendRequestAsync<LoginPersonaRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.loginPersona, request);
-            }
-
-            public NullStruct LogoutPersona()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logoutPersona, new NullStruct());
-            }
-            public Task<NullStruct> LogoutPersonaAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logoutPersona, new NullStruct());
-            }
-
-            public NullStruct DeletePersona()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.deletePersona, new NullStruct());
-            }
-            public Task<NullStruct> DeletePersonaAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.deletePersona, new NullStruct());
-            }
-
-            public NullStruct DisablePersona(PersonaRequest request)
-            {
-                return Connection.SendRequest<PersonaRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disablePersona, request);
-            }
-            public Task<NullStruct> DisablePersonaAsync(PersonaRequest request)
-            {
-                return Connection.SendRequestAsync<PersonaRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disablePersona, request);
-            }
-
-            public ListDeviceAccountsResponse ListDeviceAccounts(ListDeviceAccountsRequest request)
-            {
-                return Connection.SendRequest<ListDeviceAccountsRequest, ListDeviceAccountsResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listDeviceAccounts, request);
-            }
-            public Task<ListDeviceAccountsResponse> ListDeviceAccountsAsync(ListDeviceAccountsRequest request)
-            {
-                return Connection.SendRequestAsync<ListDeviceAccountsRequest, ListDeviceAccountsResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listDeviceAccounts, request);
-            }
-
-            public ConsoleCreateAccountResponse XboxCreateAccount(ConsoleCreateAccountRequest request)
-            {
-                return Connection.SendRequest<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
-            }
-            public Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
-            }
-
-            public FullLoginResponse OriginLogin(OriginLoginRequest request)
-            {
-                return Connection.SendRequest<OriginLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.originLogin, request);
-            }
-            public Task<FullLoginResponse> OriginLoginAsync(OriginLoginRequest request)
-            {
-                return Connection.SendRequestAsync<OriginLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.originLogin, request);
-            }
-
-            public NullStruct XboxAssociateAccount(ConsoleAssociateAccountRequest request)
-            {
-                return Connection.SendRequest<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxAssociateAccount, request);
-            }
-            public Task<NullStruct> XboxAssociateAccountAsync(ConsoleAssociateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxAssociateAccount, request);
-            }
-
-            public ConsoleLoginResponse XboxLogin(XboxLoginRequest request)
-            {
-                return Connection.SendRequest<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
-            }
-            public Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request)
-            {
-                return Connection.SendRequestAsync<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
-            }
-
-            public ConsoleCreateAccountResponse Ps3CreateAccount(ConsoleCreateAccountRequest request)
-            {
-                return Connection.SendRequest<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3CreateAccount, request);
-            }
-            public Task<ConsoleCreateAccountResponse> Ps3CreateAccountAsync(ConsoleCreateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3CreateAccount, request);
-            }
-
-            public NullStruct Ps3AssociateAccount(ConsoleAssociateAccountRequest request)
-            {
-                return Connection.SendRequest<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
-            }
-            public Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request)
-            {
-                return Connection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
-            }
-
-            public ConsoleLoginResponse Ps3Login(PS3LoginRequest request)
-            {
-                return Connection.SendRequest<PS3LoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3Login, request);
-            }
-            public Task<ConsoleLoginResponse> Ps3LoginAsync(PS3LoginRequest request)
-            {
-                return Connection.SendRequestAsync<PS3LoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3Login, request);
-            }
-
-            public NullStruct ValidateSessionKey(ValidateSessionKeyRequest request)
-            {
-                return Connection.SendRequest<ValidateSessionKeyRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.validateSessionKey, request);
-            }
-            public Task<NullStruct> ValidateSessionKeyAsync(ValidateSessionKeyRequest request)
-            {
-                return Connection.SendRequestAsync<ValidateSessionKeyRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.validateSessionKey, request);
-            }
-
-            public NullStruct CreateWalUserSession()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.createWalUserSession, new NullStruct());
-            }
-            public Task<NullStruct> CreateWalUserSessionAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.createWalUserSession, new NullStruct());
-            }
-
-            public NullStruct AcceptLegalDocs(AcceptLegalDocsRequest request)
-            {
-                return Connection.SendRequest<AcceptLegalDocsRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptLegalDocs, request);
-            }
-            public Task<NullStruct> AcceptLegalDocsAsync(AcceptLegalDocsRequest request)
-            {
-                return Connection.SendRequestAsync<AcceptLegalDocsRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptLegalDocs, request);
-            }
-
-            public GetLegalDocsInfoResponse GetLegalDocsInfo(GetLegalDocsInfoRequest request)
-            {
-                return Connection.SendRequest<GetLegalDocsInfoRequest, GetLegalDocsInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getLegalDocsInfo, request);
-            }
-            public Task<GetLegalDocsInfoResponse> GetLegalDocsInfoAsync(GetLegalDocsInfoRequest request)
-            {
-                return Connection.SendRequestAsync<GetLegalDocsInfoRequest, GetLegalDocsInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getLegalDocsInfo, request);
-            }
-
-            public GetLegalDocContentResponse GetTermsOfServiceContent(GetLegalDocContentRequest request)
-            {
-                return Connection.SendRequest<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsOfServiceContent, request);
-            }
-            public Task<GetLegalDocContentResponse> GetTermsOfServiceContentAsync(GetLegalDocContentRequest request)
-            {
-                return Connection.SendRequestAsync<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsOfServiceContent, request);
-            }
-
-            public ConsoleLoginResponse DeviceLoginGuest(DeviceLoginGuestRequest request)
-            {
-                return Connection.SendRequest<DeviceLoginGuestRequest, ConsoleLoginResponse, ConsoleCreateAccountRequest>(this, (ushort)AuthenticationComponentCommand.deviceLoginGuest, request);
-            }
-            public Task<ConsoleLoginResponse> DeviceLoginGuestAsync(DeviceLoginGuestRequest request)
-            {
-                return Connection.SendRequestAsync<DeviceLoginGuestRequest, ConsoleLoginResponse, ConsoleCreateAccountRequest>(this, (ushort)AuthenticationComponentCommand.deviceLoginGuest, request);
-            }
-
-            public NullStruct CheckSinglePlayerLogin()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.checkSinglePlayerLogin, new NullStruct());
-            }
-            public Task<NullStruct> CheckSinglePlayerLoginAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.checkSinglePlayerLogin, new NullStruct());
-            }
-
-
-            public override Type GetCommandRequestType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AuthenticationComponentNotification notification) => AuthenticationComponentBase.GetNotificationType(notification);
-
-        }
-
-        public class Proxy : BlazeProxyComponent<AuthenticationComponentCommand, AuthenticationComponentNotification, Blaze3RpcError>
-        {
-            public Proxy() : base(AuthenticationComponentBase.Id, AuthenticationComponentBase.Name)
-            {
-
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createAccount)]
-            public virtual Task<CreateAccountResponse> CreateAccountAsync(CreateAccountParameters request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<CreateAccountParameters, CreateAccountResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.updateAccount)]
-            public virtual Task<UpdateAccountResponse> UpdateAccountAsync(UpdateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateAccountRequest, UpdateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.updateParentalEmail)]
-            public virtual Task<NullStruct> UpdateParentalEmailAsync(UpdateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.updateParentalEmail, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listUserEntitlements2)]
-            public virtual Task<Entitlements> ListUserEntitlements2Async(ListUserEntitlements2Request request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ListUserEntitlements2Request, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listUserEntitlements2, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getAccount)]
-            public virtual Task<AccountInfo> GetAccountAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, AccountInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement)]
-            public virtual Task<NullStruct> GrantEntitlementAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listEntitlements)]
-            public virtual Task<Entitlements> ListEntitlementsAsync(ListEntitlementsRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ListEntitlementsRequest, Entitlements, NullStruct>(this, (ushort)AuthenticationComponentCommand.listEntitlements, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.hasEntitlement)]
-            public virtual Task<NullStruct> HasEntitlementAsync(HasEntitlementRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<HasEntitlementRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.hasEntitlement, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getUseCount)]
-            public virtual Task<UseCount> GetUseCountAsync(GetUseCountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetUseCountRequest, UseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.getUseCount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.decrementUseCount)]
-            public virtual Task<DecrementUseCount> DecrementUseCountAsync(DecrementUseCountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<DecrementUseCountRequest, DecrementUseCount, NullStruct>(this, (ushort)AuthenticationComponentCommand.decrementUseCount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getAuthToken)]
-            public virtual Task<GetAuthTokenResponse> GetAuthTokenAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GetAuthTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getAuthToken, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getHandoffToken)]
-            public virtual Task<GetHandoffTokenResponse> GetHandoffTokenAsync(GetHandoffTokenRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetHandoffTokenRequest, GetHandoffTokenResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getHandoffToken, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPasswordRules)]
-            public virtual Task<PasswordRulesInfo> GetPasswordRulesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, PasswordRulesInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPasswordRules, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.grantEntitlement2)]
-            public virtual Task<GrantEntitlement2Response> GrantEntitlement2Async(GrantEntitlement2Request request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GrantEntitlement2Request, GrantEntitlement2Response, NullStruct>(this, (ushort)AuthenticationComponentCommand.grantEntitlement2, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.login)]
-            public virtual Task<LoginResponse> LoginAsync(LoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<LoginRequest, LoginResponse, CreateAccountResponse>(this, (ushort)AuthenticationComponentCommand.login, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.acceptTos)]
-            public virtual Task<NullStruct> AcceptTosAsync(AcceptTosRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<AcceptTosRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptTos, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTosInfo)]
-            public virtual Task<GetTosInfoResponse> GetTosInfoAsync(GetTosInfoRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetTosInfoRequest, GetTosInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTosInfo, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.modifyEntitlement2)]
-            public virtual Task<NullStruct> ModifyEntitlement2Async(ModifyEntitlement2Request request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ModifyEntitlement2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.modifyEntitlement2, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.consumecode)]
-            public virtual Task<ConsumecodeResponse> ConsumecodeAsync(ConsumecodeRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ConsumecodeRequest, ConsumecodeResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.consumecode, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.passwordForgot)]
-            public virtual Task<NullStruct> PasswordForgotAsync(PasswordForgotRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<PasswordForgotRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.passwordForgot, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTermsAndConditionsContent)]
-            public virtual Task<NullStruct> GetTermsAndConditionsContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsAndConditionsContent, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPrivacyPolicyContent)]
-            public virtual Task<GetLegalDocContentResponse> GetPrivacyPolicyContentAsync(GetLegalDocContentRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPrivacyPolicyContent, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listPersonaEntitlements2)]
-            public virtual Task<NullStruct> ListPersonaEntitlements2Async(ListPersonaEntitlements2Request request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ListPersonaEntitlements2Request, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonaEntitlements2, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.silentLogin)]
-            public virtual Task<FullLoginResponse> SilentLoginAsync(SilentLoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<SilentLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.silentLogin, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.checkAgeReq)]
-            public virtual Task<CheckAgeReqResponse> CheckAgeReqAsync(CheckAgeReqRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<CheckAgeReqRequest, CheckAgeReqResponse, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.checkAgeReq, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getOptIn)]
-            public virtual Task<OptInValue> GetOptInAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, OptInValue, NullStruct>(this, (ushort)AuthenticationComponentCommand.getOptIn, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.enableOptIn)]
-            public virtual Task<NullStruct> EnableOptInAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.enableOptIn, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.disableOptIn)]
-            public virtual Task<NullStruct> DisableOptInAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disableOptIn, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.expressLogin)]
-            public virtual Task<FullLoginResponse> ExpressLoginAsync(ExpressLoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ExpressLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.expressLogin, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.logout)]
-            public virtual Task<NullStruct> LogoutAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logout, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createPersona)]
-            public virtual Task<PersonaDetails> CreatePersonaAsync(CreatePersonaRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<CreatePersonaRequest, PersonaDetails, FieldValidateErrorList>(this, (ushort)AuthenticationComponentCommand.createPersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getPersona)]
-            public virtual Task<GetPersonaResponse> GetPersonaAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GetPersonaResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getPersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listPersonas)]
-            public virtual Task<ListPersonasResponse> ListPersonasAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, ListPersonasResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listPersonas, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.loginPersona)]
-            public virtual Task<SessionInfo> LoginPersonaAsync(LoginPersonaRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<LoginPersonaRequest, SessionInfo, NullStruct>(this, (ushort)AuthenticationComponentCommand.loginPersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.logoutPersona)]
-            public virtual Task<NullStruct> LogoutPersonaAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.logoutPersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.deletePersona)]
-            public virtual Task<NullStruct> DeletePersonaAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.deletePersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.disablePersona)]
-            public virtual Task<NullStruct> DisablePersonaAsync(PersonaRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<PersonaRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.disablePersona, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.listDeviceAccounts)]
-            public virtual Task<ListDeviceAccountsResponse> ListDeviceAccountsAsync(ListDeviceAccountsRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ListDeviceAccountsRequest, ListDeviceAccountsResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.listDeviceAccounts, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxCreateAccount)]
-            public virtual Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxCreateAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.originLogin)]
-            public virtual Task<FullLoginResponse> OriginLoginAsync(OriginLoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<OriginLoginRequest, FullLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.originLogin, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxAssociateAccount)]
-            public virtual Task<NullStruct> XboxAssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxAssociateAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.xboxLogin)]
-            public virtual Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<XboxLoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.xboxLogin, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3CreateAccount)]
-            public virtual Task<ConsoleCreateAccountResponse> Ps3CreateAccountAsync(ConsoleCreateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3CreateAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3AssociateAccount)]
-            public virtual Task<NullStruct> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ConsoleAssociateAccountRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3AssociateAccount, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.ps3Login)]
-            public virtual Task<ConsoleLoginResponse> Ps3LoginAsync(PS3LoginRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<PS3LoginRequest, ConsoleLoginResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.ps3Login, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.validateSessionKey)]
-            public virtual Task<NullStruct> ValidateSessionKeyAsync(ValidateSessionKeyRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ValidateSessionKeyRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.validateSessionKey, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.createWalUserSession)]
-            public virtual Task<NullStruct> CreateWalUserSessionAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.createWalUserSession, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.acceptLegalDocs)]
-            public virtual Task<NullStruct> AcceptLegalDocsAsync(AcceptLegalDocsRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<AcceptLegalDocsRequest, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.acceptLegalDocs, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getLegalDocsInfo)]
-            public virtual Task<GetLegalDocsInfoResponse> GetLegalDocsInfoAsync(GetLegalDocsInfoRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetLegalDocsInfoRequest, GetLegalDocsInfoResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getLegalDocsInfo, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.getTermsOfServiceContent)]
-            public virtual Task<GetLegalDocContentResponse> GetTermsOfServiceContentAsync(GetLegalDocContentRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetLegalDocContentRequest, GetLegalDocContentResponse, NullStruct>(this, (ushort)AuthenticationComponentCommand.getTermsOfServiceContent, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.deviceLoginGuest)]
-            public virtual Task<ConsoleLoginResponse> DeviceLoginGuestAsync(DeviceLoginGuestRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<DeviceLoginGuestRequest, ConsoleLoginResponse, ConsoleCreateAccountRequest>(this, (ushort)AuthenticationComponentCommand.deviceLoginGuest, request);
-            }
-
-            [BlazeCommand((ushort)AuthenticationComponentCommand.checkSinglePlayerLogin)]
-            public virtual Task<NullStruct> CheckSinglePlayerLoginAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)AuthenticationComponentCommand.checkSinglePlayerLogin, request);
-            }
-
-
-            public override Type GetCommandRequestType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => AuthenticationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AuthenticationComponentNotification notification) => AuthenticationComponentBase.GetNotificationType(notification);
-
-        }
-
-        public static Type GetCommandRequestType(AuthenticationComponentCommand command) => command switch
-        {
-            AuthenticationComponentCommand.createAccount => typeof(CreateAccountParameters),
-            AuthenticationComponentCommand.updateAccount => typeof(UpdateAccountRequest),
-            AuthenticationComponentCommand.updateParentalEmail => typeof(UpdateAccountRequest),
-            AuthenticationComponentCommand.listUserEntitlements2 => typeof(ListUserEntitlements2Request),
-            AuthenticationComponentCommand.getAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
-            AuthenticationComponentCommand.listEntitlements => typeof(ListEntitlementsRequest),
-            AuthenticationComponentCommand.hasEntitlement => typeof(HasEntitlementRequest),
-            AuthenticationComponentCommand.getUseCount => typeof(GetUseCountRequest),
-            AuthenticationComponentCommand.decrementUseCount => typeof(DecrementUseCountRequest),
-            AuthenticationComponentCommand.getAuthToken => typeof(NullStruct),
-            AuthenticationComponentCommand.getHandoffToken => typeof(GetHandoffTokenRequest),
-            AuthenticationComponentCommand.getPasswordRules => typeof(NullStruct),
-            AuthenticationComponentCommand.grantEntitlement2 => typeof(GrantEntitlement2Request),
-            AuthenticationComponentCommand.login => typeof(LoginRequest),
-            AuthenticationComponentCommand.acceptTos => typeof(AcceptTosRequest),
-            AuthenticationComponentCommand.getTosInfo => typeof(GetTosInfoRequest),
-            AuthenticationComponentCommand.modifyEntitlement2 => typeof(ModifyEntitlement2Request),
-            AuthenticationComponentCommand.consumecode => typeof(ConsumecodeRequest),
-            AuthenticationComponentCommand.passwordForgot => typeof(PasswordForgotRequest),
-            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
-            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(GetLegalDocContentRequest),
-            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(ListPersonaEntitlements2Request),
-            AuthenticationComponentCommand.silentLogin => typeof(SilentLoginRequest),
-            AuthenticationComponentCommand.checkAgeReq => typeof(CheckAgeReqRequest),
-            AuthenticationComponentCommand.getOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.expressLogin => typeof(ExpressLoginRequest),
-            AuthenticationComponentCommand.logout => typeof(NullStruct),
-            AuthenticationComponentCommand.createPersona => typeof(CreatePersonaRequest),
-            AuthenticationComponentCommand.getPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.listPersonas => typeof(NullStruct),
-            AuthenticationComponentCommand.loginPersona => typeof(LoginPersonaRequest),
-            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
-            AuthenticationComponentCommand.disablePersona => typeof(PersonaRequest),
-            AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsRequest),
-            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountRequest),
-            AuthenticationComponentCommand.originLogin => typeof(OriginLoginRequest),
-            AuthenticationComponentCommand.xboxAssociateAccount => typeof(ConsoleAssociateAccountRequest),
-            AuthenticationComponentCommand.xboxLogin => typeof(XboxLoginRequest),
-            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountRequest),
-            AuthenticationComponentCommand.ps3AssociateAccount => typeof(ConsoleAssociateAccountRequest),
-            AuthenticationComponentCommand.ps3Login => typeof(PS3LoginRequest),
-            AuthenticationComponentCommand.validateSessionKey => typeof(ValidateSessionKeyRequest),
-            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
-            AuthenticationComponentCommand.acceptLegalDocs => typeof(AcceptLegalDocsRequest),
-            AuthenticationComponentCommand.getLegalDocsInfo => typeof(GetLegalDocsInfoRequest),
-            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(GetLegalDocContentRequest),
-            AuthenticationComponentCommand.deviceLoginGuest => typeof(DeviceLoginGuestRequest),
-            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetCommandResponseType(AuthenticationComponentCommand command) => command switch
-        {
-            AuthenticationComponentCommand.createAccount => typeof(CreateAccountResponse),
-            AuthenticationComponentCommand.updateAccount => typeof(UpdateAccountResponse),
-            AuthenticationComponentCommand.updateParentalEmail => typeof(NullStruct),
-            AuthenticationComponentCommand.listUserEntitlements2 => typeof(Entitlements),
-            AuthenticationComponentCommand.getAccount => typeof(AccountInfo),
-            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
-            AuthenticationComponentCommand.listEntitlements => typeof(Entitlements),
-            AuthenticationComponentCommand.hasEntitlement => typeof(NullStruct),
-            AuthenticationComponentCommand.getUseCount => typeof(UseCount),
-            AuthenticationComponentCommand.decrementUseCount => typeof(DecrementUseCount),
-            AuthenticationComponentCommand.getAuthToken => typeof(GetAuthTokenResponse),
-            AuthenticationComponentCommand.getHandoffToken => typeof(GetHandoffTokenResponse),
-            AuthenticationComponentCommand.getPasswordRules => typeof(PasswordRulesInfo),
-            AuthenticationComponentCommand.grantEntitlement2 => typeof(GrantEntitlement2Response),
-            AuthenticationComponentCommand.login => typeof(LoginResponse),
-            AuthenticationComponentCommand.acceptTos => typeof(NullStruct),
-            AuthenticationComponentCommand.getTosInfo => typeof(GetTosInfoResponse),
-            AuthenticationComponentCommand.modifyEntitlement2 => typeof(NullStruct),
-            AuthenticationComponentCommand.consumecode => typeof(ConsumecodeResponse),
-            AuthenticationComponentCommand.passwordForgot => typeof(NullStruct),
-            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
-            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(GetLegalDocContentResponse),
-            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(NullStruct),
-            AuthenticationComponentCommand.silentLogin => typeof(FullLoginResponse),
-            AuthenticationComponentCommand.checkAgeReq => typeof(CheckAgeReqResponse),
-            AuthenticationComponentCommand.getOptIn => typeof(OptInValue),
-            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.expressLogin => typeof(FullLoginResponse),
-            AuthenticationComponentCommand.logout => typeof(NullStruct),
-            AuthenticationComponentCommand.createPersona => typeof(PersonaDetails),
-            AuthenticationComponentCommand.getPersona => typeof(GetPersonaResponse),
-            AuthenticationComponentCommand.listPersonas => typeof(ListPersonasResponse),
-            AuthenticationComponentCommand.loginPersona => typeof(SessionInfo),
-            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
-            AuthenticationComponentCommand.disablePersona => typeof(NullStruct),
-            AuthenticationComponentCommand.listDeviceAccounts => typeof(ListDeviceAccountsResponse),
-            AuthenticationComponentCommand.xboxCreateAccount => typeof(ConsoleCreateAccountResponse),
-            AuthenticationComponentCommand.originLogin => typeof(FullLoginResponse),
-            AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxLogin => typeof(ConsoleLoginResponse),
-            AuthenticationComponentCommand.ps3CreateAccount => typeof(ConsoleCreateAccountResponse),
-            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3Login => typeof(ConsoleLoginResponse),
-            AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
-            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
-            AuthenticationComponentCommand.acceptLegalDocs => typeof(NullStruct),
-            AuthenticationComponentCommand.getLegalDocsInfo => typeof(GetLegalDocsInfoResponse),
-            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(GetLegalDocContentResponse),
-            AuthenticationComponentCommand.deviceLoginGuest => typeof(ConsoleLoginResponse),
-            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetCommandErrorResponseType(AuthenticationComponentCommand command) => command switch
-        {
-            AuthenticationComponentCommand.createAccount => typeof(FieldValidateErrorList),
-            AuthenticationComponentCommand.updateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.updateParentalEmail => typeof(NullStruct),
-            AuthenticationComponentCommand.listUserEntitlements2 => typeof(NullStruct),
-            AuthenticationComponentCommand.getAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.grantEntitlement => typeof(NullStruct),
-            AuthenticationComponentCommand.listEntitlements => typeof(NullStruct),
-            AuthenticationComponentCommand.hasEntitlement => typeof(NullStruct),
-            AuthenticationComponentCommand.getUseCount => typeof(NullStruct),
-            AuthenticationComponentCommand.decrementUseCount => typeof(NullStruct),
-            AuthenticationComponentCommand.getAuthToken => typeof(NullStruct),
-            AuthenticationComponentCommand.getHandoffToken => typeof(NullStruct),
-            AuthenticationComponentCommand.getPasswordRules => typeof(NullStruct),
-            AuthenticationComponentCommand.grantEntitlement2 => typeof(NullStruct),
-            AuthenticationComponentCommand.login => typeof(CreateAccountResponse),
-            AuthenticationComponentCommand.acceptTos => typeof(NullStruct),
-            AuthenticationComponentCommand.getTosInfo => typeof(NullStruct),
-            AuthenticationComponentCommand.modifyEntitlement2 => typeof(NullStruct),
-            AuthenticationComponentCommand.consumecode => typeof(NullStruct),
-            AuthenticationComponentCommand.passwordForgot => typeof(NullStruct),
-            AuthenticationComponentCommand.getTermsAndConditionsContent => typeof(NullStruct),
-            AuthenticationComponentCommand.getPrivacyPolicyContent => typeof(NullStruct),
-            AuthenticationComponentCommand.listPersonaEntitlements2 => typeof(NullStruct),
-            AuthenticationComponentCommand.silentLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.checkAgeReq => typeof(FieldValidateErrorList),
-            AuthenticationComponentCommand.getOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.enableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.disableOptIn => typeof(NullStruct),
-            AuthenticationComponentCommand.expressLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.logout => typeof(NullStruct),
-            AuthenticationComponentCommand.createPersona => typeof(FieldValidateErrorList),
-            AuthenticationComponentCommand.getPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.listPersonas => typeof(NullStruct),
-            AuthenticationComponentCommand.loginPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.logoutPersona => typeof(NullStruct),
-            AuthenticationComponentCommand.deletePersona => typeof(NullStruct),
-            AuthenticationComponentCommand.disablePersona => typeof(NullStruct),
-            AuthenticationComponentCommand.listDeviceAccounts => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxCreateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.originLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxAssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.xboxLogin => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3CreateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3AssociateAccount => typeof(NullStruct),
-            AuthenticationComponentCommand.ps3Login => typeof(NullStruct),
-            AuthenticationComponentCommand.validateSessionKey => typeof(NullStruct),
-            AuthenticationComponentCommand.createWalUserSession => typeof(NullStruct),
-            AuthenticationComponentCommand.acceptLegalDocs => typeof(NullStruct),
-            AuthenticationComponentCommand.getLegalDocsInfo => typeof(NullStruct),
-            AuthenticationComponentCommand.getTermsOfServiceContent => typeof(NullStruct),
-            AuthenticationComponentCommand.deviceLoginGuest => typeof(ConsoleCreateAccountRequest),
-            AuthenticationComponentCommand.checkSinglePlayerLogin => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetNotificationType(AuthenticationComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-
-        public enum AuthenticationComponentCommand : ushort
-        {
-            createAccount = 10,
-            updateAccount = 20,
-            updateParentalEmail = 28,
-            listUserEntitlements2 = 29,
-            getAccount = 30,
-            grantEntitlement = 31,
-            listEntitlements = 32,
-            hasEntitlement = 33,
-            getUseCount = 34,
-            decrementUseCount = 35,
-            getAuthToken = 36,
-            getHandoffToken = 37,
-            getPasswordRules = 38,
-            grantEntitlement2 = 39,
-            login = 40,
-            acceptTos = 41,
-            getTosInfo = 42,
-            modifyEntitlement2 = 43,
-            consumecode = 44,
-            passwordForgot = 45,
-            getTermsAndConditionsContent = 46,
-            getPrivacyPolicyContent = 47,
-            listPersonaEntitlements2 = 48,
-            silentLogin = 50,
-            checkAgeReq = 51,
-            getOptIn = 52,
-            enableOptIn = 53,
-            disableOptIn = 54,
-            expressLogin = 60,
-            logout = 70,
-            createPersona = 80,
-            getPersona = 90,
-            listPersonas = 100,
-            loginPersona = 110,
-            logoutPersona = 120,
-            deletePersona = 140,
-            disablePersona = 141,
-            listDeviceAccounts = 143,
-            xboxCreateAccount = 150,
-            originLogin = 152,
-            xboxAssociateAccount = 160,
-            xboxLogin = 170,
-            ps3CreateAccount = 180,
-            ps3AssociateAccount = 190,
-            ps3Login = 200,
-            validateSessionKey = 210,
-            createWalUserSession = 230,
-            acceptLegalDocs = 241,
-            getLegalDocsInfo = 242,
-            getTermsOfServiceContent = 246,
-            deviceLoginGuest = 300,
-            checkSinglePlayerLogin = 500,
-        }
-
-        public enum AuthenticationComponentNotification : ushort
-        {
-        }
-
+    public const ushort Id = 1;
+    public const string Name = "AuthenticationComponent";
+    
+    public enum Error : ushort {
+        AUTH_ERR_TOS_REQUIRED = 2,
+        AUTH_ERR_INVALID_COUNTRY = 10,
+        AUTH_ERR_INVALID_USER = 11,
+        AUTH_ERR_INVALID_PASSWORD = 12,
+        AUTH_ERR_INVALID_TOKEN = 13,
+        AUTH_ERR_EXPIRED_TOKEN = 14,
+        AUTH_ERR_EXISTS = 15,
+        AUTH_ERR_TOO_YOUNG = 16,
+        AUTH_ERR_NO_ACCOUNT = 17,
+        AUTH_ERR_PERSONA_NOT_FOUND = 18,
+        AUTH_ERR_PERSONA_INACTIVE = 19,
+        AUTH_ERR_INVALID_PMAIL = 20,
+        AUTH_ERR_INVALID_FIELD = 21,
+        AUTH_ERR_INVALID_EMAIL = 22,
+        AUTH_ERR_INVALID_STATUS = 23,
+        AUTH_ERR_INVALID_SESSION_KEY = 31,
+        AUTH_ERR_PERSONA_BANNED = 32,
+        AUTH_ERR_INVALID_PERSONA = 33,
+        AUTH_ERR_CURRENT_PASSWORD_REQUIRED = 34,
+        AUTH_ERR_INV_MASTER = 40,
+        AUTH_ERR_DEACTIVATED = 41,
+        AUTH_ERR_PENDING = 42,
+        AUTH_ERR_BANNED = 43,
+        AUTH_ERR_DISABLED = 44,
+        AUTH_ERR_NEED_PCCDKEY = 50,
+        AUTH_ERR_CODE_ALREADY_USED = 51,
+        AUTH_ERR_INVALID_CODE = 52,
+        AUTH_ERR_CODE_ALREADY_DISABLED = 53,
+        AUTH_ERR_NO_ASSOCIATED_PRODUCT = 54,
+        AUTH_ERR_INVALID_MAPPING_ERROR = 55,
+        AUTH_ERR_NO_SUCH_GROUP_NAME = 56,
+        AUTH_ERR_MISSING_PERSONAID = 57,
+        AUTH_ERR_USER_DOES_NOT_MATCH_PERSONA = 58,
+        AUTH_ERR_WHITELIST = 59,
+        AUTH_ERR_LINK_PERSONA = 60,
+        AUTH_ERR_NO_SUCH_GROUP = 61,
+        AUTH_ERR_NO_SUCH_ENTITLEMENT = 63,
+        AUTH_ERR_GROUP_NAME_DOES_NOT_MATCH = 64,
+        AUTH_ERR_DEVICE_ID_ALREADY_USED = 65,
+        AUTH_ERR_USECOUNT_ZERO = 66,
+        AUTH_ERR_ENTITLEMETNTAG_EMPTY = 67,
+        AUTH_ERR_ENTITLEMENT_OTHER = 68,
+        AUTH_ERR_GROUPNAME_REQUIRED = 70,
+        AUTH_ERR_GROUPNAME_INVALID = 71,
+        AUTH_ERR_PAGESIZE_TOO_BIG = 72,
+        AUTH_ERR_PAGESIZE_ZERO = 73,
+        AUTH_ERR_ENTITLEMENT_TAG_REQUIRED = 74,
+        AUTH_ERR_PAGENO_ZERO = 75,
+        AUTH_ERR_MODIFIED_STATUS_INVALID = 76,
+        AUTH_ERR_USECOUNT_INCREMENT = 77,
+        AUTH_ERR_TERMINATION_INVALID = 78,
+        AUTH_ERR_UNKNOWN_ENTITLEMENT = 79,
+        AUTH_ERR_EXCEED_PSU_LIMIT_TRIAL = 80,
+        AUTH_ERR_OPTIN_NAME_REQUIRED = 81,
+        AUTH_ERR_INVALID_OPTIN = 82,
+        AUTH_ERR_OPTIN_MISMATCH = 83,
+        AUTH_ERR_NO_SUCH_OPTIN = 84,
+        AUTH_ERR_AUTHID_REQUIRED = 85,
+        AUTH_ERR_PERSONA_EXTREFID_REQUIRED = 86,
+        AUTH_ERR_SOURCE_REQUIRED = 87,
+        AUTH_ERR_APPLICATION_REQUIRED = 88,
+        AUTH_ERR_TOKEN_REQUIRED = 89,
+        AUTH_ERR_PARAMETER_TOO_LENGTH = 90,
+        AUTH_ERR_NO_SUCH_PERSONA_REFERENCE = 91,
+        AUTH_ERR_EXTERNAL_AUTH_EXISTS = 92,
+        AUTH_ERR_INVALID_SOURCE = 93,
+        AUTH_ERR_NO_SUCH_AUTH_DATA = 94,
+        AUTH_ERR_USER_INACTIVE = 101,
+        AUTH_ERR_UNEXPECTED_ACTIVATION = 102,
+        AUTH_ERR_NAME_MISMATCH = 103,
+        AUTH_ERR_INVALID_PS3_TICKET = 104,
+        AUTH_ERR_INVALID_NAMESPACE = 105,
+        AUTH_ERR_EXPIRED_PS3_TICKET = 106,
+        AUTH_ERR_FIELD_INVALID_CHARS = 201,
+        AUTH_ERR_FIELD_TOO_SHORT = 202,
+        AUTH_ERR_FIELD_TOO_LONG = 203,
+        AUTH_ERR_FIELD_MUST_BEGIN_WITH_LETTER = 204,
+        AUTH_ERR_FIELD_MISSING = 205,
+        AUTH_ERR_FIELD_INVALID = 206,
+        AUTH_ERR_FIELD_NOT_ALLOWED = 207,
+        AUTH_ERR_FIELD_NEEDS_SPECIAL_CHARS = 208,
+        AUTH_ERR_FIELD_ALREADY_EXISTS = 209,
+        AUTH_ERR_FIELD_NEEDS_CONSENT = 210,
+        AUTH_ERR_FIELD_TOO_YOUNG = 211,
+        AUTH_ERR_TOO_MANY_PERSONA_FOR_NAMESPACE = 300,
     }
+    
+    public enum AuthenticationComponentCommand : ushort
+    {
+        createAccount = 10,
+        updateAccount = 20,
+        updateParentalEmail = 28,
+        listUserEntitlements2 = 29,
+        getAccount = 30,
+        grantEntitlement = 31,
+        listEntitlements = 32,
+        hasEntitlement = 33,
+        getUseCount = 34,
+        decrementUseCount = 35,
+        getAuthToken = 36,
+        getHandoffToken = 37,
+        getPasswordRules = 38,
+        grantEntitlement2 = 39,
+        login = 40,
+        acceptTos = 41,
+        getTosInfo = 42,
+        modifyEntitlement2 = 43,
+        consumecode = 44,
+        passwordForgot = 45,
+        getTermsAndConditionsContent = 46,
+        getPrivacyPolicyContent = 47,
+        listPersonaEntitlements2 = 48,
+        silentLogin = 50,
+        checkAgeReq = 51,
+        getOptIn = 52,
+        enableOptIn = 53,
+        disableOptIn = 54,
+        expressLogin = 60,
+        logout = 70,
+        createPersona = 80,
+        getPersona = 90,
+        listPersonas = 100,
+        loginPersona = 110,
+        logoutPersona = 120,
+        deletePersona = 140,
+        disablePersona = 141,
+        listDeviceAccounts = 143,
+        xboxCreateAccount = 150,
+        originLogin = 152,
+        xboxAssociateAccount = 160,
+        xboxLogin = 170,
+        ps3CreateAccount = 180,
+        ps3AssociateAccount = 190,
+        ps3Login = 200,
+        validateSessionKey = 210,
+        createWalUserSession = 230,
+        acceptLegalDocs = 241,
+        getLegalDocsInfo = 242,
+        getTermsOfServiceContent = 246,
+        deviceLoginGuest = 300,
+        checkSinglePlayerLogin = 500,
+    }
+    
+    public enum AuthenticationComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => AuthenticationComponentBase.Id;
+        public override string Name => AuthenticationComponentBase.Name;
+        
+        public virtual bool IsCommandSupported(AuthenticationComponentCommand command) => false;
+        
+        public class AuthenticationException : BlazeRpcException
+        {
+            public AuthenticationException(Error error) : base((ushort)error, null) { }
+            public AuthenticationException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public AuthenticationException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public AuthenticationException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public AuthenticationException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public AuthenticationException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public AuthenticationException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public AuthenticationException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<CreateAccountParameters, CreateAccountResponse, FieldValidateErrorList>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.createAccount,
+                Name = "createAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.createAccount),
+                Func = async (req, ctx) => await CreateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<UpdateAccountRequest, UpdateAccountResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.updateAccount,
+                Name = "updateAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.updateAccount),
+                Func = async (req, ctx) => await UpdateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<UpdateAccountRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.updateParentalEmail,
+                Name = "updateParentalEmail",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.updateParentalEmail),
+                Func = async (req, ctx) => await UpdateParentalEmailAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ListUserEntitlements2Request, Entitlements, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.listUserEntitlements2,
+                Name = "listUserEntitlements2",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.listUserEntitlements2),
+                Func = async (req, ctx) => await ListUserEntitlements2Async(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, AccountInfo, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getAccount,
+                Name = "getAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getAccount),
+                Func = async (req, ctx) => await GetAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.grantEntitlement,
+                Name = "grantEntitlement",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.grantEntitlement),
+                Func = async (req, ctx) => await GrantEntitlementAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ListEntitlementsRequest, Entitlements, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.listEntitlements,
+                Name = "listEntitlements",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.listEntitlements),
+                Func = async (req, ctx) => await ListEntitlementsAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<HasEntitlementRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.hasEntitlement,
+                Name = "hasEntitlement",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.hasEntitlement),
+                Func = async (req, ctx) => await HasEntitlementAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetUseCountRequest, UseCount, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getUseCount,
+                Name = "getUseCount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getUseCount),
+                Func = async (req, ctx) => await GetUseCountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<DecrementUseCountRequest, DecrementUseCount, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.decrementUseCount,
+                Name = "decrementUseCount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.decrementUseCount),
+                Func = async (req, ctx) => await DecrementUseCountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetAuthTokenResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getAuthToken,
+                Name = "getAuthToken",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getAuthToken),
+                Func = async (req, ctx) => await GetAuthTokenAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetHandoffTokenRequest, GetHandoffTokenResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getHandoffToken,
+                Name = "getHandoffToken",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getHandoffToken),
+                Func = async (req, ctx) => await GetHandoffTokenAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, PasswordRulesInfo, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getPasswordRules,
+                Name = "getPasswordRules",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getPasswordRules),
+                Func = async (req, ctx) => await GetPasswordRulesAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GrantEntitlement2Request, GrantEntitlement2Response, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.grantEntitlement2,
+                Name = "grantEntitlement2",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.grantEntitlement2),
+                Func = async (req, ctx) => await GrantEntitlement2Async(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<LoginRequest, LoginResponse, CreateAccountResponse>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.login,
+                Name = "login",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.login),
+                Func = async (req, ctx) => await LoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<AcceptTosRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.acceptTos,
+                Name = "acceptTos",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.acceptTos),
+                Func = async (req, ctx) => await AcceptTosAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetTosInfoRequest, GetTosInfoResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getTosInfo,
+                Name = "getTosInfo",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getTosInfo),
+                Func = async (req, ctx) => await GetTosInfoAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ModifyEntitlement2Request, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.modifyEntitlement2,
+                Name = "modifyEntitlement2",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.modifyEntitlement2),
+                Func = async (req, ctx) => await ModifyEntitlement2Async(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ConsumecodeRequest, ConsumecodeResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.consumecode,
+                Name = "consumecode",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.consumecode),
+                Func = async (req, ctx) => await ConsumecodeAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<PasswordForgotRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.passwordForgot,
+                Name = "passwordForgot",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.passwordForgot),
+                Func = async (req, ctx) => await PasswordForgotAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getTermsAndConditionsContent,
+                Name = "getTermsAndConditionsContent",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getTermsAndConditionsContent),
+                Func = async (req, ctx) => await GetTermsAndConditionsContentAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetLegalDocContentRequest, GetLegalDocContentResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getPrivacyPolicyContent,
+                Name = "getPrivacyPolicyContent",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getPrivacyPolicyContent),
+                Func = async (req, ctx) => await GetPrivacyPolicyContentAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ListPersonaEntitlements2Request, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.listPersonaEntitlements2,
+                Name = "listPersonaEntitlements2",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.listPersonaEntitlements2),
+                Func = async (req, ctx) => await ListPersonaEntitlements2Async(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<SilentLoginRequest, FullLoginResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.silentLogin,
+                Name = "silentLogin",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.silentLogin),
+                Func = async (req, ctx) => await SilentLoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<CheckAgeReqRequest, CheckAgeReqResponse, FieldValidateErrorList>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.checkAgeReq,
+                Name = "checkAgeReq",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.checkAgeReq),
+                Func = async (req, ctx) => await CheckAgeReqAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, OptInValue, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getOptIn,
+                Name = "getOptIn",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getOptIn),
+                Func = async (req, ctx) => await GetOptInAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.enableOptIn,
+                Name = "enableOptIn",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.enableOptIn),
+                Func = async (req, ctx) => await EnableOptInAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.disableOptIn,
+                Name = "disableOptIn",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.disableOptIn),
+                Func = async (req, ctx) => await DisableOptInAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ExpressLoginRequest, FullLoginResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.expressLogin,
+                Name = "expressLogin",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.expressLogin),
+                Func = async (req, ctx) => await ExpressLoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.logout,
+                Name = "logout",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.logout),
+                Func = async (req, ctx) => await LogoutAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<CreatePersonaRequest, PersonaDetails, FieldValidateErrorList>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.createPersona,
+                Name = "createPersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.createPersona),
+                Func = async (req, ctx) => await CreatePersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetPersonaResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getPersona,
+                Name = "getPersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getPersona),
+                Func = async (req, ctx) => await GetPersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, ListPersonasResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.listPersonas,
+                Name = "listPersonas",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.listPersonas),
+                Func = async (req, ctx) => await ListPersonasAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<LoginPersonaRequest, SessionInfo, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.loginPersona,
+                Name = "loginPersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.loginPersona),
+                Func = async (req, ctx) => await LoginPersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.logoutPersona,
+                Name = "logoutPersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.logoutPersona),
+                Func = async (req, ctx) => await LogoutPersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.deletePersona,
+                Name = "deletePersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.deletePersona),
+                Func = async (req, ctx) => await DeletePersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<PersonaRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.disablePersona,
+                Name = "disablePersona",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.disablePersona),
+                Func = async (req, ctx) => await DisablePersonaAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ListDeviceAccountsRequest, ListDeviceAccountsResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.listDeviceAccounts,
+                Name = "listDeviceAccounts",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.listDeviceAccounts),
+                Func = async (req, ctx) => await ListDeviceAccountsAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.xboxCreateAccount,
+                Name = "xboxCreateAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.xboxCreateAccount),
+                Func = async (req, ctx) => await XboxCreateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<OriginLoginRequest, FullLoginResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.originLogin,
+                Name = "originLogin",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.originLogin),
+                Func = async (req, ctx) => await OriginLoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ConsoleAssociateAccountRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.xboxAssociateAccount,
+                Name = "xboxAssociateAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.xboxAssociateAccount),
+                Func = async (req, ctx) => await XboxAssociateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<XboxLoginRequest, ConsoleLoginResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.xboxLogin,
+                Name = "xboxLogin",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.xboxLogin),
+                Func = async (req, ctx) => await XboxLoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ConsoleCreateAccountRequest, ConsoleCreateAccountResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.ps3CreateAccount,
+                Name = "ps3CreateAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.ps3CreateAccount),
+                Func = async (req, ctx) => await Ps3CreateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ConsoleAssociateAccountRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.ps3AssociateAccount,
+                Name = "ps3AssociateAccount",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.ps3AssociateAccount),
+                Func = async (req, ctx) => await Ps3AssociateAccountAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<PS3LoginRequest, ConsoleLoginResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.ps3Login,
+                Name = "ps3Login",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.ps3Login),
+                Func = async (req, ctx) => await Ps3LoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<ValidateSessionKeyRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.validateSessionKey,
+                Name = "validateSessionKey",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.validateSessionKey),
+                Func = async (req, ctx) => await ValidateSessionKeyAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.createWalUserSession,
+                Name = "createWalUserSession",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.createWalUserSession),
+                Func = async (req, ctx) => await CreateWalUserSessionAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<AcceptLegalDocsRequest, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.acceptLegalDocs,
+                Name = "acceptLegalDocs",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.acceptLegalDocs),
+                Func = async (req, ctx) => await AcceptLegalDocsAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetLegalDocsInfoRequest, GetLegalDocsInfoResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getLegalDocsInfo,
+                Name = "getLegalDocsInfo",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getLegalDocsInfo),
+                Func = async (req, ctx) => await GetLegalDocsInfoAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<GetLegalDocContentRequest, GetLegalDocContentResponse, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.getTermsOfServiceContent,
+                Name = "getTermsOfServiceContent",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.getTermsOfServiceContent),
+                Func = async (req, ctx) => await GetTermsOfServiceContentAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<DeviceLoginGuestRequest, ConsoleLoginResponse, ConsoleCreateAccountRequest>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.deviceLoginGuest,
+                Name = "deviceLoginGuest",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.deviceLoginGuest),
+                Func = async (req, ctx) => await DeviceLoginGuestAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)AuthenticationComponentCommand.checkSinglePlayerLogin,
+                Name = "checkSinglePlayerLogin",
+                IsSupported = IsCommandSupported(AuthenticationComponentCommand.checkSinglePlayerLogin),
+                Func = async (req, ctx) => await CheckSinglePlayerLoginAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+        }
+        
+        public override string GetErrorName(ushort errorCode)
+        {
+            return ((Error)errorCode).ToString();
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::createAccount</b> command.<br/>
+        /// Request type: <see cref="CreateAccountParameters"/><br/>
+        /// Response type: <see cref="CreateAccountResponse"/><br/>
+        /// Error response type: <see cref="FieldValidateErrorList"/><br/>
+        /// </summary>
+        public virtual Task<CreateAccountResponse> CreateAccountAsync(CreateAccountParameters request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::updateAccount</b> command.<br/>
+        /// Request type: <see cref="UpdateAccountRequest"/><br/>
+        /// Response type: <see cref="UpdateAccountResponse"/><br/>
+        /// </summary>
+        public virtual Task<UpdateAccountResponse> UpdateAccountAsync(UpdateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::updateParentalEmail</b> command.<br/>
+        /// Request type: <see cref="UpdateAccountRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateParentalEmailAsync(UpdateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::listUserEntitlements2</b> command.<br/>
+        /// Request type: <see cref="ListUserEntitlements2Request"/><br/>
+        /// Response type: <see cref="Entitlements"/><br/>
+        /// </summary>
+        public virtual Task<Entitlements> ListUserEntitlements2Async(ListUserEntitlements2Request request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getAccount</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="AccountInfo"/><br/>
+        /// </summary>
+        public virtual Task<AccountInfo> GetAccountAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::grantEntitlement</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GrantEntitlementAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::listEntitlements</b> command.<br/>
+        /// Request type: <see cref="ListEntitlementsRequest"/><br/>
+        /// Response type: <see cref="Entitlements"/><br/>
+        /// </summary>
+        public virtual Task<Entitlements> ListEntitlementsAsync(ListEntitlementsRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::hasEntitlement</b> command.<br/>
+        /// Request type: <see cref="HasEntitlementRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> HasEntitlementAsync(HasEntitlementRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getUseCount</b> command.<br/>
+        /// Request type: <see cref="GetUseCountRequest"/><br/>
+        /// Response type: <see cref="UseCount"/><br/>
+        /// </summary>
+        public virtual Task<UseCount> GetUseCountAsync(GetUseCountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::decrementUseCount</b> command.<br/>
+        /// Request type: <see cref="DecrementUseCountRequest"/><br/>
+        /// Response type: <see cref="DecrementUseCount"/><br/>
+        /// </summary>
+        public virtual Task<DecrementUseCount> DecrementUseCountAsync(DecrementUseCountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getAuthToken</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetAuthTokenResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetAuthTokenResponse> GetAuthTokenAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getHandoffToken</b> command.<br/>
+        /// Request type: <see cref="GetHandoffTokenRequest"/><br/>
+        /// Response type: <see cref="GetHandoffTokenResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetHandoffTokenResponse> GetHandoffTokenAsync(GetHandoffTokenRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getPasswordRules</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="PasswordRulesInfo"/><br/>
+        /// </summary>
+        public virtual Task<PasswordRulesInfo> GetPasswordRulesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::grantEntitlement2</b> command.<br/>
+        /// Request type: <see cref="GrantEntitlement2Request"/><br/>
+        /// Response type: <see cref="GrantEntitlement2Response"/><br/>
+        /// </summary>
+        public virtual Task<GrantEntitlement2Response> GrantEntitlement2Async(GrantEntitlement2Request request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::login</b> command.<br/>
+        /// Request type: <see cref="LoginRequest"/><br/>
+        /// Response type: <see cref="LoginResponse"/><br/>
+        /// Error response type: <see cref="CreateAccountResponse"/><br/>
+        /// </summary>
+        public virtual Task<LoginResponse> LoginAsync(LoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::acceptTos</b> command.<br/>
+        /// Request type: <see cref="AcceptTosRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AcceptTosAsync(AcceptTosRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getTosInfo</b> command.<br/>
+        /// Request type: <see cref="GetTosInfoRequest"/><br/>
+        /// Response type: <see cref="GetTosInfoResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetTosInfoResponse> GetTosInfoAsync(GetTosInfoRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::modifyEntitlement2</b> command.<br/>
+        /// Request type: <see cref="ModifyEntitlement2Request"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ModifyEntitlement2Async(ModifyEntitlement2Request request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::consumecode</b> command.<br/>
+        /// Request type: <see cref="ConsumecodeRequest"/><br/>
+        /// Response type: <see cref="ConsumecodeResponse"/><br/>
+        /// </summary>
+        public virtual Task<ConsumecodeResponse> ConsumecodeAsync(ConsumecodeRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::passwordForgot</b> command.<br/>
+        /// Request type: <see cref="PasswordForgotRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> PasswordForgotAsync(PasswordForgotRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getTermsAndConditionsContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetTermsAndConditionsContentAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getPrivacyPolicyContent</b> command.<br/>
+        /// Request type: <see cref="GetLegalDocContentRequest"/><br/>
+        /// Response type: <see cref="GetLegalDocContentResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetLegalDocContentResponse> GetPrivacyPolicyContentAsync(GetLegalDocContentRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::listPersonaEntitlements2</b> command.<br/>
+        /// Request type: <see cref="ListPersonaEntitlements2Request"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListPersonaEntitlements2Async(ListPersonaEntitlements2Request request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::silentLogin</b> command.<br/>
+        /// Request type: <see cref="SilentLoginRequest"/><br/>
+        /// Response type: <see cref="FullLoginResponse"/><br/>
+        /// </summary>
+        public virtual Task<FullLoginResponse> SilentLoginAsync(SilentLoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::checkAgeReq</b> command.<br/>
+        /// Request type: <see cref="CheckAgeReqRequest"/><br/>
+        /// Response type: <see cref="CheckAgeReqResponse"/><br/>
+        /// Error response type: <see cref="FieldValidateErrorList"/><br/>
+        /// </summary>
+        public virtual Task<CheckAgeReqResponse> CheckAgeReqAsync(CheckAgeReqRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getOptIn</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="OptInValue"/><br/>
+        /// </summary>
+        public virtual Task<OptInValue> GetOptInAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::enableOptIn</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> EnableOptInAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::disableOptIn</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DisableOptInAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::expressLogin</b> command.<br/>
+        /// Request type: <see cref="ExpressLoginRequest"/><br/>
+        /// Response type: <see cref="FullLoginResponse"/><br/>
+        /// </summary>
+        public virtual Task<FullLoginResponse> ExpressLoginAsync(ExpressLoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::logout</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LogoutAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::createPersona</b> command.<br/>
+        /// Request type: <see cref="CreatePersonaRequest"/><br/>
+        /// Response type: <see cref="PersonaDetails"/><br/>
+        /// Error response type: <see cref="FieldValidateErrorList"/><br/>
+        /// </summary>
+        public virtual Task<PersonaDetails> CreatePersonaAsync(CreatePersonaRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getPersona</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetPersonaResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetPersonaResponse> GetPersonaAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::listPersonas</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="ListPersonasResponse"/><br/>
+        /// </summary>
+        public virtual Task<ListPersonasResponse> ListPersonasAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::loginPersona</b> command.<br/>
+        /// Request type: <see cref="LoginPersonaRequest"/><br/>
+        /// Response type: <see cref="SessionInfo"/><br/>
+        /// </summary>
+        public virtual Task<SessionInfo> LoginPersonaAsync(LoginPersonaRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::logoutPersona</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LogoutPersonaAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::deletePersona</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DeletePersonaAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::disablePersona</b> command.<br/>
+        /// Request type: <see cref="PersonaRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DisablePersonaAsync(PersonaRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::listDeviceAccounts</b> command.<br/>
+        /// Request type: <see cref="ListDeviceAccountsRequest"/><br/>
+        /// Response type: <see cref="ListDeviceAccountsResponse"/><br/>
+        /// </summary>
+        public virtual Task<ListDeviceAccountsResponse> ListDeviceAccountsAsync(ListDeviceAccountsRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::xboxCreateAccount</b> command.<br/>
+        /// Request type: <see cref="ConsoleCreateAccountRequest"/><br/>
+        /// Response type: <see cref="ConsoleCreateAccountResponse"/><br/>
+        /// </summary>
+        public virtual Task<ConsoleCreateAccountResponse> XboxCreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::originLogin</b> command.<br/>
+        /// Request type: <see cref="OriginLoginRequest"/><br/>
+        /// Response type: <see cref="FullLoginResponse"/><br/>
+        /// </summary>
+        public virtual Task<FullLoginResponse> OriginLoginAsync(OriginLoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::xboxAssociateAccount</b> command.<br/>
+        /// Request type: <see cref="ConsoleAssociateAccountRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> XboxAssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::xboxLogin</b> command.<br/>
+        /// Request type: <see cref="XboxLoginRequest"/><br/>
+        /// Response type: <see cref="ConsoleLoginResponse"/><br/>
+        /// </summary>
+        public virtual Task<ConsoleLoginResponse> XboxLoginAsync(XboxLoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::ps3CreateAccount</b> command.<br/>
+        /// Request type: <see cref="ConsoleCreateAccountRequest"/><br/>
+        /// Response type: <see cref="ConsoleCreateAccountResponse"/><br/>
+        /// </summary>
+        public virtual Task<ConsoleCreateAccountResponse> Ps3CreateAccountAsync(ConsoleCreateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::ps3AssociateAccount</b> command.<br/>
+        /// Request type: <see cref="ConsoleAssociateAccountRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> Ps3AssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::ps3Login</b> command.<br/>
+        /// Request type: <see cref="PS3LoginRequest"/><br/>
+        /// Response type: <see cref="ConsoleLoginResponse"/><br/>
+        /// </summary>
+        public virtual Task<ConsoleLoginResponse> Ps3LoginAsync(PS3LoginRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::validateSessionKey</b> command.<br/>
+        /// Request type: <see cref="ValidateSessionKeyRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ValidateSessionKeyAsync(ValidateSessionKeyRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::createWalUserSession</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreateWalUserSessionAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::acceptLegalDocs</b> command.<br/>
+        /// Request type: <see cref="AcceptLegalDocsRequest"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AcceptLegalDocsAsync(AcceptLegalDocsRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getLegalDocsInfo</b> command.<br/>
+        /// Request type: <see cref="GetLegalDocsInfoRequest"/><br/>
+        /// Response type: <see cref="GetLegalDocsInfoResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetLegalDocsInfoResponse> GetLegalDocsInfoAsync(GetLegalDocsInfoRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::getTermsOfServiceContent</b> command.<br/>
+        /// Request type: <see cref="GetLegalDocContentRequest"/><br/>
+        /// Response type: <see cref="GetLegalDocContentResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetLegalDocContentResponse> GetTermsOfServiceContentAsync(GetLegalDocContentRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::deviceLoginGuest</b> command.<br/>
+        /// Request type: <see cref="DeviceLoginGuestRequest"/><br/>
+        /// Response type: <see cref="ConsoleLoginResponse"/><br/>
+        /// Error response type: <see cref="ConsoleCreateAccountRequest"/><br/>
+        /// </summary>
+        public virtual Task<ConsoleLoginResponse> DeviceLoginGuestAsync(DeviceLoginGuestRequest request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AuthenticationComponent::checkSinglePlayerLogin</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CheckSinglePlayerLoginAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+    }
+    
 }
+

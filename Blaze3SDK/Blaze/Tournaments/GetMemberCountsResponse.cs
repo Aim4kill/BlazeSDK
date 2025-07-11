@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Tournaments
+namespace Blaze3SDK.Blaze.Tournaments;
+
+public class GetMemberCountsResponse : Tdf
 {
-	[TdfStruct]
-	public struct GetMemberCountsResponse
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("TotalMemberCount", "mTotalMemberCount", 0x8EFBB400, TdfType.UInt32, 0, true), // CONT
+        new TdfMemberInfo("OnlineMemberCount", "mOnlineMemberCount", 0xBE3BEE00, TdfType.UInt32, 1, true), // OCON
+        new TdfMemberInfo("TournamentId", "mTournamentId", 0xD2EA6400, TdfType.UInt32, 2, true), // TNID
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("OCON")]
-		public uint mOnlineMemberCount;
+    private TdfUInt32 _totalMemberCount = new(__typeInfos[0]);
+    private TdfUInt32 _onlineMemberCount = new(__typeInfos[1]);
+    private TdfUInt32 _tournamentId = new(__typeInfos[2]);
 
-		[TdfMember("CONT")]
-		public uint mTotalMemberCount;
+    public GetMemberCountsResponse()
+    {
+        __members = [
+            _totalMemberCount,
+            _onlineMemberCount,
+            _tournamentId,
+        ];
+    }
 
-		[TdfMember("TNID")]
-		public uint mTournamentId;
+    public override Tdf CreateNew() => new GetMemberCountsResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetMemberCountsResponse";
+    public override string GetFullClassName() => "Blaze::Tournaments::GetMemberCountsResponse";
 
-	}
+    public uint TotalMemberCount
+    {
+        get => _totalMemberCount.Value;
+        set => _totalMemberCount.Value = value;
+    }
+
+    public uint OnlineMemberCount
+    {
+        get => _onlineMemberCount.Value;
+        set => _onlineMemberCount.Value = value;
+    }
+
+    public uint TournamentId
+    {
+        get => _tournamentId.Value;
+        set => _tournamentId.Value = value;
+    }
+
 }
+

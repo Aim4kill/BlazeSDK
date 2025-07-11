@@ -1,40 +1,91 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class GameBrowserPlayerData : Tdf
 {
-    [TdfStruct]
-    public struct GameBrowserPlayerData
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ExternalId", "mExternalId", 0x978A6400, TdfType.UInt64, 0, true), // EXID
+        new TdfMemberInfo("AccountLocale", "mAccountLocale", 0xB2F8C000, TdfType.UInt32, 1, true), // LOC
+        new TdfMemberInfo("PlayerName", "mPlayerName", 0xBA1B6500, TdfType.String, 2, true), // NAME
+        new TdfMemberInfo("PlayerAttribs", "mPlayerAttribs", 0xC21D3400, TdfType.Map, 3, true), // PATT
+        new TdfMemberInfo("PlayerId", "mPlayerId", 0xC2990000, TdfType.UInt32, 4, true), // PID
+        new TdfMemberInfo("TeamId", "mTeamId", 0xD2990000, TdfType.UInt16, 5, true), // TID
+        new TdfMemberInfo("TeamIndex", "mTeamIndex", 0xD2993800, TdfType.UInt16, 6, true), // TIDX
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt64 _externalId = new(__typeInfos[0]);
+    private TdfUInt32 _accountLocale = new(__typeInfos[1]);
+    private TdfString _playerName = new(__typeInfos[2]);
+    private TdfMap<string, string> _playerAttribs = new(__typeInfos[3]);
+    private TdfUInt32 _playerId = new(__typeInfos[4]);
+    private TdfUInt16 _teamId = new(__typeInfos[5]);
+    private TdfUInt16 _teamIndex = new(__typeInfos[6]);
+
+    public GameBrowserPlayerData()
     {
-        
-        [TdfMember("EXID")]
-        public ulong mExternalId;
-        
-        [TdfMember("LOC")]
-        public uint mAccountLocale;
-        
-        /// <summary>
-        /// Max String Length: 256
-        /// </summary>
-        [TdfMember("NAME")]
-        [StringLength(256)]
-        public string mPlayerName;
-        
-        /// <summary>
-        /// Max Key String Length: 32
-        /// Max Value String Length: 256
-        /// </summary>
-        [TdfMember("PATT")]
-        public SortedDictionary<string, string> mPlayerAttribs;
-        
-        [TdfMember("PID")]
-        public uint mPlayerId;
-        
-        [TdfMember("TID")]
-        public ushort mTeamId;
-        
-        [TdfMember("TIDX")]
-        public ushort mTeamIndex;
-        
+        __members = [
+            _externalId,
+            _accountLocale,
+            _playerName,
+            _playerAttribs,
+            _playerId,
+            _teamId,
+            _teamIndex,
+        ];
     }
+
+    public override Tdf CreateNew() => new GameBrowserPlayerData();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GameBrowserPlayerData";
+    public override string GetFullClassName() => "Blaze::GameManager::GameBrowserPlayerData";
+
+    public ulong ExternalId
+    {
+        get => _externalId.Value;
+        set => _externalId.Value = value;
+    }
+
+    public uint AccountLocale
+    {
+        get => _accountLocale.Value;
+        set => _accountLocale.Value = value;
+    }
+
+    public string PlayerName
+    {
+        get => _playerName.Value;
+        set => _playerName.Value = value;
+    }
+
+    public IDictionary<string, string> PlayerAttribs
+    {
+        get => _playerAttribs.Value;
+        set => _playerAttribs.Value = value;
+    }
+
+    public uint PlayerId
+    {
+        get => _playerId.Value;
+        set => _playerId.Value = value;
+    }
+
+    public ushort TeamId
+    {
+        get => _teamId.Value;
+        set => _teamId.Value = value;
+    }
+
+    public ushort TeamIndex
+    {
+        get => _teamIndex.Value;
+        set => _teamIndex.Value = value;
+    }
+
 }
+

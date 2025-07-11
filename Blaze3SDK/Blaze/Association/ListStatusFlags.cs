@@ -1,9 +1,9 @@
-﻿namespace Blaze3SDK.Blaze.Association
+namespace Blaze3SDK.Blaze.Association;
+
+[Flags]
+public enum ListStatusFlags : int
 {
-    [Flags]
-    public enum ListStatusFlags
-    {
-        None = 0,
-        Subscribed = 1,
-    }
+    None = 0,
+    Subscribed = 1,
 }
+

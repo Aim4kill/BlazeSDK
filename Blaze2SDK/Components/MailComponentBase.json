@@ -1,34 +1,33 @@
 {
-  "Usings": [
-    "BlazeCommon",
-    "NLog"
-  ],
+  "Usings": [],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 14,
+  "Name": "MailComponent",
+  "ShortName": "Mail",
+  "ErrorCodes": {
+    "1": "MAIL_ERR_INVALID_OPTIN_FLAGS",
+    "2": "MAIL_ERR_INVALID_EMAIL_FORMAT",
+    "3": "MAIL_ERR_USER_NOT_FOUND_IN_DB",
+    "20": "MAIL_ERR_SEND_MAIL_INVALID_EMAIL",
+    "21": "MAIL_ERR_SEND_MAIL_INVALID_TEMPLATE",
+    "22": "MAIL_ERR_SEND_MAIL_MISSING_HEADER",
+    "23": "MAIL_ERR_SEND_MAIL_MISSING_VARIABLE_VALUE"
+  },
+  "Methods": [
     {
-      "Id": 14,
-      "Name": "MailComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "updateMailSettings",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "sendMailToSelf",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 1,
+      "Name": "updateMailSettings",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "sendMailToSelf",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

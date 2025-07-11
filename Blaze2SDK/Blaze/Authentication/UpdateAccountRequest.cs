@@ -1,62 +1,109 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public class UpdateAccountRequest : Tdf
 {
-    [TdfStruct]
-    public struct UpdateAccountRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Country", "mCountry", 0x8F4CB900, TdfType.String, 0, true), // CTRY
+        new TdfMemberInfo("DOB", "mDOB", 0x92F88000, TdfType.String, 1, true), // DOB
+        new TdfMemberInfo("Language", "mLanguage", 0xB21BA700, TdfType.String, 2, true), // LANG
+        new TdfMemberInfo("Email", "mEmail", 0xB61A6C00, TdfType.String, 3, true), // MAIL
+        new TdfMemberInfo("GlobalOptin", "mGlobalOptin", 0xBF0D1100, TdfType.UInt8, 4, true), // OPT1
+        new TdfMemberInfo("ThirdPartyOptin", "mThirdPartyOptin", 0xBF0D1300, TdfType.UInt8, 5, true), // OPT3
+        new TdfMemberInfo("Password", "mPassword", 0xC21CF300, TdfType.String, 6, true), // PASS
+        new TdfMemberInfo("ParentalEmail", "mParentalEmail", 0xC32BB400, TdfType.String, 7, true), // PRNT
+        new TdfMemberInfo("UserId", "mUserId", 0xD6990000, TdfType.Int64, 8, true), // UID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _country = new(__typeInfos[0]);
+    private TdfString _dOB = new(__typeInfos[1]);
+    private TdfString _language = new(__typeInfos[2]);
+    private TdfString _email = new(__typeInfos[3]);
+    private TdfUInt8 _globalOptin = new(__typeInfos[4]);
+    private TdfUInt8 _thirdPartyOptin = new(__typeInfos[5]);
+    private TdfString _password = new(__typeInfos[6]);
+    private TdfString _parentalEmail = new(__typeInfos[7]);
+    private TdfInt64 _userId = new(__typeInfos[8]);
+
+    public UpdateAccountRequest()
     {
-        
-        /// <summary>
-        /// Max String Length: 4
-        /// </summary>
-        [TdfMember("CTRY")]
-        [StringLength(4)]
-        public string mCountry;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("DOB")]
-        [StringLength(32)]
-        public string mDOB;
-        
-        /// <summary>
-        /// Max String Length: 4
-        /// </summary>
-        [TdfMember("LANG")]
-        [StringLength(4)]
-        public string mLanguage;
-        
-        /// <summary>
-        /// Max String Length: 256
-        /// </summary>
-        [TdfMember("MAIL")]
-        [StringLength(256)]
-        public string mEmail;
-        
-        [TdfMember("OPT1")]
-        public byte mGlobalOptin;
-        
-        [TdfMember("OPT3")]
-        public byte mThirdPartyOptin;
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("PASS")]
-        [StringLength(64)]
-        public string mPassword;
-        
-        /// <summary>
-        /// Max String Length: 256
-        /// </summary>
-        [TdfMember("PRNT")]
-        [StringLength(256)]
-        public string mParentalEmail;
-        
-        [TdfMember("UID")]
-        public long mUserId;
-        
+        __members = [
+            _country,
+            _dOB,
+            _language,
+            _email,
+            _globalOptin,
+            _thirdPartyOptin,
+            _password,
+            _parentalEmail,
+            _userId,
+        ];
     }
+
+    public override Tdf CreateNew() => new UpdateAccountRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "UpdateAccountRequest";
+    public override string GetFullClassName() => "Blaze::Authentication::UpdateAccountRequest";
+
+    public string Country
+    {
+        get => _country.Value;
+        set => _country.Value = value;
+    }
+
+    public string DOB
+    {
+        get => _dOB.Value;
+        set => _dOB.Value = value;
+    }
+
+    public string Language
+    {
+        get => _language.Value;
+        set => _language.Value = value;
+    }
+
+    public string Email
+    {
+        get => _email.Value;
+        set => _email.Value = value;
+    }
+
+    public byte GlobalOptin
+    {
+        get => _globalOptin.Value;
+        set => _globalOptin.Value = value;
+    }
+
+    public byte ThirdPartyOptin
+    {
+        get => _thirdPartyOptin.Value;
+        set => _thirdPartyOptin.Value = value;
+    }
+
+    public string Password
+    {
+        get => _password.Value;
+        set => _password.Value = value;
+    }
+
+    public string ParentalEmail
+    {
+        get => _parentalEmail.Value;
+        set => _parentalEmail.Value = value;
+    }
+
+    public long UserId
+    {
+        get => _userId.Value;
+        set => _userId.Value = value;
+    }
+
 }
+

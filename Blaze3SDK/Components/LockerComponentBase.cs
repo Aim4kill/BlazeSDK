@@ -1,566 +1,443 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class LockerComponentBase
 {
-    public static class LockerComponentBase
+    public const ushort Id = 20;
+    public const string Name = "LockerComponent";
+    
+    public enum Error : ushort {
+        LOCKER_ERR_INVALID_LEADERBOARD_VIEW = 2,
+        LOCKER_ERR_INVALID_CONTENT_ID = 3,
+        LOCKER_ERR_ATTR_NOT_FOUND = 5,
+        LOCKER_ERR_INVALID_LOCKER_TYPE = 6,
+        LOCKER_ERR_UNKNOWN_STATUS = 7,
+        LOCKER_ERR_INVALID_PERMISSION_TYPE = 8,
+        LOCKER_ERR_NOT_AUTHORIZED = 9,
+        LOCKER_ERR_MAX_ITEMS_REACHED = 10,
+        LOCKER_ERR_MAX_SIZE = 11,
+        LOCKER_ERR_INVALID_ENTITY_ID = 12,
+        LOCKER_ERR_INVALID_GROUP_ID = 13,
+        LOCKER_ERR_NON_SEARCHABLE_ATTR = 15,
+        LOCKER_ERR_NOT_ACTIVE = 17,
+        LOCKER_ERR_CONTENT_NOT_FOUND = 18,
+        LOCKER_ERR_INVALID_LEADERBOARD_TYPE = 19,
+        LOCKER_ERR_INVALID_REFERENCE = 22,
+        LOCKER_ERR_SUBCONTENT_ALREADY_EXISTS = 23,
+        LOCKER_ERR_ACTION_NOT_ALLOWED = 24,
+        LOCKER_ERR_INVALID_REFERENCE_TYPE = 25,
+        LOCKER_ERR_INVALID_ATTRIBUTE_NAME = 26,
+        LOCKER_ERR_ATTRIBUTE_VALUE_NOT_MATCH_WITH_TYPE = 27,
+        LOCKER_ERR_NO_OWNER_GROUP = 28,
+        LOCKER_ERR_INVALID_OWNER_GROUP = 29,
+        LOCKER_ERR_INVALID_ENTITY_AND_GROUP_ID = 30,
+        LOCKER_ERR_LEADERBOARD_NOT_SUPPORTED = 31,
+        LOCKER_ERR_TOO_MANY_SUBCONTENT_ITEMS = 32,
+        LOCKER_ERR_CONTENT_ALREADY_CONFIRMED = 33,
+        LOCKER_ERR_INVALID_SUBCONTENT_NAME = 34,
+        LOCKER_ERR_INVALID_ENTITY_LIST_AND_GROUP_ID_AND_OBJECT_ID = 35,
+    }
+    
+    public enum LockerComponentCommand : ushort
     {
-        public const ushort Id = 20;
-        public const string Name = "LockerComponent";
+        createContent = 1,
+        createSubContent = 2,
+        confirmUpload = 3,
+        updateContentInfo = 4,
+        deleteContent = 5,
+        copyContentReference = 6,
+        bookmarkContentReference = 7,
+        getContentInfo = 8,
+        ListContent = 9,
+        getTopN = 10,
+        getLeaderboardView = 11,
+        updateRating = 12,
+        incrementUseCount = 13,
+        setOwnerGroup = 14,
+        removeOwnerGroup = 15,
+        listContentForUsers = 16,
+        WipeContent = 17,
+        getCategoryList = 18,
+        getLeaderboardList = 19,
+    }
+    
+    public enum LockerComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => LockerComponentBase.Id;
+        public override string Name => LockerComponentBase.Name;
         
-        public class Server : BlazeServerComponent<LockerComponentCommand, LockerComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(LockerComponentCommand command) => false;
+        
+        public class LockerException : BlazeRpcException
         {
-            public Server() : base(LockerComponentBase.Id, LockerComponentBase.Name)
+            public LockerException(Error error) : base((ushort)error, null) { }
+            public LockerException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public LockerException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public LockerException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public LockerException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public LockerException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public LockerException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public LockerException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)LockerComponentCommand.createContent,
+                Name = "createContent",
+                IsSupported = IsCommandSupported(LockerComponentCommand.createContent),
+                Func = async (req, ctx) => await CreateContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.createContent)]
-            public virtual Task<NullStruct> CreateContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.createSubContent,
+                Name = "createSubContent",
+                IsSupported = IsCommandSupported(LockerComponentCommand.createSubContent),
+                Func = async (req, ctx) => await CreateSubContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.createSubContent)]
-            public virtual Task<NullStruct> CreateSubContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.confirmUpload,
+                Name = "confirmUpload",
+                IsSupported = IsCommandSupported(LockerComponentCommand.confirmUpload),
+                Func = async (req, ctx) => await ConfirmUploadAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.confirmUpload)]
-            public virtual Task<NullStruct> ConfirmUploadAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.updateContentInfo,
+                Name = "updateContentInfo",
+                IsSupported = IsCommandSupported(LockerComponentCommand.updateContentInfo),
+                Func = async (req, ctx) => await UpdateContentInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.updateContentInfo)]
-            public virtual Task<NullStruct> UpdateContentInfoAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.deleteContent,
+                Name = "deleteContent",
+                IsSupported = IsCommandSupported(LockerComponentCommand.deleteContent),
+                Func = async (req, ctx) => await DeleteContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.deleteContent)]
-            public virtual Task<NullStruct> DeleteContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.copyContentReference,
+                Name = "copyContentReference",
+                IsSupported = IsCommandSupported(LockerComponentCommand.copyContentReference),
+                Func = async (req, ctx) => await CopyContentReferenceAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.copyContentReference)]
-            public virtual Task<NullStruct> CopyContentReferenceAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.bookmarkContentReference,
+                Name = "bookmarkContentReference",
+                IsSupported = IsCommandSupported(LockerComponentCommand.bookmarkContentReference),
+                Func = async (req, ctx) => await BookmarkContentReferenceAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.bookmarkContentReference)]
-            public virtual Task<NullStruct> BookmarkContentReferenceAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.getContentInfo,
+                Name = "getContentInfo",
+                IsSupported = IsCommandSupported(LockerComponentCommand.getContentInfo),
+                Func = async (req, ctx) => await GetContentInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.getContentInfo)]
-            public virtual Task<NullStruct> GetContentInfoAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.ListContent,
+                Name = "ListContent",
+                IsSupported = IsCommandSupported(LockerComponentCommand.ListContent),
+                Func = async (req, ctx) => await ListContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.ListContent)]
-            public virtual Task<NullStruct> ListContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.getTopN,
+                Name = "getTopN",
+                IsSupported = IsCommandSupported(LockerComponentCommand.getTopN),
+                Func = async (req, ctx) => await GetTopNAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.getTopN)]
-            public virtual Task<NullStruct> GetTopNAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.getLeaderboardView,
+                Name = "getLeaderboardView",
+                IsSupported = IsCommandSupported(LockerComponentCommand.getLeaderboardView),
+                Func = async (req, ctx) => await GetLeaderboardViewAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.getLeaderboardView)]
-            public virtual Task<NullStruct> GetLeaderboardViewAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.updateRating,
+                Name = "updateRating",
+                IsSupported = IsCommandSupported(LockerComponentCommand.updateRating),
+                Func = async (req, ctx) => await UpdateRatingAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.updateRating)]
-            public virtual Task<NullStruct> UpdateRatingAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.incrementUseCount,
+                Name = "incrementUseCount",
+                IsSupported = IsCommandSupported(LockerComponentCommand.incrementUseCount),
+                Func = async (req, ctx) => await IncrementUseCountAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.incrementUseCount)]
-            public virtual Task<NullStruct> IncrementUseCountAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.setOwnerGroup,
+                Name = "setOwnerGroup",
+                IsSupported = IsCommandSupported(LockerComponentCommand.setOwnerGroup),
+                Func = async (req, ctx) => await SetOwnerGroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.setOwnerGroup)]
-            public virtual Task<NullStruct> SetOwnerGroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.removeOwnerGroup,
+                Name = "removeOwnerGroup",
+                IsSupported = IsCommandSupported(LockerComponentCommand.removeOwnerGroup),
+                Func = async (req, ctx) => await RemoveOwnerGroupAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.removeOwnerGroup)]
-            public virtual Task<NullStruct> RemoveOwnerGroupAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.listContentForUsers,
+                Name = "listContentForUsers",
+                IsSupported = IsCommandSupported(LockerComponentCommand.listContentForUsers),
+                Func = async (req, ctx) => await ListContentForUsersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.listContentForUsers)]
-            public virtual Task<NullStruct> ListContentForUsersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.WipeContent,
+                Name = "WipeContent",
+                IsSupported = IsCommandSupported(LockerComponentCommand.WipeContent),
+                Func = async (req, ctx) => await WipeContentAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.WipeContent)]
-            public virtual Task<NullStruct> WipeContentAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LockerComponentCommand.getCategoryList,
+                Name = "getCategoryList",
+                IsSupported = IsCommandSupported(LockerComponentCommand.getCategoryList),
+                Func = async (req, ctx) => await GetCategoryListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LockerComponentCommand.getCategoryList)]
-            public virtual Task<NullStruct> GetCategoryListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getLeaderboardList)]
-            public virtual Task<NullStruct> GetLeaderboardListAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(LockerComponentCommand command) => LockerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LockerComponentNotification notification) => LockerComponentBase.GetNotificationType(notification);
+                Id = (ushort)LockerComponentCommand.getLeaderboardList,
+                Name = "getLeaderboardList",
+                IsSupported = IsCommandSupported(LockerComponentCommand.getLeaderboardList),
+                Func = async (req, ctx) => await GetLeaderboardListAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<LockerComponentCommand, LockerComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(LockerComponentBase.Id, LockerComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct CreateContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createContent, new NullStruct());
-            }
-            public Task<NullStruct> CreateContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createContent, new NullStruct());
-            }
-            
-            public NullStruct CreateSubContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createSubContent, new NullStruct());
-            }
-            public Task<NullStruct> CreateSubContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createSubContent, new NullStruct());
-            }
-            
-            public NullStruct ConfirmUpload()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.confirmUpload, new NullStruct());
-            }
-            public Task<NullStruct> ConfirmUploadAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.confirmUpload, new NullStruct());
-            }
-            
-            public NullStruct UpdateContentInfo()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateContentInfo, new NullStruct());
-            }
-            public Task<NullStruct> UpdateContentInfoAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateContentInfo, new NullStruct());
-            }
-            
-            public NullStruct DeleteContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.deleteContent, new NullStruct());
-            }
-            public Task<NullStruct> DeleteContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.deleteContent, new NullStruct());
-            }
-            
-            public NullStruct CopyContentReference()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.copyContentReference, new NullStruct());
-            }
-            public Task<NullStruct> CopyContentReferenceAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.copyContentReference, new NullStruct());
-            }
-            
-            public NullStruct BookmarkContentReference()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.bookmarkContentReference, new NullStruct());
-            }
-            public Task<NullStruct> BookmarkContentReferenceAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.bookmarkContentReference, new NullStruct());
-            }
-            
-            public NullStruct GetContentInfo()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getContentInfo, new NullStruct());
-            }
-            public Task<NullStruct> GetContentInfoAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getContentInfo, new NullStruct());
-            }
-            
-            public NullStruct ListContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.ListContent, new NullStruct());
-            }
-            public Task<NullStruct> ListContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.ListContent, new NullStruct());
-            }
-            
-            public NullStruct GetTopN()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getTopN, new NullStruct());
-            }
-            public Task<NullStruct> GetTopNAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getTopN, new NullStruct());
-            }
-            
-            public NullStruct GetLeaderboardView()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardView, new NullStruct());
-            }
-            public Task<NullStruct> GetLeaderboardViewAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardView, new NullStruct());
-            }
-            
-            public NullStruct UpdateRating()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateRating, new NullStruct());
-            }
-            public Task<NullStruct> UpdateRatingAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateRating, new NullStruct());
-            }
-            
-            public NullStruct IncrementUseCount()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.incrementUseCount, new NullStruct());
-            }
-            public Task<NullStruct> IncrementUseCountAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.incrementUseCount, new NullStruct());
-            }
-            
-            public NullStruct SetOwnerGroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.setOwnerGroup, new NullStruct());
-            }
-            public Task<NullStruct> SetOwnerGroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.setOwnerGroup, new NullStruct());
-            }
-            
-            public NullStruct RemoveOwnerGroup()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.removeOwnerGroup, new NullStruct());
-            }
-            public Task<NullStruct> RemoveOwnerGroupAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.removeOwnerGroup, new NullStruct());
-            }
-            
-            public NullStruct ListContentForUsers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.listContentForUsers, new NullStruct());
-            }
-            public Task<NullStruct> ListContentForUsersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.listContentForUsers, new NullStruct());
-            }
-            
-            public NullStruct WipeContent()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.WipeContent, new NullStruct());
-            }
-            public Task<NullStruct> WipeContentAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.WipeContent, new NullStruct());
-            }
-            
-            public NullStruct GetCategoryList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getCategoryList, new NullStruct());
-            }
-            public Task<NullStruct> GetCategoryListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getCategoryList, new NullStruct());
-            }
-            
-            public NullStruct GetLeaderboardList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardList, new NullStruct());
-            }
-            public Task<NullStruct> GetLeaderboardListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardList, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(LockerComponentCommand command) => LockerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LockerComponentNotification notification) => LockerComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<LockerComponentCommand, LockerComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::createContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreateContentAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(LockerComponentBase.Id, LockerComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.createContent)]
-            public virtual Task<NullStruct> CreateContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createContent, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.createSubContent)]
-            public virtual Task<NullStruct> CreateSubContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.createSubContent, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.confirmUpload)]
-            public virtual Task<NullStruct> ConfirmUploadAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.confirmUpload, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.updateContentInfo)]
-            public virtual Task<NullStruct> UpdateContentInfoAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateContentInfo, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.deleteContent)]
-            public virtual Task<NullStruct> DeleteContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.deleteContent, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.copyContentReference)]
-            public virtual Task<NullStruct> CopyContentReferenceAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.copyContentReference, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.bookmarkContentReference)]
-            public virtual Task<NullStruct> BookmarkContentReferenceAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.bookmarkContentReference, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getContentInfo)]
-            public virtual Task<NullStruct> GetContentInfoAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getContentInfo, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.ListContent)]
-            public virtual Task<NullStruct> ListContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.ListContent, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getTopN)]
-            public virtual Task<NullStruct> GetTopNAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getTopN, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getLeaderboardView)]
-            public virtual Task<NullStruct> GetLeaderboardViewAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardView, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.updateRating)]
-            public virtual Task<NullStruct> UpdateRatingAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.updateRating, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.incrementUseCount)]
-            public virtual Task<NullStruct> IncrementUseCountAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.incrementUseCount, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.setOwnerGroup)]
-            public virtual Task<NullStruct> SetOwnerGroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.setOwnerGroup, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.removeOwnerGroup)]
-            public virtual Task<NullStruct> RemoveOwnerGroupAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.removeOwnerGroup, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.listContentForUsers)]
-            public virtual Task<NullStruct> ListContentForUsersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.listContentForUsers, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.WipeContent)]
-            public virtual Task<NullStruct> WipeContentAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.WipeContent, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getCategoryList)]
-            public virtual Task<NullStruct> GetCategoryListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getCategoryList, request);
-            }
-            
-            [BlazeCommand((ushort)LockerComponentCommand.getLeaderboardList)]
-            public virtual Task<NullStruct> GetLeaderboardListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LockerComponentCommand.getLeaderboardList, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(LockerComponentCommand command) => LockerComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LockerComponentCommand command) => LockerComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LockerComponentNotification notification) => LockerComponentBase.GetNotificationType(notification);
-            
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(LockerComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::createSubContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreateSubContentAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            LockerComponentCommand.createContent => typeof(NullStruct),
-            LockerComponentCommand.createSubContent => typeof(NullStruct),
-            LockerComponentCommand.confirmUpload => typeof(NullStruct),
-            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
-            LockerComponentCommand.deleteContent => typeof(NullStruct),
-            LockerComponentCommand.copyContentReference => typeof(NullStruct),
-            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
-            LockerComponentCommand.getContentInfo => typeof(NullStruct),
-            LockerComponentCommand.ListContent => typeof(NullStruct),
-            LockerComponentCommand.getTopN => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
-            LockerComponentCommand.updateRating => typeof(NullStruct),
-            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
-            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.listContentForUsers => typeof(NullStruct),
-            LockerComponentCommand.WipeContent => typeof(NullStruct),
-            LockerComponentCommand.getCategoryList => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardList => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(LockerComponentCommand command) => command switch
-        {
-            LockerComponentCommand.createContent => typeof(NullStruct),
-            LockerComponentCommand.createSubContent => typeof(NullStruct),
-            LockerComponentCommand.confirmUpload => typeof(NullStruct),
-            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
-            LockerComponentCommand.deleteContent => typeof(NullStruct),
-            LockerComponentCommand.copyContentReference => typeof(NullStruct),
-            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
-            LockerComponentCommand.getContentInfo => typeof(NullStruct),
-            LockerComponentCommand.ListContent => typeof(NullStruct),
-            LockerComponentCommand.getTopN => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
-            LockerComponentCommand.updateRating => typeof(NullStruct),
-            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
-            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.listContentForUsers => typeof(NullStruct),
-            LockerComponentCommand.WipeContent => typeof(NullStruct),
-            LockerComponentCommand.getCategoryList => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardList => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(LockerComponentCommand command) => command switch
-        {
-            LockerComponentCommand.createContent => typeof(NullStruct),
-            LockerComponentCommand.createSubContent => typeof(NullStruct),
-            LockerComponentCommand.confirmUpload => typeof(NullStruct),
-            LockerComponentCommand.updateContentInfo => typeof(NullStruct),
-            LockerComponentCommand.deleteContent => typeof(NullStruct),
-            LockerComponentCommand.copyContentReference => typeof(NullStruct),
-            LockerComponentCommand.bookmarkContentReference => typeof(NullStruct),
-            LockerComponentCommand.getContentInfo => typeof(NullStruct),
-            LockerComponentCommand.ListContent => typeof(NullStruct),
-            LockerComponentCommand.getTopN => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardView => typeof(NullStruct),
-            LockerComponentCommand.updateRating => typeof(NullStruct),
-            LockerComponentCommand.incrementUseCount => typeof(NullStruct),
-            LockerComponentCommand.setOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.removeOwnerGroup => typeof(NullStruct),
-            LockerComponentCommand.listContentForUsers => typeof(NullStruct),
-            LockerComponentCommand.WipeContent => typeof(NullStruct),
-            LockerComponentCommand.getCategoryList => typeof(NullStruct),
-            LockerComponentCommand.getLeaderboardList => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(LockerComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum LockerComponentCommand : ushort
-        {
-            createContent = 1,
-            createSubContent = 2,
-            confirmUpload = 3,
-            updateContentInfo = 4,
-            deleteContent = 5,
-            copyContentReference = 6,
-            bookmarkContentReference = 7,
-            getContentInfo = 8,
-            ListContent = 9,
-            getTopN = 10,
-            getLeaderboardView = 11,
-            updateRating = 12,
-            incrementUseCount = 13,
-            setOwnerGroup = 14,
-            removeOwnerGroup = 15,
-            listContentForUsers = 16,
-            WipeContent = 17,
-            getCategoryList = 18,
-            getLeaderboardList = 19,
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum LockerComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::confirmUpload</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ConfirmUploadAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::updateContentInfo</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateContentInfoAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::deleteContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DeleteContentAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::copyContentReference</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CopyContentReferenceAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::bookmarkContentReference</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> BookmarkContentReferenceAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::getContentInfo</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetContentInfoAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::ListContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListContentAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::getTopN</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetTopNAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::getLeaderboardView</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetLeaderboardViewAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::updateRating</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateRatingAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::incrementUseCount</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> IncrementUseCountAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::setOwnerGroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetOwnerGroupAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::removeOwnerGroup</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemoveOwnerGroupAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::listContentForUsers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListContentForUsersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::WipeContent</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> WipeContentAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::getCategoryList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetCategoryListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LockerComponent::getLeaderboardList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetLeaderboardListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LockerException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

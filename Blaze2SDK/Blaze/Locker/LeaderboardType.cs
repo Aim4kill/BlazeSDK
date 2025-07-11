@@ -1,9 +1,9 @@
-namespace Blaze2SDK.Blaze.Locker
+namespace Blaze2SDK.Blaze.Locker;
+
+public enum LeaderboardType : int
 {
-    public enum LeaderboardType : int
-    {
-        MOST_RECENT = 0x0,
-        HIGHEST_RATED = 0x1,
-        MOST_USED = 0x2,
-    }
+    MOST_RECENT = 0,
+    HIGHEST_RATED = 1,
+    MOST_USED = 2,
 }
+

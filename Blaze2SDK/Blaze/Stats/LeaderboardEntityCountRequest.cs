@@ -1,34 +1,73 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Stats
+namespace Blaze2SDK.Blaze.Stats;
+
+public class LeaderboardEntityCountRequest : Tdf
 {
-    [TdfStruct]
-    public struct LeaderboardEntityCountRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ContextId", "mContextId", 0x8E990000, TdfType.UInt32, 0, true), // CID
+        new TdfMemberInfo("ScopeValueMap", "mScopeValueMap", 0xAF3D6D00, TdfType.Map, 1, true), // KSUM
+        new TdfMemberInfo("BoardId", "mBoardId", 0xB22A6400, TdfType.Int32, 2, true), // LBID
+        new TdfMemberInfo("BoardName", "mBoardName", 0xBA1B6500, TdfType.String, 3, true), // NAME
+        new TdfMemberInfo("PeriodOffset", "mPeriodOffset", 0xC2F9A600, TdfType.Int32, 4, true), // POFF
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt32 _contextId = new(__typeInfos[0]);
+    private TdfMap<string, string> _scopeValueMap = new(__typeInfos[1]);
+    private TdfInt32 _boardId = new(__typeInfos[2]);
+    private TdfString _boardName = new(__typeInfos[3]);
+    private TdfInt32 _periodOffset = new(__typeInfos[4]);
+
+    public LeaderboardEntityCountRequest()
     {
-        
-        [TdfMember("CID")]
-        public uint mContextId;
-        
-        /// <summary>
-        /// Max Key String Length: 32
-        /// Max Value String Length: 32
-        /// </summary>
-        [TdfMember("KSUM")]
-        public SortedDictionary<string, string> mScopeValueMap;
-        
-        [TdfMember("LBID")]
-        public int mBoardId;
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("NAME")]
-        [StringLength(64)]
-        public string mBoardName;
-        
-        [TdfMember("POFF")]
-        public int mPeriodOffset;
-        
+        __members = [
+            _contextId,
+            _scopeValueMap,
+            _boardId,
+            _boardName,
+            _periodOffset,
+        ];
     }
+
+    public override Tdf CreateNew() => new LeaderboardEntityCountRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "LeaderboardEntityCountRequest";
+    public override string GetFullClassName() => "Blaze::Stats::LeaderboardEntityCountRequest";
+
+    public uint ContextId
+    {
+        get => _contextId.Value;
+        set => _contextId.Value = value;
+    }
+
+    public IDictionary<string, string> ScopeValueMap
+    {
+        get => _scopeValueMap.Value;
+        set => _scopeValueMap.Value = value;
+    }
+
+    public int BoardId
+    {
+        get => _boardId.Value;
+        set => _boardId.Value = value;
+    }
+
+    public string BoardName
+    {
+        get => _boardName.Value;
+        set => _boardName.Value = value;
+    }
+
+    public int PeriodOffset
+    {
+        get => _periodOffset.Value;
+        set => _periodOffset.Value = value;
+    }
+
 }
+

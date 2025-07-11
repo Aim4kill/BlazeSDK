@@ -1,9 +1,9 @@
-namespace Blaze2SDK.Blaze.Messaging
+namespace Blaze2SDK.Blaze.Messaging;
+
+public enum MessageOrder : int
 {
-    public enum MessageOrder : int
-    {
-        ORDER_DEFAULT = 0x0,
-        ORDER_TIME_ASC = 0x1,
-        ORDER_TIME_DESC = 0x2,
-    }
+    ORDER_DEFAULT = 0,
+    ORDER_TIME_ASC = 1,
+    ORDER_TIME_DESC = 2,
 }
+

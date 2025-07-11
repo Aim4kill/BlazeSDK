@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazeCommon\BlazeCommon.csproj" />
-    <ProjectReference Include="..\Tdf\Tdf.csproj" />
+    <ProjectReference Include="..\Blaze.Core\Blaze.Core.csproj" />
+    <ProjectReference Include="..\EATDF\EATDF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

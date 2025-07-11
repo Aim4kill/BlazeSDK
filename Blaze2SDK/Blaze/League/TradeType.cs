@@ -1,9 +1,9 @@
-namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+public enum TradeType : int
 {
-    public enum TradeType : int
-    {
-        LEAGUE_TRADES_NONE = 0x0,
-        LEAGUE_TRADES_SIMPLE = 0x1,
-        LEAGUE_TRADES_RESTRICTED = 0x2,
-    }
+    LEAGUE_TRADES_NONE = 0,
+    LEAGUE_TRADES_SIMPLE = 1,
+    LEAGUE_TRADES_RESTRICTED = 2,
 }
+

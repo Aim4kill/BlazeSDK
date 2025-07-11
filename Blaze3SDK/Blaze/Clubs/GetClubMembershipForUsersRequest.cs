@@ -1,13 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Clubs
+namespace Blaze3SDK.Blaze.Clubs;
+
+public class GetClubMembershipForUsersRequest : Tdf
 {
-	[TdfStruct]
-	public struct GetClubMembershipForUsersRequest
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("BlazeIdList", "mBlazeIdList", 0xA64B3400, TdfType.List, 0, true), // IDLT
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("IDLT")]
-		public List<long> mBlazeIdList;
+    private TdfList<long> _blazeIdList = new(__typeInfos[0]);
 
-	}
+    public GetClubMembershipForUsersRequest()
+    {
+        __members = [
+            _blazeIdList,
+        ];
+    }
+
+    public override Tdf CreateNew() => new GetClubMembershipForUsersRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetClubMembershipForUsersRequest";
+    public override string GetFullClassName() => "Blaze::Clubs::GetClubMembershipForUsersRequest";
+
+    public IList<long> BlazeIdList
+    {
+        get => _blazeIdList.Value;
+        set => _blazeIdList.Value = value;
+    }
+
 }
+

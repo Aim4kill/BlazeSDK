@@ -1,13 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Clubs
+namespace Blaze2SDK.Blaze.Clubs;
+
+public class GetClubsResponse : Tdf
 {
-    [TdfStruct]
-    public struct GetClubsResponse
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ClubList", "mClubList", 0x8ECCF400, TdfType.List, 0, true), // CLST
+    ];
+    private ITdfMember[] __members;
+
+    private TdfList<Blaze2SDK.Blaze.Clubs.Club> _clubList = new(__typeInfos[0]);
+
+    public GetClubsResponse()
     {
-        
-        [TdfMember("CLST")]
-        public List<Club> mClubList;
-        
+        __members = [
+            _clubList,
+        ];
     }
+
+    public override Tdf CreateNew() => new GetClubsResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetClubsResponse";
+    public override string GetFullClassName() => "Blaze::Clubs::GetClubsResponse";
+
+    public IList<Blaze2SDK.Blaze.Clubs.Club> ClubList
+    {
+        get => _clubList.Value;
+        set => _clubList.Value = value;
+    }
+
 }
+

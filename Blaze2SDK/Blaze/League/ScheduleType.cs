@@ -1,9 +1,9 @@
-namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+public enum ScheduleType : int
 {
-    public enum ScheduleType : int
-    {
-        LEAGUE_SCHEDULE_NONE = 0x0,
-        LEAGUE_SCHEDULE_CASUAL = 0x1,
-        LEAGUE_SCHEDULE_STRICT = 0x2,
-    }
+    LEAGUE_SCHEDULE_NONE = 0,
+    LEAGUE_SCHEDULE_CASUAL = 1,
+    LEAGUE_SCHEDULE_STRICT = 2,
 }
+

@@ -1,15 +1,15 @@
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public enum NucleusField : int
 {
-    public enum NucleusField : int
-    {
-        UNKNOWN = 0x0,
-        PASSWORD = 0x1,
-        EMAIL = 0x2,
-        PARENTAL_EMAIL = 0x3,
-        DISPLAY_NAME = 0x4,
-        STATUS = 0x5,
-        DOB = 0x6,
-        TOKEN = 0x7,
-        EXPIRATION = 0x8,
-    }
+    UNKNOWN = 0,
+    PASSWORD = 1,
+    EMAIL = 2,
+    PARENTAL_EMAIL = 3,
+    DISPLAY_NAME = 4,
+    STATUS = 5,
+    DOB = 6,
+    TOKEN = 7,
+    EXPIRATION = 8,
 }
+

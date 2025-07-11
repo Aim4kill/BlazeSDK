@@ -1,228 +1,245 @@
 {
   "Usings": [
-    "Blaze2SDK.Blaze.Rooms",
-    "BlazeCommon",
-    "NLog"
+    "Blaze2SDK.Blaze.Rooms"
   ],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 21,
+  "Name": "RoomsComponent",
+  "ShortName": "Rooms",
+  "ErrorCodes": {
+    "1": "ROOMS_ERR_GENERIC",
+    "2": "ROOMS_ERR_MISSING_PARAM",
+    "3": "ROOMS_ERR_BAD_PARAM",
+    "4": "ROOMS_ERR_CONFIG_ERROR",
+    "5": "ROOMS_ERR_DB_ERROR",
+    "10": "ROOMS_ERR_NO_PERMISSION",
+    "11": "ROOMS_ERR_NOT_FOUND",
+    "12": "ROOMS_ERR_ROOM_FULL",
+    "13": "ROOMS_ERR_UNKNOWN_VIEW",
+    "14": "ROOMS_ERR_ALREADY_MEMBER",
+    "15": "ROOMS_ERR_NOT_MEMBER",
+    "16": "ROOMS_ERR_ALREADY_REGISTERED",
+    "17": "ROOMS_ERR_NOT_REGISTERED",
+    "18": "ROOMS_ERR_JOIN_CRITERIA_FAILED",
+    "19": "ROOMS_ERR_JOIN_WRONG_PASSWORD",
+    "20": "ROOMS_ERR_CREATE_UNKNOWN_VIEW",
+    "21": "ROOMS_ERR_CREATE_SMALL_CAPACITY",
+    "22": "ROOMS_ERR_CREATE_BLANK_NAME",
+    "23": "ROOMS_ERR_CREATE_DUPLICATE_NAME",
+    "24": "ROOMS_ERR_CREATE_MAX_ROOMS",
+    "25": "ROOMS_ERR_CREATE_UNKNOWN_CATEGORY",
+    "26": "ROOMS_ERR_INVALID_CRITERIA",
+    "27": "ROOMS_ERR_CREATE_PROFANE_NAME",
+    "28": "ROOMS_ERR_JOIN_BANNED"
+  },
+  "Methods": [
+    {
+      "Id": 10,
+      "Name": "selectViewUpdates",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 11,
+      "Name": "selectCategoryUpdates",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 20,
+      "Name": "joinRoom",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
     {
       "Id": 21,
-      "Name": "RoomsComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 10,
-          "Name": "selectViewUpdates",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 11,
-          "Name": "selectCategoryUpdates",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 20,
-          "Name": "joinRoom",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 21,
-          "Name": "leaveRoom",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 31,
-          "Name": "kickUser",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 40,
-          "Name": "transferRoomHost",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 100,
-          "Name": "createRoomCategory",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 101,
-          "Name": "removeRoomCategory",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 102,
-          "Name": "createRoom",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 103,
-          "Name": "removeRoom",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 109,
-          "Name": "getViews",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 110,
-          "Name": "createScheduledCategory",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 111,
-          "Name": "deleteScheduledCategory",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 112,
-          "Name": "getScheduledCategories",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 120,
-          "Name": "lookupRoomData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 130,
-          "Name": "setRoomAttributes",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 140,
-          "Name": "checkEntryCriteria",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 150,
-          "Name": "toggleJoinedRoomNotifications",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 10,
-          "Name": "RoomViewUpdatedNotification",
-          "Type": "RoomViewData"
-        },
-        {
-          "Id": 11,
-          "Name": "RoomViewAddedNotification",
-          "Type": "RoomViewData"
-        },
-        {
-          "Id": 12,
-          "Name": "RoomViewRemovedNotification",
-          "Type": "RoomViewRemoved"
-        },
-        {
-          "Id": 20,
-          "Name": "RoomCategoryUpdatedNotification",
-          "Type": "RoomCategoryData"
-        },
-        {
-          "Id": 21,
-          "Name": "RoomCategoryAddedNotification",
-          "Type": "RoomCategoryData"
-        },
-        {
-          "Id": 22,
-          "Name": "RoomCategoryRemovedNotification",
-          "Type": "RoomCategoryRemoved"
-        },
-        {
-          "Id": 30,
-          "Name": "RoomUpdatedNotification",
-          "Type": "RoomData"
-        },
-        {
-          "Id": 31,
-          "Name": "RoomAddedNotification",
-          "Type": "RoomData"
-        },
-        {
-          "Id": 32,
-          "Name": "RoomRemovedNotification",
-          "Type": "RoomRemoved"
-        },
-        {
-          "Id": 40,
-          "Name": "RoomPopulationUpdated",
-          "Type": "RoomsPopulationUpdate"
-        },
-        {
-          "Id": 50,
-          "Name": "RoomMemberJoined",
-          "Type": "RoomMemberData"
-        },
-        {
-          "Id": 51,
-          "Name": "RoomMemberLeft",
-          "Type": "RoomMemberRemoved"
-        },
-        {
-          "Id": 52,
-          "Name": "RoomMemberUpdated",
-          "Type": "RoomMemberData"
-        },
-        {
-          "Id": 60,
-          "Name": "RoomKick",
-          "Type": "RoomMemberKicked"
-        },
-        {
-          "Id": 70,
-          "Name": "RoomHostTransfer",
-          "Type": "RoomHostTransfered"
-        },
-        {
-          "Id": 80,
-          "Name": "RoomAttributesSet",
-          "Type": "RoomAttributesSet"
-        }
-      ]
+      "Name": "leaveRoom",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 31,
+      "Name": "kickUser",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 40,
+      "Name": "transferRoomHost",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 100,
+      "Name": "createRoomCategory",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 101,
+      "Name": "removeRoomCategory",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 102,
+      "Name": "createRoom",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 103,
+      "Name": "removeRoom",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 109,
+      "Name": "getViews",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 110,
+      "Name": "createScheduledCategory",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 111,
+      "Name": "deleteScheduledCategory",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 112,
+      "Name": "getScheduledCategories",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 120,
+      "Name": "lookupRoomData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 130,
+      "Name": "setRoomAttributes",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 140,
+      "Name": "checkEntryCriteria",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 150,
+      "Name": "toggleJoinedRoomNotifications",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 10,
+      "Name": "RoomViewUpdatedNotification",
+      "Type": "RoomViewData"
+    },
+    {
+      "Id": 11,
+      "Name": "RoomViewAddedNotification",
+      "Type": "RoomViewData"
+    },
+    {
+      "Id": 12,
+      "Name": "RoomViewRemovedNotification",
+      "Type": "RoomViewRemoved"
+    },
+    {
+      "Id": 20,
+      "Name": "RoomCategoryUpdatedNotification",
+      "Type": "RoomCategoryData"
+    },
+    {
+      "Id": 21,
+      "Name": "RoomCategoryAddedNotification",
+      "Type": "RoomCategoryData"
+    },
+    {
+      "Id": 22,
+      "Name": "RoomCategoryRemovedNotification",
+      "Type": "RoomCategoryRemoved"
+    },
+    {
+      "Id": 30,
+      "Name": "RoomUpdatedNotification",
+      "Type": "RoomData"
+    },
+    {
+      "Id": 31,
+      "Name": "RoomAddedNotification",
+      "Type": "RoomData"
+    },
+    {
+      "Id": 32,
+      "Name": "RoomRemovedNotification",
+      "Type": "RoomRemoved"
+    },
+    {
+      "Id": 40,
+      "Name": "RoomPopulationUpdated",
+      "Type": "RoomsPopulationUpdate"
+    },
+    {
+      "Id": 50,
+      "Name": "RoomMemberJoined",
+      "Type": "RoomMemberData"
+    },
+    {
+      "Id": 51,
+      "Name": "RoomMemberLeft",
+      "Type": "RoomMemberRemoved"
+    },
+    {
+      "Id": 52,
+      "Name": "RoomMemberUpdated",
+      "Type": "RoomMemberData"
+    },
+    {
+      "Id": 60,
+      "Name": "RoomKick",
+      "Type": "RoomMemberKicked"
+    },
+    {
+      "Id": 70,
+      "Name": "RoomHostTransfer",
+      "Type": "RoomHostTransfered"
+    },
+    {
+      "Id": 80,
+      "Name": "RoomAttributesSet",
+      "Type": "RoomAttributesSet"
     }
   ]
 }

@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.GameManager
+namespace Blaze3SDK.Blaze.GameManager;
+
+public class NotifyGamePlayerTeamChange : Tdf
 {
-	[TdfStruct]
-	public struct NotifyGamePlayerTeamChange
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("GameId", "mGameId", 0x9E990000, TdfType.UInt32, 0, true), // GID
+        new TdfMemberInfo("PlayerId", "mPlayerId", 0xC2990000, TdfType.Int64, 1, true), // PID
+        new TdfMemberInfo("TeamIndex", "mTeamIndex", 0xD2993800, TdfType.UInt16, 2, true), // TIDX
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("GID")]
-		public uint mGameId;
+    private TdfUInt32 _gameId = new(__typeInfos[0]);
+    private TdfInt64 _playerId = new(__typeInfos[1]);
+    private TdfUInt16 _teamIndex = new(__typeInfos[2]);
 
-		[TdfMember("PID")]
-		public long mPlayerId;
+    public NotifyGamePlayerTeamChange()
+    {
+        __members = [
+            _gameId,
+            _playerId,
+            _teamIndex,
+        ];
+    }
 
-		[TdfMember("TIDX")]
-		public ushort mTeamIndex;
+    public override Tdf CreateNew() => new NotifyGamePlayerTeamChange();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "NotifyGamePlayerTeamChange";
+    public override string GetFullClassName() => "Blaze::GameManager::NotifyGamePlayerTeamChange";
 
-	}
+    public uint GameId
+    {
+        get => _gameId.Value;
+        set => _gameId.Value = value;
+    }
+
+    public long PlayerId
+    {
+        get => _playerId.Value;
+        set => _playerId.Value = value;
+    }
+
+    public ushort TeamIndex
+    {
+        get => _teamIndex.Value;
+        set => _teamIndex.Value = value;
+    }
+
 }
+

@@ -1,8 +1,8 @@
-namespace Blaze2SDK.Blaze
+namespace Blaze2SDK.Blaze;
+
+public enum UpnpStatus : int
 {
-    public enum UpnpStatus : int
-    {
-        UPNP_UNKNOWN = 0x0,
-        UPNP_ENABLED = 0x1,
-    }
+    UPNP_UNKNOWN = 0,
+    UPNP_ENABLED = 1,
 }
+

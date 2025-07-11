@@ -1,385 +1,463 @@
 {
   "Usings": [
-    "Blaze3SDK.Blaze.Authentication",
-    "BlazeCommon",
-    "NLog"
+    "Blaze3SDK.Blaze.Authentication"
   ],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 1,
+  "Name": "AuthenticationComponent",
+  "ShortName": "Authentication",
+  "ErrorCodes": {
+    "2": "AUTH_ERR_TOS_REQUIRED",
+    "10": "AUTH_ERR_INVALID_COUNTRY",
+    "11": "AUTH_ERR_INVALID_USER",
+    "12": "AUTH_ERR_INVALID_PASSWORD",
+    "13": "AUTH_ERR_INVALID_TOKEN",
+    "14": "AUTH_ERR_EXPIRED_TOKEN",
+    "15": "AUTH_ERR_EXISTS",
+    "16": "AUTH_ERR_TOO_YOUNG",
+    "17": "AUTH_ERR_NO_ACCOUNT",
+    "18": "AUTH_ERR_PERSONA_NOT_FOUND",
+    "19": "AUTH_ERR_PERSONA_INACTIVE",
+    "20": "AUTH_ERR_INVALID_PMAIL",
+    "21": "AUTH_ERR_INVALID_FIELD",
+    "22": "AUTH_ERR_INVALID_EMAIL",
+    "23": "AUTH_ERR_INVALID_STATUS",
+    "31": "AUTH_ERR_INVALID_SESSION_KEY",
+    "32": "AUTH_ERR_PERSONA_BANNED",
+    "33": "AUTH_ERR_INVALID_PERSONA",
+    "34": "AUTH_ERR_CURRENT_PASSWORD_REQUIRED",
+    "40": "AUTH_ERR_INV_MASTER",
+    "41": "AUTH_ERR_DEACTIVATED",
+    "42": "AUTH_ERR_PENDING",
+    "43": "AUTH_ERR_BANNED",
+    "44": "AUTH_ERR_DISABLED",
+    "50": "AUTH_ERR_NEED_PCCDKEY",
+    "51": "AUTH_ERR_CODE_ALREADY_USED",
+    "52": "AUTH_ERR_INVALID_CODE",
+    "53": "AUTH_ERR_CODE_ALREADY_DISABLED",
+    "54": "AUTH_ERR_NO_ASSOCIATED_PRODUCT",
+    "55": "AUTH_ERR_INVALID_MAPPING_ERROR",
+    "56": "AUTH_ERR_NO_SUCH_GROUP_NAME",
+    "57": "AUTH_ERR_MISSING_PERSONAID",
+    "58": "AUTH_ERR_USER_DOES_NOT_MATCH_PERSONA",
+    "59": "AUTH_ERR_WHITELIST",
+    "60": "AUTH_ERR_LINK_PERSONA",
+    "61": "AUTH_ERR_NO_SUCH_GROUP",
+    "63": "AUTH_ERR_NO_SUCH_ENTITLEMENT",
+    "64": "AUTH_ERR_GROUP_NAME_DOES_NOT_MATCH",
+    "65": "AUTH_ERR_DEVICE_ID_ALREADY_USED",
+    "66": "AUTH_ERR_USECOUNT_ZERO",
+    "67": "AUTH_ERR_ENTITLEMETNTAG_EMPTY",
+    "68": "AUTH_ERR_ENTITLEMENT_OTHER",
+    "70": "AUTH_ERR_GROUPNAME_REQUIRED",
+    "71": "AUTH_ERR_GROUPNAME_INVALID",
+    "72": "AUTH_ERR_PAGESIZE_TOO_BIG",
+    "73": "AUTH_ERR_PAGESIZE_ZERO",
+    "74": "AUTH_ERR_ENTITLEMENT_TAG_REQUIRED",
+    "75": "AUTH_ERR_PAGENO_ZERO",
+    "76": "AUTH_ERR_MODIFIED_STATUS_INVALID",
+    "77": "AUTH_ERR_USECOUNT_INCREMENT",
+    "78": "AUTH_ERR_TERMINATION_INVALID",
+    "79": "AUTH_ERR_UNKNOWN_ENTITLEMENT",
+    "80": "AUTH_ERR_EXCEED_PSU_LIMIT_TRIAL",
+    "81": "AUTH_ERR_OPTIN_NAME_REQUIRED",
+    "82": "AUTH_ERR_INVALID_OPTIN",
+    "83": "AUTH_ERR_OPTIN_MISMATCH",
+    "84": "AUTH_ERR_NO_SUCH_OPTIN",
+    "85": "AUTH_ERR_AUTHID_REQUIRED",
+    "86": "AUTH_ERR_PERSONA_EXTREFID_REQUIRED",
+    "87": "AUTH_ERR_SOURCE_REQUIRED",
+    "88": "AUTH_ERR_APPLICATION_REQUIRED",
+    "89": "AUTH_ERR_TOKEN_REQUIRED",
+    "90": "AUTH_ERR_PARAMETER_TOO_LENGTH",
+    "91": "AUTH_ERR_NO_SUCH_PERSONA_REFERENCE",
+    "92": "AUTH_ERR_EXTERNAL_AUTH_EXISTS",
+    "93": "AUTH_ERR_INVALID_SOURCE",
+    "94": "AUTH_ERR_NO_SUCH_AUTH_DATA",
+    "101": "AUTH_ERR_USER_INACTIVE",
+    "102": "AUTH_ERR_UNEXPECTED_ACTIVATION",
+    "103": "AUTH_ERR_NAME_MISMATCH",
+    "104": "AUTH_ERR_INVALID_PS3_TICKET",
+    "105": "AUTH_ERR_INVALID_NAMESPACE",
+    "106": "AUTH_ERR_EXPIRED_PS3_TICKET",
+    "201": "AUTH_ERR_FIELD_INVALID_CHARS",
+    "202": "AUTH_ERR_FIELD_TOO_SHORT",
+    "203": "AUTH_ERR_FIELD_TOO_LONG",
+    "204": "AUTH_ERR_FIELD_MUST_BEGIN_WITH_LETTER",
+    "205": "AUTH_ERR_FIELD_MISSING",
+    "206": "AUTH_ERR_FIELD_INVALID",
+    "207": "AUTH_ERR_FIELD_NOT_ALLOWED",
+    "208": "AUTH_ERR_FIELD_NEEDS_SPECIAL_CHARS",
+    "209": "AUTH_ERR_FIELD_ALREADY_EXISTS",
+    "210": "AUTH_ERR_FIELD_NEEDS_CONSENT",
+    "211": "AUTH_ERR_FIELD_TOO_YOUNG",
+    "300": "AUTH_ERR_TOO_MANY_PERSONA_FOR_NAMESPACE"
+  },
+  "Methods": [
     {
-      "Id": 1,
-      "Name": "AuthenticationComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 10,
-          "Name": "createAccount",
-          "RequestType": "CreateAccountParameters",
-          "ResponseType": "CreateAccountResponse",
-          "ErrorResponseType": "FieldValidateErrorList"
-        },
-        {
-          "Id": 20,
-          "Name": "updateAccount",
-          "RequestType": "UpdateAccountRequest",
-          "ResponseType": "UpdateAccountResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 28,
-          "Name": "updateParentalEmail",
-          "RequestType": "UpdateAccountRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 29,
-          "Name": "listUserEntitlements2",
-          "RequestType": "ListUserEntitlements2Request",
-          "ResponseType": "Entitlements",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 30,
-          "Name": "getAccount",
-          "RequestType": "NullStruct",
-          "ResponseType": "AccountInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 31,
-          "Name": "grantEntitlement",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 32,
-          "Name": "listEntitlements",
-          "RequestType": "ListEntitlementsRequest",
-          "ResponseType": "Entitlements",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 33,
-          "Name": "hasEntitlement",
-          "RequestType": "HasEntitlementRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 34,
-          "Name": "getUseCount",
-          "RequestType": "GetUseCountRequest",
-          "ResponseType": "UseCount",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 35,
-          "Name": "decrementUseCount",
-          "RequestType": "DecrementUseCountRequest",
-          "ResponseType": "DecrementUseCount",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 36,
-          "Name": "getAuthToken",
-          "RequestType": "NullStruct",
-          "ResponseType": "GetAuthTokenResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 37,
-          "Name": "getHandoffToken",
-          "RequestType": "GetHandoffTokenRequest",
-          "ResponseType": "GetHandoffTokenResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 38,
-          "Name": "getPasswordRules",
-          "RequestType": "NullStruct",
-          "ResponseType": "PasswordRulesInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 39,
-          "Name": "grantEntitlement2",
-          "RequestType": "GrantEntitlement2Request",
-          "ResponseType": "GrantEntitlement2Response",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 40,
-          "Name": "login",
-          "RequestType": "LoginRequest",
-          "ResponseType": "LoginResponse",
-          "ErrorResponseType": "CreateAccountResponse"
-        },
-        {
-          "Id": 41,
-          "Name": "acceptTos",
-          "RequestType": "AcceptTosRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 42,
-          "Name": "getTosInfo",
-          "RequestType": "GetTosInfoRequest",
-          "ResponseType": "GetTosInfoResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 43,
-          "Name": "modifyEntitlement2",
-          "RequestType": "ModifyEntitlement2Request",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 44,
-          "Name": "consumecode",
-          "RequestType": "ConsumecodeRequest",
-          "ResponseType": "ConsumecodeResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 45,
-          "Name": "passwordForgot",
-          "RequestType": "PasswordForgotRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 46,
-          "Name": "getTermsAndConditionsContent",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 47,
-          "Name": "getPrivacyPolicyContent",
-          "RequestType": "GetLegalDocContentRequest",
-          "ResponseType": "GetLegalDocContentResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 48,
-          "Name": "listPersonaEntitlements2",
-          "RequestType": "ListPersonaEntitlements2Request",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 50,
-          "Name": "silentLogin",
-          "RequestType": "SilentLoginRequest",
-          "ResponseType": "FullLoginResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 51,
-          "Name": "checkAgeReq",
-          "RequestType": "CheckAgeReqRequest",
-          "ResponseType": "CheckAgeReqResponse",
-          "ErrorResponseType": "FieldValidateErrorList"
-        },
-        {
-          "Id": 52,
-          "Name": "getOptIn",
-          "RequestType": "NullStruct",
-          "ResponseType": "OptInValue",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 53,
-          "Name": "enableOptIn",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 54,
-          "Name": "disableOptIn",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 60,
-          "Name": "expressLogin",
-          "RequestType": "ExpressLoginRequest",
-          "ResponseType": "FullLoginResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 70,
-          "Name": "logout",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 80,
-          "Name": "createPersona",
-          "RequestType": "CreatePersonaRequest",
-          "ResponseType": "PersonaDetails",
-          "ErrorResponseType": "FieldValidateErrorList"
-        },
-        {
-          "Id": 90,
-          "Name": "getPersona",
-          "RequestType": "NullStruct",
-          "ResponseType": "GetPersonaResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 100,
-          "Name": "listPersonas",
-          "RequestType": "NullStruct",
-          "ResponseType": "ListPersonasResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 110,
-          "Name": "loginPersona",
-          "RequestType": "LoginPersonaRequest",
-          "ResponseType": "SessionInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 120,
-          "Name": "logoutPersona",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 140,
-          "Name": "deletePersona",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 141,
-          "Name": "disablePersona",
-          "RequestType": "PersonaRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 143,
-          "Name": "listDeviceAccounts",
-          "RequestType": "ListDeviceAccountsRequest",
-          "ResponseType": "ListDeviceAccountsResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 150,
-          "Name": "xboxCreateAccount",
-          "RequestType": "ConsoleCreateAccountRequest",
-          "ResponseType": "ConsoleCreateAccountResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 152,
-          "Name": "originLogin",
-          "RequestType": "OriginLoginRequest",
-          "ResponseType": "FullLoginResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 160,
-          "Name": "xboxAssociateAccount",
-          "RequestType": "ConsoleAssociateAccountRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 170,
-          "Name": "xboxLogin",
-          "RequestType": "XboxLoginRequest",
-          "ResponseType": "ConsoleLoginResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 180,
-          "Name": "ps3CreateAccount",
-          "RequestType": "ConsoleCreateAccountRequest",
-          "ResponseType": "ConsoleCreateAccountResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 190,
-          "Name": "ps3AssociateAccount",
-          "RequestType": "ConsoleAssociateAccountRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 200,
-          "Name": "ps3Login",
-          "RequestType": "PS3LoginRequest",
-          "ResponseType": "ConsoleLoginResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 210,
-          "Name": "validateSessionKey",
-          "RequestType": "ValidateSessionKeyRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 230,
-          "Name": "createWalUserSession",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 241,
-          "Name": "acceptLegalDocs",
-          "RequestType": "AcceptLegalDocsRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 242,
-          "Name": "getLegalDocsInfo",
-          "RequestType": "GetLegalDocsInfoRequest",
-          "ResponseType": "GetLegalDocsInfoResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 246,
-          "Name": "getTermsOfServiceContent",
-          "RequestType": "GetLegalDocContentRequest",
-          "ResponseType": "GetLegalDocContentResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 300,
-          "Name": "deviceLoginGuest",
-          "RequestType": "DeviceLoginGuestRequest",
-          "ResponseType": "ConsoleLoginResponse",
-          "ErrorResponseType": "ConsoleCreateAccountRequest"
-        },
-        {
-          "Id": 500,
-          "Name": "checkSinglePlayerLogin",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 10,
+      "Name": "createAccount",
+      "RequestType": "CreateAccountParameters",
+      "ResponseType": "CreateAccountResponse",
+      "ErrorResponseType": "FieldValidateErrorList"
+    },
+    {
+      "Id": 20,
+      "Name": "updateAccount",
+      "RequestType": "UpdateAccountRequest",
+      "ResponseType": "UpdateAccountResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 28,
+      "Name": "updateParentalEmail",
+      "RequestType": "UpdateAccountRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 29,
+      "Name": "listUserEntitlements2",
+      "RequestType": "ListUserEntitlements2Request",
+      "ResponseType": "Entitlements",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 30,
+      "Name": "getAccount",
+      "RequestType": null,
+      "ResponseType": "AccountInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 31,
+      "Name": "grantEntitlement",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 32,
+      "Name": "listEntitlements",
+      "RequestType": "ListEntitlementsRequest",
+      "ResponseType": "Entitlements",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 33,
+      "Name": "hasEntitlement",
+      "RequestType": "HasEntitlementRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 34,
+      "Name": "getUseCount",
+      "RequestType": "GetUseCountRequest",
+      "ResponseType": "UseCount",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 35,
+      "Name": "decrementUseCount",
+      "RequestType": "DecrementUseCountRequest",
+      "ResponseType": "DecrementUseCount",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 36,
+      "Name": "getAuthToken",
+      "RequestType": null,
+      "ResponseType": "GetAuthTokenResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 37,
+      "Name": "getHandoffToken",
+      "RequestType": "GetHandoffTokenRequest",
+      "ResponseType": "GetHandoffTokenResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 38,
+      "Name": "getPasswordRules",
+      "RequestType": null,
+      "ResponseType": "PasswordRulesInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 39,
+      "Name": "grantEntitlement2",
+      "RequestType": "GrantEntitlement2Request",
+      "ResponseType": "GrantEntitlement2Response",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 40,
+      "Name": "login",
+      "RequestType": "LoginRequest",
+      "ResponseType": "LoginResponse",
+      "ErrorResponseType": "CreateAccountResponse"
+    },
+    {
+      "Id": 41,
+      "Name": "acceptTos",
+      "RequestType": "AcceptTosRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 42,
+      "Name": "getTosInfo",
+      "RequestType": "GetTosInfoRequest",
+      "ResponseType": "GetTosInfoResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 43,
+      "Name": "modifyEntitlement2",
+      "RequestType": "ModifyEntitlement2Request",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 44,
+      "Name": "consumecode",
+      "RequestType": "ConsumecodeRequest",
+      "ResponseType": "ConsumecodeResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 45,
+      "Name": "passwordForgot",
+      "RequestType": "PasswordForgotRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 46,
+      "Name": "getTermsAndConditionsContent",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 47,
+      "Name": "getPrivacyPolicyContent",
+      "RequestType": "GetLegalDocContentRequest",
+      "ResponseType": "GetLegalDocContentResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 48,
+      "Name": "listPersonaEntitlements2",
+      "RequestType": "ListPersonaEntitlements2Request",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 50,
+      "Name": "silentLogin",
+      "RequestType": "SilentLoginRequest",
+      "ResponseType": "FullLoginResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 51,
+      "Name": "checkAgeReq",
+      "RequestType": "CheckAgeReqRequest",
+      "ResponseType": "CheckAgeReqResponse",
+      "ErrorResponseType": "FieldValidateErrorList"
+    },
+    {
+      "Id": 52,
+      "Name": "getOptIn",
+      "RequestType": null,
+      "ResponseType": "OptInValue",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 53,
+      "Name": "enableOptIn",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 54,
+      "Name": "disableOptIn",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 60,
+      "Name": "expressLogin",
+      "RequestType": "ExpressLoginRequest",
+      "ResponseType": "FullLoginResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 70,
+      "Name": "logout",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 80,
+      "Name": "createPersona",
+      "RequestType": "CreatePersonaRequest",
+      "ResponseType": "PersonaDetails",
+      "ErrorResponseType": "FieldValidateErrorList"
+    },
+    {
+      "Id": 90,
+      "Name": "getPersona",
+      "RequestType": null,
+      "ResponseType": "GetPersonaResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 100,
+      "Name": "listPersonas",
+      "RequestType": null,
+      "ResponseType": "ListPersonasResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 110,
+      "Name": "loginPersona",
+      "RequestType": "LoginPersonaRequest",
+      "ResponseType": "SessionInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 120,
+      "Name": "logoutPersona",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 140,
+      "Name": "deletePersona",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 141,
+      "Name": "disablePersona",
+      "RequestType": "PersonaRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 143,
+      "Name": "listDeviceAccounts",
+      "RequestType": "ListDeviceAccountsRequest",
+      "ResponseType": "ListDeviceAccountsResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 150,
+      "Name": "xboxCreateAccount",
+      "RequestType": "ConsoleCreateAccountRequest",
+      "ResponseType": "ConsoleCreateAccountResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 152,
+      "Name": "originLogin",
+      "RequestType": "OriginLoginRequest",
+      "ResponseType": "FullLoginResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 160,
+      "Name": "xboxAssociateAccount",
+      "RequestType": "ConsoleAssociateAccountRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 170,
+      "Name": "xboxLogin",
+      "RequestType": "XboxLoginRequest",
+      "ResponseType": "ConsoleLoginResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 180,
+      "Name": "ps3CreateAccount",
+      "RequestType": "ConsoleCreateAccountRequest",
+      "ResponseType": "ConsoleCreateAccountResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 190,
+      "Name": "ps3AssociateAccount",
+      "RequestType": "ConsoleAssociateAccountRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 200,
+      "Name": "ps3Login",
+      "RequestType": "PS3LoginRequest",
+      "ResponseType": "ConsoleLoginResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 210,
+      "Name": "validateSessionKey",
+      "RequestType": "ValidateSessionKeyRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 230,
+      "Name": "createWalUserSession",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 241,
+      "Name": "acceptLegalDocs",
+      "RequestType": "AcceptLegalDocsRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 242,
+      "Name": "getLegalDocsInfo",
+      "RequestType": "GetLegalDocsInfoRequest",
+      "ResponseType": "GetLegalDocsInfoResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 246,
+      "Name": "getTermsOfServiceContent",
+      "RequestType": "GetLegalDocContentRequest",
+      "ResponseType": "GetLegalDocContentResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 300,
+      "Name": "deviceLoginGuest",
+      "RequestType": "DeviceLoginGuestRequest",
+      "ResponseType": "ConsoleLoginResponse",
+      "ErrorResponseType": "ConsoleCreateAccountRequest"
+    },
+    {
+      "Id": 500,
+      "Name": "checkSinglePlayerLogin",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

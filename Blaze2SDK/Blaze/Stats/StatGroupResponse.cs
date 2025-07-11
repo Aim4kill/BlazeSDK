@@ -1,48 +1,91 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Stats
+namespace Blaze2SDK.Blaze.Stats;
+
+public class StatGroupResponse : Tdf
 {
-    [TdfStruct]
-    public struct StatGroupResponse
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ContextType", "mContextType", 0x8F4E7000, TdfType.UInt32, 0, true), // CTYP
+        new TdfMemberInfo("Desc", "mDesc", 0x925CE300, TdfType.String, 1, true), // DESC
+        new TdfMemberInfo("EntityType", "mEntityType", 0x974E7000, TdfType.UInt32, 2, true), // ETYP
+        new TdfMemberInfo("KeyScopeUnitMap", "mKeyScopeUnitMap", 0xAF3D6D00, TdfType.Map, 3, true), // KSUM
+        new TdfMemberInfo("Metadata", "mMetadata", 0xB65D2100, TdfType.String, 4, true), // META
+        new TdfMemberInfo("Name", "mName", 0xBA1B6500, TdfType.String, 5, true), // NAME
+        new TdfMemberInfo("StatDescs", "mStatDescs", 0xCF487400, TdfType.List, 6, true), // STAT
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt32 _contextType = new(__typeInfos[0]);
+    private TdfString _desc = new(__typeInfos[1]);
+    private TdfUInt32 _entityType = new(__typeInfos[2]);
+    private TdfMap<string, string> _keyScopeUnitMap = new(__typeInfos[3]);
+    private TdfString _metadata = new(__typeInfos[4]);
+    private TdfString _name = new(__typeInfos[5]);
+    private TdfList<Blaze2SDK.Blaze.Stats.StatDescSummary> _statDescs = new(__typeInfos[6]);
+
+    public StatGroupResponse()
     {
-        
-        [TdfMember("CTYP")]
-        public uint mContextType;
-        
-        /// <summary>
-        /// Max String Length: 128
-        /// </summary>
-        [TdfMember("DESC")]
-        [StringLength(128)]
-        public string mDesc;
-        
-        [TdfMember("ETYP")]
-        public uint mEntityType;
-        
-        /// <summary>
-        /// Max Key String Length: 32
-        /// Max Value String Length: 32
-        /// </summary>
-        [TdfMember("KSUM")]
-        public SortedDictionary<string, string> mKeyScopeUnitMap;
-        
-        /// <summary>
-        /// Max String Length: 128
-        /// </summary>
-        [TdfMember("META")]
-        [StringLength(128)]
-        public string mMetadata;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("NAME")]
-        [StringLength(32)]
-        public string mName;
-        
-        [TdfMember("STAT")]
-        public List<StatDescSummary> mStatDescs;
-        
+        __members = [
+            _contextType,
+            _desc,
+            _entityType,
+            _keyScopeUnitMap,
+            _metadata,
+            _name,
+            _statDescs,
+        ];
     }
+
+    public override Tdf CreateNew() => new StatGroupResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "StatGroupResponse";
+    public override string GetFullClassName() => "Blaze::Stats::StatGroupResponse";
+
+    public uint ContextType
+    {
+        get => _contextType.Value;
+        set => _contextType.Value = value;
+    }
+
+    public string Desc
+    {
+        get => _desc.Value;
+        set => _desc.Value = value;
+    }
+
+    public uint EntityType
+    {
+        get => _entityType.Value;
+        set => _entityType.Value = value;
+    }
+
+    public IDictionary<string, string> KeyScopeUnitMap
+    {
+        get => _keyScopeUnitMap.Value;
+        set => _keyScopeUnitMap.Value = value;
+    }
+
+    public string Metadata
+    {
+        get => _metadata.Value;
+        set => _metadata.Value = value;
+    }
+
+    public string Name
+    {
+        get => _name.Value;
+        set => _name.Value = value;
+    }
+
+    public IList<Blaze2SDK.Blaze.Stats.StatDescSummary> StatDescs
+    {
+        get => _statDescs.Value;
+        set => _statDescs.Value = value;
+    }
+
 }
+

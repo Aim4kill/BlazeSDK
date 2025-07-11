@@ -1,11 +1,11 @@
-﻿namespace Blaze2SDK.Blaze.Messaging
+namespace Blaze2SDK.Blaze.Messaging;
+
+[Flags]
+public enum MatchFlags : uint
 {
-    [Flags]
-    public enum MatchFlags
-    {
-        None = 0,
-        MatchId = 1,
-        MatchSource = 2,
-        MatchType = 4,
-    }
+    None = 0,
+    MatchId = 1,
+    MatchSource = 2,
+    MatchType = 4,
 }
+

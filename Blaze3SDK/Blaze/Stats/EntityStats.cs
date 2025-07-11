@@ -1,22 +1,64 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Stats
+namespace Blaze3SDK.Blaze.Stats;
+
+public class EntityStats : Tdf
 {
-	[TdfStruct]
-	public struct EntityStats
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("EntityId", "mEntityId", 0x96990000, TdfType.Int64, 0, true), // EID
+        new TdfMemberInfo("EntityType", "mEntityType", 0x974E7000, TdfType.ObjectType, 1, true), // ETYP
+        new TdfMemberInfo("PeriodOffset", "mPeriodOffset", 0xC2F9A600, TdfType.Int32, 2, true), // POFF
+        new TdfMemberInfo("StatValues", "mStatValues", 0xCF487400, TdfType.List, 3, true), // STAT
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("EID")]
-		public long mEntityId;
+    private TdfInt64 _entityId = new(__typeInfos[0]);
+    private TdfObjectType _entityType = new(__typeInfos[1]);
+    private TdfInt32 _periodOffset = new(__typeInfos[2]);
+    private TdfList<string> _statValues = new(__typeInfos[3]);
 
-		[TdfMember("ETYP")]
-		public BlazeObjectType mEntityType;
+    public EntityStats()
+    {
+        __members = [
+            _entityId,
+            _entityType,
+            _periodOffset,
+            _statValues,
+        ];
+    }
 
-		[TdfMember("POFF")]
-		public int mPeriodOffset;
+    public override Tdf CreateNew() => new EntityStats();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "EntityStats";
+    public override string GetFullClassName() => "Blaze::Stats::EntityStats";
 
-		[TdfMember("STAT")]
-		public List<string> mStatValues;
+    public long EntityId
+    {
+        get => _entityId.Value;
+        set => _entityId.Value = value;
+    }
 
-	}
+    public ObjectType EntityType
+    {
+        get => _entityType.Value;
+        set => _entityType.Value = value;
+    }
+
+    public int PeriodOffset
+    {
+        get => _periodOffset.Value;
+        set => _periodOffset.Value = value;
+    }
+
+    public IList<string> StatValues
+    {
+        get => _statValues.Value;
+        set => _statValues.Value = value;
+    }
+
 }
+

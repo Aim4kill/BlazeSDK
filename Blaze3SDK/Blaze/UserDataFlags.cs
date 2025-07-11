@@ -1,10 +1,10 @@
-﻿namespace Blaze3SDK.Blaze
+namespace Blaze3SDK.Blaze;
+
+[Flags]
+public enum UserDataFlags : int
 {
-    [Flags]
-    public enum UserDataFlags
-    {
-        None = 0,
-        Subscribed = 1,
-        Online = 2
-    }
+    None = 0,
+    Subscribed = 1,
+    Online = 2,
 }
+

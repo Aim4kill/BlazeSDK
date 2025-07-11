@@ -1,18 +1,37 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Util
+namespace Blaze2SDK.Blaze.Util;
+
+public class UserText : Tdf
 {
-    [TdfStruct]
-    public struct UserText
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Text", "mText", 0xD74E3400, TdfType.String, 0, true), // UTXT
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _text = new(__typeInfos[0]);
+
+    public UserText()
     {
-        
-        /// <summary>
-        /// Max String Length: 1024
-        /// </summary>
-        [TdfMember("UTXT")]
-        [StringLength(1024)]
-        public string mText;
-        
+        __members = [
+            _text,
+        ];
     }
+
+    public override Tdf CreateNew() => new UserText();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "UserText";
+    public override string GetFullClassName() => "Blaze::Util::UserText";
+
+    public string Text
+    {
+        get => _text.Value;
+        set => _text.Value = value;
+    }
+
 }
+

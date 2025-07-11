@@ -1,27 +1,55 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameReporting
+namespace Blaze2SDK.Blaze.GameReporting;
+
+public class GetGameReportView : Tdf
 {
-    [TdfStruct]
-    public struct GetGameReportView
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("MaxRows", "mMaxRows", 0xB61E3200, TdfType.UInt32, 0, true), // MAXR
+        new TdfMemberInfo("Name", "mName", 0xBA1B6500, TdfType.String, 1, true), // NAME
+        new TdfMemberInfo("QueryVarValues", "mQueryVarValues", 0xC7687200, TdfType.List, 2, true), // QVAR
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt32 _maxRows = new(__typeInfos[0]);
+    private TdfString _name = new(__typeInfos[1]);
+    private TdfList<string> _queryVarValues = new(__typeInfos[2]);
+
+    public GetGameReportView()
     {
-        
-        [TdfMember("MAXR")]
-        public uint mMaxRows;
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("NAME")]
-        [StringLength(64)]
-        public string mName;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("QVAR")]
-        public List<string> mQueryVarValues;
-        
+        __members = [
+            _maxRows,
+            _name,
+            _queryVarValues,
+        ];
     }
+
+    public override Tdf CreateNew() => new GetGameReportView();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetGameReportView";
+    public override string GetFullClassName() => "Blaze::GameReporting::GetGameReportView";
+
+    public uint MaxRows
+    {
+        get => _maxRows.Value;
+        set => _maxRows.Value = value;
+    }
+
+    public string Name
+    {
+        get => _name.Value;
+        set => _name.Value = value;
+    }
+
+    public IList<string> QueryVarValues
+    {
+        get => _queryVarValues.Value;
+        set => _queryVarValues.Value = value;
+    }
+
 }
+

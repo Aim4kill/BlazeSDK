@@ -1,242 +1,179 @@
+using Blaze.Core;
 using Blaze2SDK.Blaze.Redirector;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class RedirectorComponentBase
 {
-    public static class RedirectorComponentBase
+    public const ushort Id = 5;
+    public const string Name = "RedirectorComponent";
+    
+    public enum Error : ushort 
     {
-        public const ushort Id = 5;
-        public const string Name = "RedirectorComponent";
+        REDIRECTOR_SERVER_NOT_FOUND = 1,
+        REDIRECTOR_NO_SERVER_CAPACITY = 2,
+        REDIRECTOR_NO_MATCHING_INSTANCE = 3,
+        REDIRECTOR_SERVER_NAME_ALREADY_IN_USE = 4,
+        REDIRECTOR_CLIENT_NOT_COMPATIBLE = 5,
+        REDIRECTOR_CLIENT_UNKNOWN = 6,
+        REDIRECTOR_UNKNOWN_CONNECTION_PROFILE = 7,
+        REDIRECTOR_SERVER_SUNSET = 8,
+        REDIRECTOR_SERVER_DOWN = 9,
+    }
+    
+    public enum RedirectorComponentCommand : ushort
+    {
+        getServerInstance = 1,
+        getServerList = 2,
+        scheduleServerDowntime = 3,
+        cancelServerDowntime = 4,
+        getDowntimeList = 5,
+        getDowntimeMessageTypes = 6,
+    }
+    
+    public enum RedirectorComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => RedirectorComponentBase.Id;
+        public override string Name => RedirectorComponentBase.Name;
         
-        public class Server : BlazeServerComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(RedirectorComponentCommand command) => false;
+        
+        public class RedirectorException : BlazeRpcException
         {
-            public Server() : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
+            public RedirectorException(Error error) : base((ushort)error, null) { }
+            public RedirectorException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public RedirectorException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public RedirectorException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public RedirectorException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public RedirectorException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public RedirectorException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public RedirectorException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>()
             {
-                
-            }
+                Id = (ushort)RedirectorComponentCommand.getServerInstance,
+                Name = "getServerInstance",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.getServerInstance),
+                Func = async (req, ctx) => await GetServerInstanceAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RedirectorComponentCommand.getServerInstance)]
-            public virtual Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RedirectorComponentCommand.getServerList,
+                Name = "getServerList",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.getServerList),
+                Func = async (req, ctx) => await GetServerListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RedirectorComponentCommand.getServerList)]
-            public virtual Task<NullStruct> GetServerListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RedirectorComponentCommand.scheduleServerDowntime,
+                Name = "scheduleServerDowntime",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.scheduleServerDowntime),
+                Func = async (req, ctx) => await ScheduleServerDowntimeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RedirectorComponentCommand.scheduleServerDowntime)]
-            public virtual Task<NullStruct> ScheduleServerDowntimeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RedirectorComponentCommand.cancelServerDowntime,
+                Name = "cancelServerDowntime",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.cancelServerDowntime),
+                Func = async (req, ctx) => await CancelServerDowntimeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RedirectorComponentCommand.cancelServerDowntime)]
-            public virtual Task<NullStruct> CancelServerDowntimeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RedirectorComponentCommand.getDowntimeList,
+                Name = "getDowntimeList",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.getDowntimeList),
+                Func = async (req, ctx) => await GetDowntimeListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RedirectorComponentCommand.getDowntimeList)]
-            public virtual Task<NullStruct> GetDowntimeListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.getDowntimeMessageTypes)]
-            public virtual Task<NullStruct> GetDowntimeMessageTypesAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
+                Id = (ushort)RedirectorComponentCommand.getDowntimeMessageTypes,
+                Name = "getDowntimeMessageTypes",
+                IsSupported = IsCommandSupported(RedirectorComponentCommand.getDowntimeMessageTypes),
+                Func = async (req, ctx) => await GetDowntimeMessageTypesAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public ServerInstanceInfo GetServerInstance(ServerInstanceRequest request)
-            {
-                return Connection.SendRequest<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
-            }
-            public Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request)
-            {
-                return Connection.SendRequestAsync<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
-            }
-            
-            public NullStruct GetServerList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getServerList, new NullStruct());
-            }
-            public Task<NullStruct> GetServerListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getServerList, new NullStruct());
-            }
-            
-            public NullStruct ScheduleServerDowntime()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.scheduleServerDowntime, new NullStruct());
-            }
-            public Task<NullStruct> ScheduleServerDowntimeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.scheduleServerDowntime, new NullStruct());
-            }
-            
-            public NullStruct CancelServerDowntime()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.cancelServerDowntime, new NullStruct());
-            }
-            public Task<NullStruct> CancelServerDowntimeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.cancelServerDowntime, new NullStruct());
-            }
-            
-            public NullStruct GetDowntimeList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeList, new NullStruct());
-            }
-            public Task<NullStruct> GetDowntimeListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeList, new NullStruct());
-            }
-            
-            public NullStruct GetDowntimeMessageTypes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeMessageTypes, new NullStruct());
-            }
-            public Task<NullStruct> GetDowntimeMessageTypesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeMessageTypes, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<RedirectorComponentCommand, RedirectorComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::getServerInstance</b> command.<br/>
+        /// Request type: <see cref="ServerInstanceRequest"/><br/>
+        /// Response type: <see cref="ServerInstanceInfo"/><br/>
+        /// Error response type: <see cref="ServerInstanceError"/><br/>
+        /// </summary>
+        public virtual Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request, BlazeRpcContext context)
         {
-            public Proxy() : base(RedirectorComponentBase.Id, RedirectorComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.getServerInstance)]
-            public virtual Task<ServerInstanceInfo> GetServerInstanceAsync(ServerInstanceRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ServerInstanceRequest, ServerInstanceInfo, ServerInstanceError>(this, (ushort)RedirectorComponentCommand.getServerInstance, request);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.getServerList)]
-            public virtual Task<NullStruct> GetServerListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getServerList, request);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.scheduleServerDowntime)]
-            public virtual Task<NullStruct> ScheduleServerDowntimeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.scheduleServerDowntime, request);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.cancelServerDowntime)]
-            public virtual Task<NullStruct> CancelServerDowntimeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.cancelServerDowntime, request);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.getDowntimeList)]
-            public virtual Task<NullStruct> GetDowntimeListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeList, request);
-            }
-            
-            [BlazeCommand((ushort)RedirectorComponentCommand.getDowntimeMessageTypes)]
-            public virtual Task<NullStruct> GetDowntimeMessageTypesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RedirectorComponentCommand.getDowntimeMessageTypes, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RedirectorComponentCommand command) => RedirectorComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RedirectorComponentNotification notification) => RedirectorComponentBase.GetNotificationType(notification);
-            
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(RedirectorComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::getServerList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetServerListAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceRequest),
-            RedirectorComponentCommand.getServerList => typeof(NullStruct),
-            RedirectorComponentCommand.scheduleServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.cancelServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeList => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeMessageTypes => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(RedirectorComponentCommand command) => command switch
-        {
-            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceInfo),
-            RedirectorComponentCommand.getServerList => typeof(NullStruct),
-            RedirectorComponentCommand.scheduleServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.cancelServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeList => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeMessageTypes => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(RedirectorComponentCommand command) => command switch
-        {
-            RedirectorComponentCommand.getServerInstance => typeof(ServerInstanceError),
-            RedirectorComponentCommand.getServerList => typeof(NullStruct),
-            RedirectorComponentCommand.scheduleServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.cancelServerDowntime => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeList => typeof(NullStruct),
-            RedirectorComponentCommand.getDowntimeMessageTypes => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(RedirectorComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum RedirectorComponentCommand : ushort
-        {
-            getServerInstance = 1,
-            getServerList = 2,
-            scheduleServerDowntime = 3,
-            cancelServerDowntime = 4,
-            getDowntimeList = 5,
-            getDowntimeMessageTypes = 6,
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum RedirectorComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::scheduleServerDowntime</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ScheduleServerDowntimeAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::cancelServerDowntime</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CancelServerDowntimeAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::getDowntimeList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetDowntimeListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RedirectorComponent::getDowntimeMessageTypes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetDowntimeMessageTypesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RedirectorException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

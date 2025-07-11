@@ -1,13 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+public class GetRecentGamesResponse : Tdf
 {
-    [TdfStruct]
-    public struct GetRecentGamesResponse
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Results", "mResults", 0xCA39ED00, TdfType.List, 0, true), // RCGM
+    ];
+    private ITdfMember[] __members;
+
+    private TdfList<Blaze2SDK.Blaze.League.GameResult> _results = new(__typeInfos[0]);
+
+    public GetRecentGamesResponse()
     {
-        
-        [TdfMember("RCGM")]
-        public List<GameResult> mResults;
-        
+        __members = [
+            _results,
+        ];
     }
+
+    public override Tdf CreateNew() => new GetRecentGamesResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetRecentGamesResponse";
+    public override string GetFullClassName() => "Blaze::League::GetRecentGamesResponse";
+
+    public IList<Blaze2SDK.Blaze.League.GameResult> Results
+    {
+        get => _results.Value;
+        set => _results.Value = value;
+    }
+
 }
+

@@ -1,10 +1,10 @@
-﻿namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+[Flags]
+public enum MatchmakingSessionMode : uint
 {
-    [Flags]
-    public enum MatchmakingSessionMode
-    {
-        None = 0,
-        FindGame = 1,
-        CreateGame = 2,
-    }
+    None = 0,
+    FindGame = 1,
+    CreateGame = 2,
 }
+

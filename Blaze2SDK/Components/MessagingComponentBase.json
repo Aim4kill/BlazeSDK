@@ -1,62 +1,64 @@
 {
   "Usings": [
-    "Blaze2SDK.Blaze.Messaging",
-    "BlazeCommon",
-    "NLog"
+    "Blaze2SDK.Blaze.Messaging"
   ],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 15,
+  "Name": "MessagingComponent",
+  "ShortName": "Messaging",
+  "ErrorCodes": {
+    "1": "MESSAGING_ERR_UNKNOWN",
+    "2": "MESSAGING_ERR_MAX_ATTR_EXCEEDED",
+    "3": "MESSAGING_ERR_DATABASE",
+    "4": "MESSAGING_ERR_TARGET_NOT_FOUND",
+    "5": "MESSAGING_ERR_TARGET_TYPE_INVALID",
+    "6": "MESSAGING_ERR_TARGET_INBOX_FULL",
+    "7": "MESSAGING_ERR_MATCH_NOT_FOUND",
+    "8": "MESSAGING_ERR_FEATURE_DISABLED",
+    "9": "MESSAGING_ERR_INVALID_PARAM"
+  },
+  "Methods": [
     {
-      "Id": 15,
-      "Name": "MessagingComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "sendMessage",
-          "RequestType": "ClientMessage",
-          "ResponseType": "SendMessageResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "fetchMessages",
-          "RequestType": "FetchMessageRequest",
-          "ResponseType": "FetchMessageResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "purgeMessages",
-          "RequestType": "PurgeMessageRequest",
-          "ResponseType": "PurgeMessageResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "touchMessages",
-          "RequestType": "TouchMessageRequest",
-          "ResponseType": "TouchMessageResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "getMessages",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 1,
-          "Name": "NotifyMessage",
-          "Type": "ServerMessage"
-        }
-      ]
+      "Id": 1,
+      "Name": "sendMessage",
+      "RequestType": "ClientMessage",
+      "ResponseType": "SendMessageResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "fetchMessages",
+      "RequestType": "FetchMessageRequest",
+      "ResponseType": "FetchMessageResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "purgeMessages",
+      "RequestType": "PurgeMessageRequest",
+      "ResponseType": "PurgeMessageResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "touchMessages",
+      "RequestType": "TouchMessageRequest",
+      "ResponseType": "TouchMessageResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "getMessages",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 1,
+      "Name": "NotifyMessage",
+      "Type": "ServerMessage"
     }
   ]
 }

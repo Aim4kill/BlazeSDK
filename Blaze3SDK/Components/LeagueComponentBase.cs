@@ -1,862 +1,685 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.League;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class LeagueComponentBase
 {
-    public static class LeagueComponentBase
+    public const ushort Id = 13;
+    public const string Name = "LeagueComponent";
+    
+    public enum Error : ushort {
+        LEAGUE_ERR_INVALID_LEAGUEID = 1,
+        LEAGUE_ERR_INVALID_PLAYERID = 2,
+        LEAGUE_ERR_INVALID_TRADEID = 3,
+        LEAGUE_ERR_INVALID_ROSTERID = 4,
+        LEAGUE_ERR_INVALID_GAMEID = 5,
+        LEAGUE_ERR_INVALID_BLAZEID = 6,
+        LEAGUE_ERR_INVALID_ARGUMENT = 7,
+        LEAGUE_ERR_MAX_LEAGUES = 8,
+        LEAGUE_ERR_INCORRECT_PASSWORD = 9,
+        LEAGUE_ERR_LEAGUE_FULL = 10,
+        LEAGUE_ERR_REQUESTER_NOT_AUTHORIZED = 11,
+        LEAGUE_ERR_REQUESTER_NOT_A_MEMBER = 12,
+        LEAGUE_ERR_USER_NOT_A_MEMBER = 13,
+        LEAGUE_ERR_JOINS_DISABLED = 14,
+        LEAGUE_ERR_INVALID_OP_FOR_LEAGUE_STATE = 15,
+        LEAGUE_ERR_ALREADY_A_GM = 16,
+        LEAGUE_ERR_ALREADY_A_MEMBER = 17,
+        LEAGUE_ERR_LEAGUE_NAME_IN_USE = 18,
+        LEAGUE_ERR_PROFANITY_FILTER = 19,
+        LEAGUE_ERR_LAST_GM = 20,
+        LEAGUE_ERR_INVALID_TRADE_PROPOSAL = 21,
+        LEAGUE_ERR_TRADES_DISABLED = 22,
+        LEAGUE_ERR_REP_TOO_LOW = 23,
+        LEAGUE_ERR_DNF_TOO_HIGH = 24,
+        LEAGUE_ERR_DATABASE_ERROR = 25,
+        LEAGUE_ERR_REQUESTER_NOT_A_GM = 26,
+        LEAGUE_ERR_LEAGUE_NOT_EMPTY = 27,
+        LEAGUE_ERR_REQUESTER_IS_BANNED = 28,
+        LEAGUE_ERR_INVALID_INVITATION = 29,
+        LEAGUE_ERR_SERVER_ERROR = 30,
+        LEAGUE_ERR_NOT_ENOUGH_MEMBERS_TO_RUN_DRAFT = 31,
+        LEAGUE_ERR_DRAFT_DISABLED = 32,
+        LEAGUE_ERR_LEAGUES_SERVER_UNAVAILABLE = 33,
+        LEAGUE_ERR_TEAM_IN_USE = 34,
+        LEAGUE_ERR_ROSTER_CRC_MISMATCH = 35,
+        LEAGUE_ERR_INVALID_INVITEE = 36,
+        LEAGUE_ERR_INVITEE_IS_BANNED = 37,
+        LEAGUE_ERR_REQUESTER_IS_TEMP_BANNED = 38,
+    }
+    
+    public enum LeagueComponentCommand : ushort
     {
-        public const ushort Id = 13;
-        public const string Name = "LeagueComponent";
+        createLeague = 1,
+        joinLeague = 2,
+        getLeague = 3,
+        getLeaguesByUser = 4,
+        deleteLeague = 5,
+        promoteToGM = 7,
+        findLeagues = 8,
+        findLeaguesAsync = 9,
+        removeMember = 10,
+        resetLeague = 11,
+        updateLeagueSettings = 12,
+        setMetadata = 13,
+        postNews = 15,
+        getNews = 16,
+        setRoster = 20,
+        sendInvitation = 22,
+        getInvitations = 23,
+        processInvitation = 24,
+        proposeTrade = 26,
+        processTrade = 27,
+        getTrades = 29,
+        getMembers = 31,
+        submitStatistics = 103,
+        getRecentGames = 104,
+        submitScores = 105,
+        getRoster = 107,
+        runDraft = 109,
+        getDraftProfile = 112,
+        setDraftProfile = 113,
+        getPlayoffSeries = 116,
+    }
+    
+    public enum LeagueComponentNotification : ushort
+    {
+        FindLeaguesAsyncNotification = 118,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => LeagueComponentBase.Id;
+        public override string Name => LeagueComponentBase.Name;
         
-        public class Server : BlazeServerComponent<LeagueComponentCommand, LeagueComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(LeagueComponentCommand command) => false;
+        
+        public class LeagueException : BlazeRpcException
         {
-            public Server() : base(LeagueComponentBase.Id, LeagueComponentBase.Name)
+            public LeagueException(Error error) : base((ushort)error, null) { }
+            public LeagueException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public LeagueException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public LeagueException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public LeagueException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public LeagueException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public LeagueException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public LeagueException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)LeagueComponentCommand.createLeague,
+                Name = "createLeague",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.createLeague),
+                Func = async (req, ctx) => await CreateLeagueAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.createLeague)]
-            public virtual Task<NullStruct> CreateLeagueAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.joinLeague,
+                Name = "joinLeague",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.joinLeague),
+                Func = async (req, ctx) => await JoinLeagueAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.joinLeague)]
-            public virtual Task<NullStruct> JoinLeagueAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getLeague,
+                Name = "getLeague",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getLeague),
+                Func = async (req, ctx) => await GetLeagueAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getLeague)]
-            public virtual Task<NullStruct> GetLeagueAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getLeaguesByUser,
+                Name = "getLeaguesByUser",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getLeaguesByUser),
+                Func = async (req, ctx) => await GetLeaguesByUserAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getLeaguesByUser)]
-            public virtual Task<NullStruct> GetLeaguesByUserAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.deleteLeague,
+                Name = "deleteLeague",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.deleteLeague),
+                Func = async (req, ctx) => await DeleteLeagueAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.deleteLeague)]
-            public virtual Task<NullStruct> DeleteLeagueAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.promoteToGM,
+                Name = "promoteToGM",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.promoteToGM),
+                Func = async (req, ctx) => await PromoteToGMAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.promoteToGM)]
-            public virtual Task<NullStruct> PromoteToGMAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.findLeagues,
+                Name = "findLeagues",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.findLeagues),
+                Func = async (req, ctx) => await FindLeaguesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.findLeagues)]
-            public virtual Task<NullStruct> FindLeaguesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.findLeaguesAsync,
+                Name = "findLeaguesAsync",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.findLeaguesAsync),
+                Func = async (req, ctx) => await FindLeaguesAsyncAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.findLeaguesAsync)]
-            public virtual Task<NullStruct> FindLeaguesAsyncAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.removeMember,
+                Name = "removeMember",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.removeMember),
+                Func = async (req, ctx) => await RemoveMemberAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.removeMember)]
-            public virtual Task<NullStruct> RemoveMemberAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.resetLeague,
+                Name = "resetLeague",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.resetLeague),
+                Func = async (req, ctx) => await ResetLeagueAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.resetLeague)]
-            public virtual Task<NullStruct> ResetLeagueAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.updateLeagueSettings,
+                Name = "updateLeagueSettings",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.updateLeagueSettings),
+                Func = async (req, ctx) => await UpdateLeagueSettingsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.updateLeagueSettings)]
-            public virtual Task<NullStruct> UpdateLeagueSettingsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.setMetadata,
+                Name = "setMetadata",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.setMetadata),
+                Func = async (req, ctx) => await SetMetadataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.setMetadata)]
-            public virtual Task<NullStruct> SetMetadataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.postNews,
+                Name = "postNews",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.postNews),
+                Func = async (req, ctx) => await PostNewsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.postNews)]
-            public virtual Task<NullStruct> PostNewsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getNews,
+                Name = "getNews",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getNews),
+                Func = async (req, ctx) => await GetNewsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getNews)]
-            public virtual Task<NullStruct> GetNewsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.setRoster,
+                Name = "setRoster",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.setRoster),
+                Func = async (req, ctx) => await SetRosterAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.setRoster)]
-            public virtual Task<NullStruct> SetRosterAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.sendInvitation,
+                Name = "sendInvitation",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.sendInvitation),
+                Func = async (req, ctx) => await SendInvitationAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.sendInvitation)]
-            public virtual Task<NullStruct> SendInvitationAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getInvitations,
+                Name = "getInvitations",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getInvitations),
+                Func = async (req, ctx) => await GetInvitationsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getInvitations)]
-            public virtual Task<NullStruct> GetInvitationsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.processInvitation,
+                Name = "processInvitation",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.processInvitation),
+                Func = async (req, ctx) => await ProcessInvitationAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.processInvitation)]
-            public virtual Task<NullStruct> ProcessInvitationAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.proposeTrade,
+                Name = "proposeTrade",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.proposeTrade),
+                Func = async (req, ctx) => await ProposeTradeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.proposeTrade)]
-            public virtual Task<NullStruct> ProposeTradeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.processTrade,
+                Name = "processTrade",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.processTrade),
+                Func = async (req, ctx) => await ProcessTradeAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.processTrade)]
-            public virtual Task<NullStruct> ProcessTradeAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getTrades,
+                Name = "getTrades",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getTrades),
+                Func = async (req, ctx) => await GetTradesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getTrades)]
-            public virtual Task<NullStruct> GetTradesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getMembers,
+                Name = "getMembers",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getMembers),
+                Func = async (req, ctx) => await GetMembersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getMembers)]
-            public virtual Task<NullStruct> GetMembersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.submitStatistics,
+                Name = "submitStatistics",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.submitStatistics),
+                Func = async (req, ctx) => await SubmitStatisticsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.submitStatistics)]
-            public virtual Task<NullStruct> SubmitStatisticsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getRecentGames,
+                Name = "getRecentGames",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getRecentGames),
+                Func = async (req, ctx) => await GetRecentGamesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getRecentGames)]
-            public virtual Task<NullStruct> GetRecentGamesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.submitScores,
+                Name = "submitScores",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.submitScores),
+                Func = async (req, ctx) => await SubmitScoresAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.submitScores)]
-            public virtual Task<NullStruct> SubmitScoresAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getRoster,
+                Name = "getRoster",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getRoster),
+                Func = async (req, ctx) => await GetRosterAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getRoster)]
-            public virtual Task<NullStruct> GetRosterAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.runDraft,
+                Name = "runDraft",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.runDraft),
+                Func = async (req, ctx) => await RunDraftAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.runDraft)]
-            public virtual Task<NullStruct> RunDraftAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.getDraftProfile,
+                Name = "getDraftProfile",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getDraftProfile),
+                Func = async (req, ctx) => await GetDraftProfileAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.getDraftProfile)]
-            public virtual Task<NullStruct> GetDraftProfileAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)LeagueComponentCommand.setDraftProfile,
+                Name = "setDraftProfile",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.setDraftProfile),
+                Func = async (req, ctx) => await SetDraftProfileAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)LeagueComponentCommand.setDraftProfile)]
-            public virtual Task<NullStruct> SetDraftProfileAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getPlayoffSeries)]
-            public virtual Task<NullStruct> GetPlayoffSeriesAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyFindLeaguesAsyncNotificationAsync(BlazeServerConnection connection, FindLeaguesAsyncNotification notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(LeagueComponentBase.Id, (ushort)LeagueComponentNotification.FindLeaguesAsyncNotification, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LeagueComponentNotification notification) => LeagueComponentBase.GetNotificationType(notification);
+                Id = (ushort)LeagueComponentCommand.getPlayoffSeries,
+                Name = "getPlayoffSeries",
+                IsSupported = IsCommandSupported(LeagueComponentCommand.getPlayoffSeries),
+                Func = async (req, ctx) => await GetPlayoffSeriesAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<LeagueComponentCommand, LeagueComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(LeagueComponentBase.Id, LeagueComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct CreateLeague()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.createLeague, new NullStruct());
-            }
-            public Task<NullStruct> CreateLeagueAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.createLeague, new NullStruct());
-            }
-            
-            public NullStruct JoinLeague()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.joinLeague, new NullStruct());
-            }
-            public Task<NullStruct> JoinLeagueAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.joinLeague, new NullStruct());
-            }
-            
-            public NullStruct GetLeague()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeague, new NullStruct());
-            }
-            public Task<NullStruct> GetLeagueAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeague, new NullStruct());
-            }
-            
-            public NullStruct GetLeaguesByUser()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeaguesByUser, new NullStruct());
-            }
-            public Task<NullStruct> GetLeaguesByUserAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeaguesByUser, new NullStruct());
-            }
-            
-            public NullStruct DeleteLeague()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.deleteLeague, new NullStruct());
-            }
-            public Task<NullStruct> DeleteLeagueAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.deleteLeague, new NullStruct());
-            }
-            
-            public NullStruct PromoteToGM()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.promoteToGM, new NullStruct());
-            }
-            public Task<NullStruct> PromoteToGMAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.promoteToGM, new NullStruct());
-            }
-            
-            public NullStruct FindLeagues()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeagues, new NullStruct());
-            }
-            public Task<NullStruct> FindLeaguesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeagues, new NullStruct());
-            }
-            
-            public NullStruct FindLeaguesAsynchronously()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeaguesAsync, new NullStruct());
-            }
-            public Task<NullStruct> FindLeaguesAsynchronouslyAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeaguesAsync, new NullStruct());
-            }
-            
-            public NullStruct RemoveMember()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.removeMember, new NullStruct());
-            }
-            public Task<NullStruct> RemoveMemberAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.removeMember, new NullStruct());
-            }
-            
-            public NullStruct ResetLeague()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.resetLeague, new NullStruct());
-            }
-            public Task<NullStruct> ResetLeagueAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.resetLeague, new NullStruct());
-            }
-            
-            public NullStruct UpdateLeagueSettings()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.updateLeagueSettings, new NullStruct());
-            }
-            public Task<NullStruct> UpdateLeagueSettingsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.updateLeagueSettings, new NullStruct());
-            }
-            
-            public NullStruct SetMetadata()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setMetadata, new NullStruct());
-            }
-            public Task<NullStruct> SetMetadataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setMetadata, new NullStruct());
-            }
-            
-            public NullStruct PostNews()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.postNews, new NullStruct());
-            }
-            public Task<NullStruct> PostNewsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.postNews, new NullStruct());
-            }
-            
-            public NullStruct GetNews()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getNews, new NullStruct());
-            }
-            public Task<NullStruct> GetNewsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getNews, new NullStruct());
-            }
-            
-            public NullStruct SetRoster()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setRoster, new NullStruct());
-            }
-            public Task<NullStruct> SetRosterAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setRoster, new NullStruct());
-            }
-            
-            public NullStruct SendInvitation()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.sendInvitation, new NullStruct());
-            }
-            public Task<NullStruct> SendInvitationAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.sendInvitation, new NullStruct());
-            }
-            
-            public NullStruct GetInvitations()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getInvitations, new NullStruct());
-            }
-            public Task<NullStruct> GetInvitationsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getInvitations, new NullStruct());
-            }
-            
-            public NullStruct ProcessInvitation()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processInvitation, new NullStruct());
-            }
-            public Task<NullStruct> ProcessInvitationAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processInvitation, new NullStruct());
-            }
-            
-            public NullStruct ProposeTrade()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.proposeTrade, new NullStruct());
-            }
-            public Task<NullStruct> ProposeTradeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.proposeTrade, new NullStruct());
-            }
-            
-            public NullStruct ProcessTrade()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processTrade, new NullStruct());
-            }
-            public Task<NullStruct> ProcessTradeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processTrade, new NullStruct());
-            }
-            
-            public NullStruct GetTrades()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getTrades, new NullStruct());
-            }
-            public Task<NullStruct> GetTradesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getTrades, new NullStruct());
-            }
-            
-            public NullStruct GetMembers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getMembers, new NullStruct());
-            }
-            public Task<NullStruct> GetMembersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getMembers, new NullStruct());
-            }
-            
-            public NullStruct SubmitStatistics()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitStatistics, new NullStruct());
-            }
-            public Task<NullStruct> SubmitStatisticsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitStatistics, new NullStruct());
-            }
-            
-            public NullStruct GetRecentGames()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRecentGames, new NullStruct());
-            }
-            public Task<NullStruct> GetRecentGamesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRecentGames, new NullStruct());
-            }
-            
-            public NullStruct SubmitScores()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitScores, new NullStruct());
-            }
-            public Task<NullStruct> SubmitScoresAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitScores, new NullStruct());
-            }
-            
-            public NullStruct GetRoster()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRoster, new NullStruct());
-            }
-            public Task<NullStruct> GetRosterAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRoster, new NullStruct());
-            }
-            
-            public NullStruct RunDraft()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.runDraft, new NullStruct());
-            }
-            public Task<NullStruct> RunDraftAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.runDraft, new NullStruct());
-            }
-            
-            public NullStruct GetDraftProfile()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getDraftProfile, new NullStruct());
-            }
-            public Task<NullStruct> GetDraftProfileAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getDraftProfile, new NullStruct());
-            }
-            
-            public NullStruct SetDraftProfile()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setDraftProfile, new NullStruct());
-            }
-            public Task<NullStruct> SetDraftProfileAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setDraftProfile, new NullStruct());
-            }
-            
-            public NullStruct GetPlayoffSeries()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getPlayoffSeries, new NullStruct());
-            }
-            public Task<NullStruct> GetPlayoffSeriesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getPlayoffSeries, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)LeagueComponentNotification.FindLeaguesAsyncNotification)]
-            public virtual Task OnFindLeaguesAsyncNotificationAsync(FindLeaguesAsyncNotification notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnFindLeaguesAsyncNotificationAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LeagueComponentNotification notification) => LeagueComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<LeagueComponentCommand, LeagueComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::createLeague</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreateLeagueAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(LeagueComponentBase.Id, LeagueComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.createLeague)]
-            public virtual Task<NullStruct> CreateLeagueAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.createLeague, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.joinLeague)]
-            public virtual Task<NullStruct> JoinLeagueAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.joinLeague, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getLeague)]
-            public virtual Task<NullStruct> GetLeagueAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeague, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getLeaguesByUser)]
-            public virtual Task<NullStruct> GetLeaguesByUserAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getLeaguesByUser, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.deleteLeague)]
-            public virtual Task<NullStruct> DeleteLeagueAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.deleteLeague, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.promoteToGM)]
-            public virtual Task<NullStruct> PromoteToGMAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.promoteToGM, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.findLeagues)]
-            public virtual Task<NullStruct> FindLeaguesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeagues, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.findLeaguesAsync)]
-            public virtual Task<NullStruct> FindLeaguesAsyncAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.findLeaguesAsync, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.removeMember)]
-            public virtual Task<NullStruct> RemoveMemberAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.removeMember, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.resetLeague)]
-            public virtual Task<NullStruct> ResetLeagueAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.resetLeague, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.updateLeagueSettings)]
-            public virtual Task<NullStruct> UpdateLeagueSettingsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.updateLeagueSettings, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.setMetadata)]
-            public virtual Task<NullStruct> SetMetadataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setMetadata, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.postNews)]
-            public virtual Task<NullStruct> PostNewsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.postNews, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getNews)]
-            public virtual Task<NullStruct> GetNewsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getNews, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.setRoster)]
-            public virtual Task<NullStruct> SetRosterAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setRoster, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.sendInvitation)]
-            public virtual Task<NullStruct> SendInvitationAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.sendInvitation, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getInvitations)]
-            public virtual Task<NullStruct> GetInvitationsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getInvitations, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.processInvitation)]
-            public virtual Task<NullStruct> ProcessInvitationAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processInvitation, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.proposeTrade)]
-            public virtual Task<NullStruct> ProposeTradeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.proposeTrade, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.processTrade)]
-            public virtual Task<NullStruct> ProcessTradeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.processTrade, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getTrades)]
-            public virtual Task<NullStruct> GetTradesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getTrades, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getMembers)]
-            public virtual Task<NullStruct> GetMembersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getMembers, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.submitStatistics)]
-            public virtual Task<NullStruct> SubmitStatisticsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitStatistics, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getRecentGames)]
-            public virtual Task<NullStruct> GetRecentGamesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRecentGames, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.submitScores)]
-            public virtual Task<NullStruct> SubmitScoresAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.submitScores, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getRoster)]
-            public virtual Task<NullStruct> GetRosterAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getRoster, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.runDraft)]
-            public virtual Task<NullStruct> RunDraftAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.runDraft, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getDraftProfile)]
-            public virtual Task<NullStruct> GetDraftProfileAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getDraftProfile, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.setDraftProfile)]
-            public virtual Task<NullStruct> SetDraftProfileAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.setDraftProfile, request);
-            }
-            
-            [BlazeCommand((ushort)LeagueComponentCommand.getPlayoffSeries)]
-            public virtual Task<NullStruct> GetPlayoffSeriesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)LeagueComponentCommand.getPlayoffSeries, request);
-            }
-            
-            
-            [BlazeNotification((ushort)LeagueComponentNotification.FindLeaguesAsyncNotification)]
-            public virtual Task<FindLeaguesAsyncNotification> OnFindLeaguesAsyncNotificationAsync(FindLeaguesAsyncNotification notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(LeagueComponentCommand command) => LeagueComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(LeagueComponentNotification notification) => LeagueComponentBase.GetNotificationType(notification);
-            
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(LeagueComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::joinLeague</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> JoinLeagueAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            LeagueComponentCommand.createLeague => typeof(NullStruct),
-            LeagueComponentCommand.joinLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
-            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
-            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
-            LeagueComponentCommand.findLeagues => typeof(NullStruct),
-            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
-            LeagueComponentCommand.removeMember => typeof(NullStruct),
-            LeagueComponentCommand.resetLeague => typeof(NullStruct),
-            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
-            LeagueComponentCommand.setMetadata => typeof(NullStruct),
-            LeagueComponentCommand.postNews => typeof(NullStruct),
-            LeagueComponentCommand.getNews => typeof(NullStruct),
-            LeagueComponentCommand.setRoster => typeof(NullStruct),
-            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
-            LeagueComponentCommand.getInvitations => typeof(NullStruct),
-            LeagueComponentCommand.processInvitation => typeof(NullStruct),
-            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
-            LeagueComponentCommand.processTrade => typeof(NullStruct),
-            LeagueComponentCommand.getTrades => typeof(NullStruct),
-            LeagueComponentCommand.getMembers => typeof(NullStruct),
-            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
-            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
-            LeagueComponentCommand.submitScores => typeof(NullStruct),
-            LeagueComponentCommand.getRoster => typeof(NullStruct),
-            LeagueComponentCommand.runDraft => typeof(NullStruct),
-            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(LeagueComponentCommand command) => command switch
-        {
-            LeagueComponentCommand.createLeague => typeof(NullStruct),
-            LeagueComponentCommand.joinLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
-            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
-            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
-            LeagueComponentCommand.findLeagues => typeof(NullStruct),
-            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
-            LeagueComponentCommand.removeMember => typeof(NullStruct),
-            LeagueComponentCommand.resetLeague => typeof(NullStruct),
-            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
-            LeagueComponentCommand.setMetadata => typeof(NullStruct),
-            LeagueComponentCommand.postNews => typeof(NullStruct),
-            LeagueComponentCommand.getNews => typeof(NullStruct),
-            LeagueComponentCommand.setRoster => typeof(NullStruct),
-            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
-            LeagueComponentCommand.getInvitations => typeof(NullStruct),
-            LeagueComponentCommand.processInvitation => typeof(NullStruct),
-            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
-            LeagueComponentCommand.processTrade => typeof(NullStruct),
-            LeagueComponentCommand.getTrades => typeof(NullStruct),
-            LeagueComponentCommand.getMembers => typeof(NullStruct),
-            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
-            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
-            LeagueComponentCommand.submitScores => typeof(NullStruct),
-            LeagueComponentCommand.getRoster => typeof(NullStruct),
-            LeagueComponentCommand.runDraft => typeof(NullStruct),
-            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(LeagueComponentCommand command) => command switch
-        {
-            LeagueComponentCommand.createLeague => typeof(NullStruct),
-            LeagueComponentCommand.joinLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeague => typeof(NullStruct),
-            LeagueComponentCommand.getLeaguesByUser => typeof(NullStruct),
-            LeagueComponentCommand.deleteLeague => typeof(NullStruct),
-            LeagueComponentCommand.promoteToGM => typeof(NullStruct),
-            LeagueComponentCommand.findLeagues => typeof(NullStruct),
-            LeagueComponentCommand.findLeaguesAsync => typeof(NullStruct),
-            LeagueComponentCommand.removeMember => typeof(NullStruct),
-            LeagueComponentCommand.resetLeague => typeof(NullStruct),
-            LeagueComponentCommand.updateLeagueSettings => typeof(NullStruct),
-            LeagueComponentCommand.setMetadata => typeof(NullStruct),
-            LeagueComponentCommand.postNews => typeof(NullStruct),
-            LeagueComponentCommand.getNews => typeof(NullStruct),
-            LeagueComponentCommand.setRoster => typeof(NullStruct),
-            LeagueComponentCommand.sendInvitation => typeof(NullStruct),
-            LeagueComponentCommand.getInvitations => typeof(NullStruct),
-            LeagueComponentCommand.processInvitation => typeof(NullStruct),
-            LeagueComponentCommand.proposeTrade => typeof(NullStruct),
-            LeagueComponentCommand.processTrade => typeof(NullStruct),
-            LeagueComponentCommand.getTrades => typeof(NullStruct),
-            LeagueComponentCommand.getMembers => typeof(NullStruct),
-            LeagueComponentCommand.submitStatistics => typeof(NullStruct),
-            LeagueComponentCommand.getRecentGames => typeof(NullStruct),
-            LeagueComponentCommand.submitScores => typeof(NullStruct),
-            LeagueComponentCommand.getRoster => typeof(NullStruct),
-            LeagueComponentCommand.runDraft => typeof(NullStruct),
-            LeagueComponentCommand.getDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.setDraftProfile => typeof(NullStruct),
-            LeagueComponentCommand.getPlayoffSeries => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(LeagueComponentNotification notification) => notification switch
-        {
-            LeagueComponentNotification.FindLeaguesAsyncNotification => typeof(FindLeaguesAsyncNotification),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum LeagueComponentCommand : ushort
-        {
-            createLeague = 1,
-            joinLeague = 2,
-            getLeague = 3,
-            getLeaguesByUser = 4,
-            deleteLeague = 5,
-            promoteToGM = 7,
-            findLeagues = 8,
-            findLeaguesAsync = 9,
-            removeMember = 10,
-            resetLeague = 11,
-            updateLeagueSettings = 12,
-            setMetadata = 13,
-            postNews = 15,
-            getNews = 16,
-            setRoster = 20,
-            sendInvitation = 22,
-            getInvitations = 23,
-            processInvitation = 24,
-            proposeTrade = 26,
-            processTrade = 27,
-            getTrades = 29,
-            getMembers = 31,
-            submitStatistics = 103,
-            getRecentGames = 104,
-            submitScores = 105,
-            getRoster = 107,
-            runDraft = 109,
-            getDraftProfile = 112,
-            setDraftProfile = 113,
-            getPlayoffSeries = 116,
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum LeagueComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getLeague</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetLeagueAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            FindLeaguesAsyncNotification = 118,
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getLeaguesByUser</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetLeaguesByUserAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::deleteLeague</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> DeleteLeagueAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::promoteToGM</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> PromoteToGMAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::findLeagues</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FindLeaguesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::findLeaguesAsync</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FindLeaguesAsyncAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::removeMember</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemoveMemberAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::resetLeague</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ResetLeagueAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::updateLeagueSettings</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateLeagueSettingsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::setMetadata</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetMetadataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::postNews</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> PostNewsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getNews</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetNewsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::setRoster</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetRosterAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::sendInvitation</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SendInvitationAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getInvitations</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetInvitationsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::processInvitation</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ProcessInvitationAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::proposeTrade</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ProposeTradeAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::processTrade</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ProcessTradeAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getTrades</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetTradesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getMembers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetMembersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::submitStatistics</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitStatisticsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getRecentGames</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetRecentGamesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::submitScores</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitScoresAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getRoster</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetRosterAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::runDraft</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RunDraftAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getDraftProfile</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetDraftProfileAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::setDraftProfile</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetDraftProfileAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>LeagueComponent::getPlayoffSeries</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetPlayoffSeriesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new LeagueException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>LeagueComponent::FindLeaguesAsyncNotification</b> notification.<br/>
+        /// Notification type: <see cref="FindLeaguesAsyncNotification"/><br/>
+        /// </summary>
+        public static Task NotifyFindLeaguesAsyncNotificationAsync(BlazeRpcConnection connection, FindLeaguesAsyncNotification notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = LeagueComponentBase.Id;
+                frame.Command = (ushort)LeagueComponentNotification.FindLeaguesAsyncNotification;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

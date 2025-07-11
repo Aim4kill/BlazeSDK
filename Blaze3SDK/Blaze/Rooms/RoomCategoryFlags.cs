@@ -1,10 +1,10 @@
-﻿namespace Blaze3SDK.Blaze.Rooms
+namespace Blaze3SDK.Blaze.Rooms;
+
+[Flags]
+public enum RoomCategoryFlags : int
 {
-    [Flags]
-    public enum RoomCategoryFlags
-    {
-        None = 0,
-        Pseudo = 4,
-        AutoRemoveMember = 8
-    }
+    None = 0,
+    Pseudo = 4,
+    AutoRemoveMember = 8,
 }
+

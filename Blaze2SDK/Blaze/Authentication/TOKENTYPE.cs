@@ -1,10 +1,10 @@
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public enum TOKENTYPE : int
 {
-    public enum TOKENTYPE : int
-    {
-        UNKNOWN = 0x0,
-        AUTHTOKEN = 0x1,
-        PCLOGINTOKEN = 0x2,
-        HANDOFFTOKEN = 0x3,
-    }
+    UNKNOWN = 0,
+    AUTHTOKEN = 1,
+    PCLOGINTOKEN = 2,
+    HANDOFFTOKEN = 3,
 }
+

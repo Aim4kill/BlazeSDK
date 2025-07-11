@@ -1,10 +1,11 @@
-﻿namespace Blaze2SDK.Blaze.Messaging
+namespace Blaze2SDK.Blaze.Messaging;
+
+[Flags]
+public enum MessageFlags : uint
 {
-    [Flags]
-    public enum MessageFlags
-    {
-        None = 0,
-        Persistent = 1,
-        FilterProfanity = 4,
-    }
+    None = 0,
+    Persistent = 1,
+    Echo = 2,
+    FilterProfanity = 4,
 }
+

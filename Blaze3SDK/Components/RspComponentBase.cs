@@ -1,767 +1,628 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.Rsp;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class RspComponentBase
 {
-    public static class RspComponentBase
+    public const ushort Id = 2049;
+    public const string Name = "RspComponent";
+    
+    public enum Error : ushort {
+        RSP_ERR_NO_GAMEMANAGER = 1,
+        RSP_ERR_INVALID_USER_ID = 2,
+        RSP_ERR_INVALID_SERVER_ID = 3,
+        RSP_ERR_INVALID_CONSUMABLE_ID = 4,
+        RSP_ERR_INVALID_PURCHASE_ID = 5,
+        RSP_ERR_INVALID_PURCHASE_STATUS = 6,
+        RSP_ERR_INVALID_PURCHASE_QUANTITY = 7,
+        RSP_ERR_PURCHASE_EXISTS = 8,
+        RSP_ERR_SERVER_NOT_ACTIVATED = 9,
+        RSP_ERR_SERVER_HAS_EXPIRED = 10,
+        RSP_ERR_SERVER_NOT_EXTANDABLE = 11,
+        RSP_ERR_INVALID_PRESET_ID = 12,
+        RSP_ERR_INVALID_PING_SITE_ALIAS = 13,
+        RSP_ERR_INVALID_SERVER_NAME_PROFANITY = 14,
+        RSP_ERR_INVALID_SERVER_DESCRIPTION_PROFANITY = 15,
+        RSP_ERR_INVALID_SERVER_MESSAGE_PROFANITY = 16,
+        RSP_ERR_INVALID_SERVER_PASSWORD_PROFANITY = 17,
+        RSP_ERR_INVALID_SERVER_PRESET_TYPE = 18,
+        RSP_ERR_INVALID_SERVER_PRESET_SETTINGS = 19,
+        RSP_ERR_USER_IS_ALREADY_ADMIN = 20,
+        RSP_ERR_USER_IS_NOT_ADMIN = 21,
+        RSP_ERR_USER_ADMIN_MAX = 22,
+        RSP_ERR_SERVER_ADMIN_MAX = 23,
+        RSP_ERR_NO_VIRTUAL_GAME = 24,
+        RSP_ERR_USER_IS_ALREADY_BANNED = 25,
+        RSP_ERR_USER_IS_NOT_BANNED = 26,
+        RSP_ERR_USER_CANNOT_BE_BANNED = 27,
+        RSP_ERR_SERVER_BAN_MAX = 28,
+        RSP_ERR_GAME_UPDATE_FAILED = 29,
+        RSP_ERR_INVALID_GAME_ID = 30,
+        RSP_ERR_INVALID_PERSISTED_GAME_ID = 31,
+        RSP_ERR_INVALID_MAP_ROTATION_ID = 32,
+        RSP_ERR_INVALID_MAP_ROTATION_MOD = 33,
+        RSP_ERR_INVALID_MAP_ROTATION_ENTRIES = 34,
+        RSP_ERR_INVALID_MAP_ROTATION_SETTINGS = 35,
+        RSP_ERR_PING_SITE_CAPACITY_MAX = 36,
+        RSP_ERR_SERVER_NOT_RESTARTABLE = 37,
+        RSP_ERR_INVALID_BANNER_ID = 38,
+        RSP_ERR_USER_IS_ALREADY_VIP = 39,
+        RSP_ERR_USER_IS_NOT_VIP = 40,
+        RSP_ERR_SERVER_VIP_MAX = 41,
+        RSP_ERR_INVALID_EXPIRATION_DATE = 42,
+        RSP_ERR_INVALID_SLAVE_SESSION_ID = 43,
+        RSP_ERR_USER_OWNER_MAX = 44,
+        RSP_ERR_INVALID_SERVER_NAME = 45,
+        RSP_ERR_INVALID_PRESET_FOR_RANKED_SERVER = 46,
+        RSP_ERR_NO_PASSWORD_FOR_PRIVATE_SERVER = 47,
+        RSP_ERR_MATCH_ALREADY_RUNNING = 48,
+        RSP_ERR_MATCH_NOT_RUNNING = 49,
+        RSP_ERR_MATCH_EXPIRATION_DATE_PASSED = 50,
+        RSP_ERR_MATCH_EMPTY_ROSTER = 51,
+        RSP_ERR_MATCH_ROSTER_TOO_BIG = 52,
+        RSP_ERR_INVALID_MATCH_ID = 53,
+        RSP_ERR_WRONG_MATCH_ID = 54,
+        RSP_ERR_INVALID_SERVER_PRESET_NAME_PROFANITY = 55,
+        RSP_ERR_INVALID_MAP_ROTATION_NAME_PROFANITY = 56,
+        RSP_ERR_INVALID_GAME_STATE_ACTION = 57,
+        RSP_ERR_GAME_PERMISSION_DENIED = 58,
+        RSP_ERR_INVALID_ACTIVE_PRESET_FOR_RANKED_SERVER = 59,
+        RSP_ERR_SERVER_RANKED = 60,
+        RSP_ERR_MATCH_RUNNING = 61,
+    }
+    
+    public enum RspComponentCommand : ushort
     {
-        public const ushort Id = 2049;
-        public const string Name = "RspComponent";
+        startPurchase = 10,
+        updatePurchase = 11,
+        finishPurchase = 12,
+        listPurchases = 15,
+        listServers = 20,
+        getServerDetails = 21,
+        restartServer = 23,
+        updateServerBanner = 24,
+        updateServerSettings = 25,
+        updateServerPreset = 26,
+        updateServerMapRotation = 27,
+        addServerAdmin = 31,
+        removeServerAdmin = 32,
+        addServerBan = 33,
+        removeServerBan = 34,
+        addServerVip = 35,
+        removeServerVip = 36,
+        getConfig = 50,
+        getPingSites = 51,
+        getGameData = 60,
+        addGameBan = 61,
+        createServer = 70,
+        updateServer = 71,
+        listAllServers = 72,
+        startMatch = 80,
+        abortMatch = 81,
+        endMatch = 82,
+    }
+    
+    public enum RspComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => RspComponentBase.Id;
+        public override string Name => RspComponentBase.Name;
         
-        public class Server : BlazeServerComponent<RspComponentCommand, RspComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(RspComponentCommand command) => false;
+        
+        public class RspException : BlazeRpcException
         {
-            public Server() : base(RspComponentBase.Id, RspComponentBase.Name)
+            public RspException(Error error) : base((ushort)error, null) { }
+            public RspException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public RspException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public RspException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public RspException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public RspException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public RspException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public RspException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)RspComponentCommand.startPurchase,
+                Name = "startPurchase",
+                IsSupported = IsCommandSupported(RspComponentCommand.startPurchase),
+                Func = async (req, ctx) => await StartPurchaseAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.startPurchase)]
-            public virtual Task<NullStruct> StartPurchaseAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updatePurchase,
+                Name = "updatePurchase",
+                IsSupported = IsCommandSupported(RspComponentCommand.updatePurchase),
+                Func = async (req, ctx) => await UpdatePurchaseAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updatePurchase)]
-            public virtual Task<NullStruct> UpdatePurchaseAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.finishPurchase,
+                Name = "finishPurchase",
+                IsSupported = IsCommandSupported(RspComponentCommand.finishPurchase),
+                Func = async (req, ctx) => await FinishPurchaseAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.finishPurchase)]
-            public virtual Task<NullStruct> FinishPurchaseAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.listPurchases,
+                Name = "listPurchases",
+                IsSupported = IsCommandSupported(RspComponentCommand.listPurchases),
+                Func = async (req, ctx) => await ListPurchasesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.listPurchases)]
-            public virtual Task<NullStruct> ListPurchasesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.listServers,
+                Name = "listServers",
+                IsSupported = IsCommandSupported(RspComponentCommand.listServers),
+                Func = async (req, ctx) => await ListServersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.listServers)]
-            public virtual Task<NullStruct> ListServersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.getServerDetails,
+                Name = "getServerDetails",
+                IsSupported = IsCommandSupported(RspComponentCommand.getServerDetails),
+                Func = async (req, ctx) => await GetServerDetailsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.getServerDetails)]
-            public virtual Task<NullStruct> GetServerDetailsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.restartServer,
+                Name = "restartServer",
+                IsSupported = IsCommandSupported(RspComponentCommand.restartServer),
+                Func = async (req, ctx) => await RestartServerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.restartServer)]
-            public virtual Task<NullStruct> RestartServerAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updateServerBanner,
+                Name = "updateServerBanner",
+                IsSupported = IsCommandSupported(RspComponentCommand.updateServerBanner),
+                Func = async (req, ctx) => await UpdateServerBannerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updateServerBanner)]
-            public virtual Task<NullStruct> UpdateServerBannerAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updateServerSettings,
+                Name = "updateServerSettings",
+                IsSupported = IsCommandSupported(RspComponentCommand.updateServerSettings),
+                Func = async (req, ctx) => await UpdateServerSettingsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updateServerSettings)]
-            public virtual Task<NullStruct> UpdateServerSettingsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updateServerPreset,
+                Name = "updateServerPreset",
+                IsSupported = IsCommandSupported(RspComponentCommand.updateServerPreset),
+                Func = async (req, ctx) => await UpdateServerPresetAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updateServerPreset)]
-            public virtual Task<NullStruct> UpdateServerPresetAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updateServerMapRotation,
+                Name = "updateServerMapRotation",
+                IsSupported = IsCommandSupported(RspComponentCommand.updateServerMapRotation),
+                Func = async (req, ctx) => await UpdateServerMapRotationAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updateServerMapRotation)]
-            public virtual Task<NullStruct> UpdateServerMapRotationAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.addServerAdmin,
+                Name = "addServerAdmin",
+                IsSupported = IsCommandSupported(RspComponentCommand.addServerAdmin),
+                Func = async (req, ctx) => await AddServerAdminAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.addServerAdmin)]
-            public virtual Task<NullStruct> AddServerAdminAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.removeServerAdmin,
+                Name = "removeServerAdmin",
+                IsSupported = IsCommandSupported(RspComponentCommand.removeServerAdmin),
+                Func = async (req, ctx) => await RemoveServerAdminAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.removeServerAdmin)]
-            public virtual Task<NullStruct> RemoveServerAdminAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.addServerBan,
+                Name = "addServerBan",
+                IsSupported = IsCommandSupported(RspComponentCommand.addServerBan),
+                Func = async (req, ctx) => await AddServerBanAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.addServerBan)]
-            public virtual Task<NullStruct> AddServerBanAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.removeServerBan,
+                Name = "removeServerBan",
+                IsSupported = IsCommandSupported(RspComponentCommand.removeServerBan),
+                Func = async (req, ctx) => await RemoveServerBanAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.removeServerBan)]
-            public virtual Task<NullStruct> RemoveServerBanAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.addServerVip,
+                Name = "addServerVip",
+                IsSupported = IsCommandSupported(RspComponentCommand.addServerVip),
+                Func = async (req, ctx) => await AddServerVipAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.addServerVip)]
-            public virtual Task<NullStruct> AddServerVipAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.removeServerVip,
+                Name = "removeServerVip",
+                IsSupported = IsCommandSupported(RspComponentCommand.removeServerVip),
+                Func = async (req, ctx) => await RemoveServerVipAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.removeServerVip)]
-            public virtual Task<NullStruct> RemoveServerVipAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetConfigResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.getConfig,
+                Name = "getConfig",
+                IsSupported = IsCommandSupported(RspComponentCommand.getConfig),
+                Func = async (req, ctx) => await GetConfigAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.getConfig)]
-            public virtual Task<GetConfigResponse> GetConfigAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.getPingSites,
+                Name = "getPingSites",
+                IsSupported = IsCommandSupported(RspComponentCommand.getPingSites),
+                Func = async (req, ctx) => await GetPingSitesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.getPingSites)]
-            public virtual Task<NullStruct> GetPingSitesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.getGameData,
+                Name = "getGameData",
+                IsSupported = IsCommandSupported(RspComponentCommand.getGameData),
+                Func = async (req, ctx) => await GetGameDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.getGameData)]
-            public virtual Task<NullStruct> GetGameDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.addGameBan,
+                Name = "addGameBan",
+                IsSupported = IsCommandSupported(RspComponentCommand.addGameBan),
+                Func = async (req, ctx) => await AddGameBanAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.addGameBan)]
-            public virtual Task<NullStruct> AddGameBanAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.createServer,
+                Name = "createServer",
+                IsSupported = IsCommandSupported(RspComponentCommand.createServer),
+                Func = async (req, ctx) => await CreateServerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.createServer)]
-            public virtual Task<NullStruct> CreateServerAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.updateServer,
+                Name = "updateServer",
+                IsSupported = IsCommandSupported(RspComponentCommand.updateServer),
+                Func = async (req, ctx) => await UpdateServerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.updateServer)]
-            public virtual Task<NullStruct> UpdateServerAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.listAllServers,
+                Name = "listAllServers",
+                IsSupported = IsCommandSupported(RspComponentCommand.listAllServers),
+                Func = async (req, ctx) => await ListAllServersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.listAllServers)]
-            public virtual Task<NullStruct> ListAllServersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.startMatch,
+                Name = "startMatch",
+                IsSupported = IsCommandSupported(RspComponentCommand.startMatch),
+                Func = async (req, ctx) => await StartMatchAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.startMatch)]
-            public virtual Task<NullStruct> StartMatchAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RspComponentCommand.abortMatch,
+                Name = "abortMatch",
+                IsSupported = IsCommandSupported(RspComponentCommand.abortMatch),
+                Func = async (req, ctx) => await AbortMatchAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RspComponentCommand.abortMatch)]
-            public virtual Task<NullStruct> AbortMatchAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.endMatch)]
-            public virtual Task<NullStruct> EndMatchAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(RspComponentCommand command) => RspComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RspComponentCommand command) => RspComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RspComponentCommand command) => RspComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RspComponentNotification notification) => RspComponentBase.GetNotificationType(notification);
+                Id = (ushort)RspComponentCommand.endMatch,
+                Name = "endMatch",
+                IsSupported = IsCommandSupported(RspComponentCommand.endMatch),
+                Func = async (req, ctx) => await EndMatchAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<RspComponentCommand, RspComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(RspComponentBase.Id, RspComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct StartPurchase()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startPurchase, new NullStruct());
-            }
-            public Task<NullStruct> StartPurchaseAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startPurchase, new NullStruct());
-            }
-            
-            public NullStruct UpdatePurchase()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updatePurchase, new NullStruct());
-            }
-            public Task<NullStruct> UpdatePurchaseAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updatePurchase, new NullStruct());
-            }
-            
-            public NullStruct FinishPurchase()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.finishPurchase, new NullStruct());
-            }
-            public Task<NullStruct> FinishPurchaseAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.finishPurchase, new NullStruct());
-            }
-            
-            public NullStruct ListPurchases()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listPurchases, new NullStruct());
-            }
-            public Task<NullStruct> ListPurchasesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listPurchases, new NullStruct());
-            }
-            
-            public NullStruct ListServers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listServers, new NullStruct());
-            }
-            public Task<NullStruct> ListServersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listServers, new NullStruct());
-            }
-            
-            public NullStruct GetServerDetails()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getServerDetails, new NullStruct());
-            }
-            public Task<NullStruct> GetServerDetailsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getServerDetails, new NullStruct());
-            }
-            
-            public NullStruct RestartServer()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.restartServer, new NullStruct());
-            }
-            public Task<NullStruct> RestartServerAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.restartServer, new NullStruct());
-            }
-            
-            public NullStruct UpdateServerBanner()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerBanner, new NullStruct());
-            }
-            public Task<NullStruct> UpdateServerBannerAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerBanner, new NullStruct());
-            }
-            
-            public NullStruct UpdateServerSettings()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerSettings, new NullStruct());
-            }
-            public Task<NullStruct> UpdateServerSettingsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerSettings, new NullStruct());
-            }
-            
-            public NullStruct UpdateServerPreset()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerPreset, new NullStruct());
-            }
-            public Task<NullStruct> UpdateServerPresetAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerPreset, new NullStruct());
-            }
-            
-            public NullStruct UpdateServerMapRotation()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerMapRotation, new NullStruct());
-            }
-            public Task<NullStruct> UpdateServerMapRotationAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerMapRotation, new NullStruct());
-            }
-            
-            public NullStruct AddServerAdmin()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerAdmin, new NullStruct());
-            }
-            public Task<NullStruct> AddServerAdminAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerAdmin, new NullStruct());
-            }
-            
-            public NullStruct RemoveServerAdmin()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerAdmin, new NullStruct());
-            }
-            public Task<NullStruct> RemoveServerAdminAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerAdmin, new NullStruct());
-            }
-            
-            public NullStruct AddServerBan()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerBan, new NullStruct());
-            }
-            public Task<NullStruct> AddServerBanAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerBan, new NullStruct());
-            }
-            
-            public NullStruct RemoveServerBan()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerBan, new NullStruct());
-            }
-            public Task<NullStruct> RemoveServerBanAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerBan, new NullStruct());
-            }
-            
-            public NullStruct AddServerVip()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerVip, new NullStruct());
-            }
-            public Task<NullStruct> AddServerVipAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerVip, new NullStruct());
-            }
-            
-            public NullStruct RemoveServerVip()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerVip, new NullStruct());
-            }
-            public Task<NullStruct> RemoveServerVipAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerVip, new NullStruct());
-            }
-            
-            public GetConfigResponse GetConfig()
-            {
-                return Connection.SendRequest<NullStruct, GetConfigResponse, NullStruct>(this, (ushort)RspComponentCommand.getConfig, new NullStruct());
-            }
-            public Task<GetConfigResponse> GetConfigAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GetConfigResponse, NullStruct>(this, (ushort)RspComponentCommand.getConfig, new NullStruct());
-            }
-            
-            public NullStruct GetPingSites()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getPingSites, new NullStruct());
-            }
-            public Task<NullStruct> GetPingSitesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getPingSites, new NullStruct());
-            }
-            
-            public NullStruct GetGameData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getGameData, new NullStruct());
-            }
-            public Task<NullStruct> GetGameDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getGameData, new NullStruct());
-            }
-            
-            public NullStruct AddGameBan()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addGameBan, new NullStruct());
-            }
-            public Task<NullStruct> AddGameBanAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addGameBan, new NullStruct());
-            }
-            
-            public NullStruct CreateServer()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.createServer, new NullStruct());
-            }
-            public Task<NullStruct> CreateServerAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.createServer, new NullStruct());
-            }
-            
-            public NullStruct UpdateServer()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServer, new NullStruct());
-            }
-            public Task<NullStruct> UpdateServerAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServer, new NullStruct());
-            }
-            
-            public NullStruct ListAllServers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listAllServers, new NullStruct());
-            }
-            public Task<NullStruct> ListAllServersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listAllServers, new NullStruct());
-            }
-            
-            public NullStruct StartMatch()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startMatch, new NullStruct());
-            }
-            public Task<NullStruct> StartMatchAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startMatch, new NullStruct());
-            }
-            
-            public NullStruct AbortMatch()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.abortMatch, new NullStruct());
-            }
-            public Task<NullStruct> AbortMatchAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.abortMatch, new NullStruct());
-            }
-            
-            public NullStruct EndMatch()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.endMatch, new NullStruct());
-            }
-            public Task<NullStruct> EndMatchAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.endMatch, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(RspComponentCommand command) => RspComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RspComponentCommand command) => RspComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RspComponentCommand command) => RspComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RspComponentNotification notification) => RspComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<RspComponentCommand, RspComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::startPurchase</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> StartPurchaseAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(RspComponentBase.Id, RspComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.startPurchase)]
-            public virtual Task<NullStruct> StartPurchaseAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startPurchase, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updatePurchase)]
-            public virtual Task<NullStruct> UpdatePurchaseAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updatePurchase, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.finishPurchase)]
-            public virtual Task<NullStruct> FinishPurchaseAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.finishPurchase, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.listPurchases)]
-            public virtual Task<NullStruct> ListPurchasesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listPurchases, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.listServers)]
-            public virtual Task<NullStruct> ListServersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listServers, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.getServerDetails)]
-            public virtual Task<NullStruct> GetServerDetailsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getServerDetails, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.restartServer)]
-            public virtual Task<NullStruct> RestartServerAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.restartServer, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updateServerBanner)]
-            public virtual Task<NullStruct> UpdateServerBannerAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerBanner, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updateServerSettings)]
-            public virtual Task<NullStruct> UpdateServerSettingsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerSettings, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updateServerPreset)]
-            public virtual Task<NullStruct> UpdateServerPresetAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerPreset, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updateServerMapRotation)]
-            public virtual Task<NullStruct> UpdateServerMapRotationAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServerMapRotation, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.addServerAdmin)]
-            public virtual Task<NullStruct> AddServerAdminAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerAdmin, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.removeServerAdmin)]
-            public virtual Task<NullStruct> RemoveServerAdminAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerAdmin, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.addServerBan)]
-            public virtual Task<NullStruct> AddServerBanAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerBan, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.removeServerBan)]
-            public virtual Task<NullStruct> RemoveServerBanAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerBan, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.addServerVip)]
-            public virtual Task<NullStruct> AddServerVipAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addServerVip, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.removeServerVip)]
-            public virtual Task<NullStruct> RemoveServerVipAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.removeServerVip, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.getConfig)]
-            public virtual Task<GetConfigResponse> GetConfigAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GetConfigResponse, NullStruct>(this, (ushort)RspComponentCommand.getConfig, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.getPingSites)]
-            public virtual Task<NullStruct> GetPingSitesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getPingSites, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.getGameData)]
-            public virtual Task<NullStruct> GetGameDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.getGameData, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.addGameBan)]
-            public virtual Task<NullStruct> AddGameBanAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.addGameBan, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.createServer)]
-            public virtual Task<NullStruct> CreateServerAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.createServer, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.updateServer)]
-            public virtual Task<NullStruct> UpdateServerAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.updateServer, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.listAllServers)]
-            public virtual Task<NullStruct> ListAllServersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.listAllServers, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.startMatch)]
-            public virtual Task<NullStruct> StartMatchAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.startMatch, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.abortMatch)]
-            public virtual Task<NullStruct> AbortMatchAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.abortMatch, request);
-            }
-            
-            [BlazeCommand((ushort)RspComponentCommand.endMatch)]
-            public virtual Task<NullStruct> EndMatchAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RspComponentCommand.endMatch, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(RspComponentCommand command) => RspComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RspComponentCommand command) => RspComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RspComponentCommand command) => RspComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RspComponentNotification notification) => RspComponentBase.GetNotificationType(notification);
-            
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(RspComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updatePurchase</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdatePurchaseAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            RspComponentCommand.startPurchase => typeof(NullStruct),
-            RspComponentCommand.updatePurchase => typeof(NullStruct),
-            RspComponentCommand.finishPurchase => typeof(NullStruct),
-            RspComponentCommand.listPurchases => typeof(NullStruct),
-            RspComponentCommand.listServers => typeof(NullStruct),
-            RspComponentCommand.getServerDetails => typeof(NullStruct),
-            RspComponentCommand.restartServer => typeof(NullStruct),
-            RspComponentCommand.updateServerBanner => typeof(NullStruct),
-            RspComponentCommand.updateServerSettings => typeof(NullStruct),
-            RspComponentCommand.updateServerPreset => typeof(NullStruct),
-            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
-            RspComponentCommand.addServerAdmin => typeof(NullStruct),
-            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
-            RspComponentCommand.addServerBan => typeof(NullStruct),
-            RspComponentCommand.removeServerBan => typeof(NullStruct),
-            RspComponentCommand.addServerVip => typeof(NullStruct),
-            RspComponentCommand.removeServerVip => typeof(NullStruct),
-            RspComponentCommand.getConfig => typeof(NullStruct),
-            RspComponentCommand.getPingSites => typeof(NullStruct),
-            RspComponentCommand.getGameData => typeof(NullStruct),
-            RspComponentCommand.addGameBan => typeof(NullStruct),
-            RspComponentCommand.createServer => typeof(NullStruct),
-            RspComponentCommand.updateServer => typeof(NullStruct),
-            RspComponentCommand.listAllServers => typeof(NullStruct),
-            RspComponentCommand.startMatch => typeof(NullStruct),
-            RspComponentCommand.abortMatch => typeof(NullStruct),
-            RspComponentCommand.endMatch => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(RspComponentCommand command) => command switch
-        {
-            RspComponentCommand.startPurchase => typeof(NullStruct),
-            RspComponentCommand.updatePurchase => typeof(NullStruct),
-            RspComponentCommand.finishPurchase => typeof(NullStruct),
-            RspComponentCommand.listPurchases => typeof(NullStruct),
-            RspComponentCommand.listServers => typeof(NullStruct),
-            RspComponentCommand.getServerDetails => typeof(NullStruct),
-            RspComponentCommand.restartServer => typeof(NullStruct),
-            RspComponentCommand.updateServerBanner => typeof(NullStruct),
-            RspComponentCommand.updateServerSettings => typeof(NullStruct),
-            RspComponentCommand.updateServerPreset => typeof(NullStruct),
-            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
-            RspComponentCommand.addServerAdmin => typeof(NullStruct),
-            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
-            RspComponentCommand.addServerBan => typeof(NullStruct),
-            RspComponentCommand.removeServerBan => typeof(NullStruct),
-            RspComponentCommand.addServerVip => typeof(NullStruct),
-            RspComponentCommand.removeServerVip => typeof(NullStruct),
-            RspComponentCommand.getConfig => typeof(GetConfigResponse),
-            RspComponentCommand.getPingSites => typeof(NullStruct),
-            RspComponentCommand.getGameData => typeof(NullStruct),
-            RspComponentCommand.addGameBan => typeof(NullStruct),
-            RspComponentCommand.createServer => typeof(NullStruct),
-            RspComponentCommand.updateServer => typeof(NullStruct),
-            RspComponentCommand.listAllServers => typeof(NullStruct),
-            RspComponentCommand.startMatch => typeof(NullStruct),
-            RspComponentCommand.abortMatch => typeof(NullStruct),
-            RspComponentCommand.endMatch => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(RspComponentCommand command) => command switch
-        {
-            RspComponentCommand.startPurchase => typeof(NullStruct),
-            RspComponentCommand.updatePurchase => typeof(NullStruct),
-            RspComponentCommand.finishPurchase => typeof(NullStruct),
-            RspComponentCommand.listPurchases => typeof(NullStruct),
-            RspComponentCommand.listServers => typeof(NullStruct),
-            RspComponentCommand.getServerDetails => typeof(NullStruct),
-            RspComponentCommand.restartServer => typeof(NullStruct),
-            RspComponentCommand.updateServerBanner => typeof(NullStruct),
-            RspComponentCommand.updateServerSettings => typeof(NullStruct),
-            RspComponentCommand.updateServerPreset => typeof(NullStruct),
-            RspComponentCommand.updateServerMapRotation => typeof(NullStruct),
-            RspComponentCommand.addServerAdmin => typeof(NullStruct),
-            RspComponentCommand.removeServerAdmin => typeof(NullStruct),
-            RspComponentCommand.addServerBan => typeof(NullStruct),
-            RspComponentCommand.removeServerBan => typeof(NullStruct),
-            RspComponentCommand.addServerVip => typeof(NullStruct),
-            RspComponentCommand.removeServerVip => typeof(NullStruct),
-            RspComponentCommand.getConfig => typeof(NullStruct),
-            RspComponentCommand.getPingSites => typeof(NullStruct),
-            RspComponentCommand.getGameData => typeof(NullStruct),
-            RspComponentCommand.addGameBan => typeof(NullStruct),
-            RspComponentCommand.createServer => typeof(NullStruct),
-            RspComponentCommand.updateServer => typeof(NullStruct),
-            RspComponentCommand.listAllServers => typeof(NullStruct),
-            RspComponentCommand.startMatch => typeof(NullStruct),
-            RspComponentCommand.abortMatch => typeof(NullStruct),
-            RspComponentCommand.endMatch => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(RspComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum RspComponentCommand : ushort
-        {
-            startPurchase = 10,
-            updatePurchase = 11,
-            finishPurchase = 12,
-            listPurchases = 15,
-            listServers = 20,
-            getServerDetails = 21,
-            restartServer = 23,
-            updateServerBanner = 24,
-            updateServerSettings = 25,
-            updateServerPreset = 26,
-            updateServerMapRotation = 27,
-            addServerAdmin = 31,
-            removeServerAdmin = 32,
-            addServerBan = 33,
-            removeServerBan = 34,
-            addServerVip = 35,
-            removeServerVip = 36,
-            getConfig = 50,
-            getPingSites = 51,
-            getGameData = 60,
-            addGameBan = 61,
-            createServer = 70,
-            updateServer = 71,
-            listAllServers = 72,
-            startMatch = 80,
-            abortMatch = 81,
-            endMatch = 82,
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum RspComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::finishPurchase</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FinishPurchaseAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::listPurchases</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListPurchasesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::listServers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListServersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::getServerDetails</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetServerDetailsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::restartServer</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RestartServerAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updateServerBanner</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateServerBannerAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updateServerSettings</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateServerSettingsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updateServerPreset</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateServerPresetAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updateServerMapRotation</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateServerMapRotationAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::addServerAdmin</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddServerAdminAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::removeServerAdmin</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemoveServerAdminAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::addServerBan</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddServerBanAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::removeServerBan</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemoveServerBanAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::addServerVip</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddServerVipAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::removeServerVip</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemoveServerVipAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::getConfig</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetConfigResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetConfigResponse> GetConfigAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::getPingSites</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetPingSitesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::getGameData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::addGameBan</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddGameBanAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::createServer</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CreateServerAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::updateServer</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateServerAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::listAllServers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ListAllServersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::startMatch</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> StartMatchAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::abortMatch</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AbortMatchAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RspComponent::endMatch</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> EndMatchAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RspException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

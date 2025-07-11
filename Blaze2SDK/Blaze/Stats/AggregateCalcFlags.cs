@@ -1,8 +1,8 @@
-﻿namespace Blaze2SDK.Blaze.Stats
+namespace Blaze2SDK.Blaze.Stats;
+
+[Flags]
+public enum AggregateCalcFlags : int
 {
-    [Flags]
-    public enum AggregateCalcFlags
-    {
-        None = 0,
-    }
+    None = 0,
 }
+

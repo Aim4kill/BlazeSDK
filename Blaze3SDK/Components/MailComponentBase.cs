@@ -1,216 +1,155 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class MailComponentBase
 {
-    public static class MailComponentBase
+    public const ushort Id = 14;
+    public const string Name = "MailComponent";
+    
+    public enum Error : ushort {
+        MAIL_ERR_INVALID_OPTIN_FLAGS = 1,
+        MAIL_ERR_INVALID_EMAIL_FORMAT = 2,
+        MAIL_ERR_USER_NOT_FOUND_IN_DB = 3,
+        MAIL_ERR_SEND_MAIL_INVALID_EMAIL = 20,
+        MAIL_ERR_SEND_MAIL_INVALID_TEMPLATE = 21,
+        MAIL_ERR_SEND_MAIL_MISSING_HEADER = 22,
+        MAIL_ERR_SEND_MAIL_MISSING_VARIABLE_VALUE = 23,
+    }
+    
+    public enum MailComponentCommand : ushort
     {
-        public const ushort Id = 14;
-        public const string Name = "MailComponent";
+        updateMailSettings = 1,
+        sendMailToSelf = 2,
+        setMailOptInFlags = 3,
+        setMailPref = 4,
+        getMailSettings = 5,
+    }
+    
+    public enum MailComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => MailComponentBase.Id;
+        public override string Name => MailComponentBase.Name;
         
-        public class Server : BlazeServerComponent<MailComponentCommand, MailComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(MailComponentCommand command) => false;
+        
+        public class MailException : BlazeRpcException
         {
-            public Server() : base(MailComponentBase.Id, MailComponentBase.Name)
+            public MailException(Error error) : base((ushort)error, null) { }
+            public MailException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public MailException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public MailException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public MailException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public MailException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public MailException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public MailException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)MailComponentCommand.updateMailSettings,
+                Name = "updateMailSettings",
+                IsSupported = IsCommandSupported(MailComponentCommand.updateMailSettings),
+                Func = async (req, ctx) => await UpdateMailSettingsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MailComponentCommand.updateMailSettings)]
-            public virtual Task<NullStruct> UpdateMailSettingsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MailComponentCommand.sendMailToSelf,
+                Name = "sendMailToSelf",
+                IsSupported = IsCommandSupported(MailComponentCommand.sendMailToSelf),
+                Func = async (req, ctx) => await SendMailToSelfAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MailComponentCommand.sendMailToSelf)]
-            public virtual Task<NullStruct> SendMailToSelfAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MailComponentCommand.setMailOptInFlags,
+                Name = "setMailOptInFlags",
+                IsSupported = IsCommandSupported(MailComponentCommand.setMailOptInFlags),
+                Func = async (req, ctx) => await SetMailOptInFlagsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MailComponentCommand.setMailOptInFlags)]
-            public virtual Task<NullStruct> SetMailOptInFlagsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MailComponentCommand.setMailPref,
+                Name = "setMailPref",
+                IsSupported = IsCommandSupported(MailComponentCommand.setMailPref),
+                Func = async (req, ctx) => await SetMailPrefAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MailComponentCommand.setMailPref)]
-            public virtual Task<NullStruct> SetMailPrefAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.getMailSettings)]
-            public virtual Task<NullStruct> GetMailSettingsAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(MailComponentCommand command) => MailComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MailComponentCommand command) => MailComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MailComponentCommand command) => MailComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MailComponentNotification notification) => MailComponentBase.GetNotificationType(notification);
+                Id = (ushort)MailComponentCommand.getMailSettings,
+                Name = "getMailSettings",
+                IsSupported = IsCommandSupported(MailComponentCommand.getMailSettings),
+                Func = async (req, ctx) => await GetMailSettingsAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<MailComponentCommand, MailComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(MailComponentBase.Id, MailComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct UpdateMailSettings()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, new NullStruct());
-            }
-            public Task<NullStruct> UpdateMailSettingsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, new NullStruct());
-            }
-            
-            public NullStruct SendMailToSelf()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, new NullStruct());
-            }
-            public Task<NullStruct> SendMailToSelfAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, new NullStruct());
-            }
-            
-            public NullStruct SetMailOptInFlags()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailOptInFlags, new NullStruct());
-            }
-            public Task<NullStruct> SetMailOptInFlagsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailOptInFlags, new NullStruct());
-            }
-            
-            public NullStruct SetMailPref()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailPref, new NullStruct());
-            }
-            public Task<NullStruct> SetMailPrefAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailPref, new NullStruct());
-            }
-            
-            public NullStruct GetMailSettings()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.getMailSettings, new NullStruct());
-            }
-            public Task<NullStruct> GetMailSettingsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.getMailSettings, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(MailComponentCommand command) => MailComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MailComponentCommand command) => MailComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MailComponentCommand command) => MailComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MailComponentNotification notification) => MailComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<MailComponentCommand, MailComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>MailComponent::updateMailSettings</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateMailSettingsAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(MailComponentBase.Id, MailComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.updateMailSettings)]
-            public virtual Task<NullStruct> UpdateMailSettingsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.updateMailSettings, request);
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.sendMailToSelf)]
-            public virtual Task<NullStruct> SendMailToSelfAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.sendMailToSelf, request);
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.setMailOptInFlags)]
-            public virtual Task<NullStruct> SetMailOptInFlagsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailOptInFlags, request);
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.setMailPref)]
-            public virtual Task<NullStruct> SetMailPrefAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.setMailPref, request);
-            }
-            
-            [BlazeCommand((ushort)MailComponentCommand.getMailSettings)]
-            public virtual Task<NullStruct> GetMailSettingsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MailComponentCommand.getMailSettings, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(MailComponentCommand command) => MailComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MailComponentCommand command) => MailComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MailComponentCommand command) => MailComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MailComponentNotification notification) => MailComponentBase.GetNotificationType(notification);
-            
+            throw new MailException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(MailComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>MailComponent::sendMailToSelf</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SendMailToSelfAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            MailComponentCommand.updateMailSettings => typeof(NullStruct),
-            MailComponentCommand.sendMailToSelf => typeof(NullStruct),
-            MailComponentCommand.setMailOptInFlags => typeof(NullStruct),
-            MailComponentCommand.setMailPref => typeof(NullStruct),
-            MailComponentCommand.getMailSettings => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(MailComponentCommand command) => command switch
-        {
-            MailComponentCommand.updateMailSettings => typeof(NullStruct),
-            MailComponentCommand.sendMailToSelf => typeof(NullStruct),
-            MailComponentCommand.setMailOptInFlags => typeof(NullStruct),
-            MailComponentCommand.setMailPref => typeof(NullStruct),
-            MailComponentCommand.getMailSettings => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(MailComponentCommand command) => command switch
-        {
-            MailComponentCommand.updateMailSettings => typeof(NullStruct),
-            MailComponentCommand.sendMailToSelf => typeof(NullStruct),
-            MailComponentCommand.setMailOptInFlags => typeof(NullStruct),
-            MailComponentCommand.setMailPref => typeof(NullStruct),
-            MailComponentCommand.getMailSettings => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(MailComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum MailComponentCommand : ushort
-        {
-            updateMailSettings = 1,
-            sendMailToSelf = 2,
-            setMailOptInFlags = 3,
-            setMailPref = 4,
-            getMailSettings = 5,
+            throw new MailException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum MailComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>MailComponent::setMailOptInFlags</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetMailOptInFlagsAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new MailException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>MailComponent::setMailPref</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetMailPrefAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new MailException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>MailComponent::getMailSettings</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetMailSettingsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new MailException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

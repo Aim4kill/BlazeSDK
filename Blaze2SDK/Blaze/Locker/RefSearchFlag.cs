@@ -1,11 +1,11 @@
-namespace Blaze2SDK.Blaze.Locker
+namespace Blaze2SDK.Blaze.Locker;
+
+public enum RefSearchFlag : int
 {
-    public enum RefSearchFlag : int
-    {
-        OWNERFLAG = 0x1,
-        COPYFLAG = 0x2,
-        LOCKERFLAG = 0x3,
-        BOOKMARKFLAG = 0x4,
-        ALLFLAG = 0x8,
-    }
+    OWNERFLAG = 1,
+    COPYFLAG = 2,
+    LOCKERFLAG = 3,
+    BOOKMARKFLAG = 4,
+    ALLFLAG = 8,
 }
+

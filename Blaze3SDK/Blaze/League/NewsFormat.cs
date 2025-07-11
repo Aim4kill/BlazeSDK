@@ -1,8 +1,8 @@
-namespace Blaze3SDK.Blaze.League
+namespace Blaze3SDK.Blaze.League;
+
+public enum NewsFormat : int
 {
-	public enum NewsFormat : int
-	{
-		NEWS_FMT_PLAIN_TEXT = 1,
-		NEWS_FMT_HTML = 2,
-	}
+    NEWS_FMT_PLAIN_TEXT = 1,
+    NEWS_FMT_HTML = 2,
 }
+

@@ -1,19 +1,55 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Clubs
+namespace Blaze3SDK.Blaze.Clubs;
+
+public class RemoveCachedMemberRequest : Tdf
 {
-	[TdfStruct]
-	public struct RemoveCachedMemberRequest
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("BlazeId", "mBlazeId", 0x8ACA6400, TdfType.Int64, 0, true), // BLID
+        new TdfMemberInfo("ClubId", "mClubId", 0x8ECA6400, TdfType.UInt32, 1, true), // CLID
+        new TdfMemberInfo("Reason", "mReason", 0xD70CB300, TdfType.Enum, 2, true), // UPRS
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("BLID")]
-		public long mBlazeId;
+    private TdfInt64 _blazeId = new(__typeInfos[0]);
+    private TdfUInt32 _clubId = new(__typeInfos[1]);
+    private TdfEnum<Blaze3SDK.Blaze.Clubs.UpdateReason> _reason = new(__typeInfos[2]);
 
-		[TdfMember("CLID")]
-		public uint mClubId;
+    public RemoveCachedMemberRequest()
+    {
+        __members = [
+            _blazeId,
+            _clubId,
+            _reason,
+        ];
+    }
 
-		[TdfMember("UPRS")]
-		public UpdateReason mReason;
+    public override Tdf CreateNew() => new RemoveCachedMemberRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "RemoveCachedMemberRequest";
+    public override string GetFullClassName() => "Blaze::Clubs::RemoveCachedMemberRequest";
 
-	}
+    public long BlazeId
+    {
+        get => _blazeId.Value;
+        set => _blazeId.Value = value;
+    }
+
+    public uint ClubId
+    {
+        get => _clubId.Value;
+        set => _clubId.Value = value;
+    }
+
+    public Blaze3SDK.Blaze.Clubs.UpdateReason Reason
+    {
+        get => _reason.Value;
+        set => _reason.Value = value;
+    }
+
 }
+

@@ -1,31 +1,64 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Stats
+namespace Blaze2SDK.Blaze.Stats;
+
+public class GetEntityCountRequest : Tdf
 {
-    [TdfStruct]
-    public struct GetEntityCountRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Category", "mCategory", 0x8E1D0000, TdfType.String, 0, true), // CAT
+        new TdfMemberInfo("KeyScopeValueMap", "mKeyScopeValueMap", 0xAF3D6D00, TdfType.Map, 1, true), // KSUM
+        new TdfMemberInfo("PeriodOffset", "mPeriodOffset", 0xC2F9A600, TdfType.Int32, 2, true), // POFF
+        new TdfMemberInfo("PeriodType", "mPeriodType", 0xC34E7000, TdfType.Int32, 3, true), // PTYP
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _category = new(__typeInfos[0]);
+    private TdfMap<string, string> _keyScopeValueMap = new(__typeInfos[1]);
+    private TdfInt32 _periodOffset = new(__typeInfos[2]);
+    private TdfInt32 _periodType = new(__typeInfos[3]);
+
+    public GetEntityCountRequest()
     {
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("CAT")]
-        [StringLength(32)]
-        public string mCategory;
-        
-        /// <summary>
-        /// Max Key String Length: 32
-        /// Max Value String Length: 32
-        /// </summary>
-        [TdfMember("KSUM")]
-        public SortedDictionary<string, string> mKeyScopeValueMap;
-        
-        [TdfMember("POFF")]
-        public int mPeriodOffset;
-        
-        [TdfMember("PTYP")]
-        public int mPeriodType;
-        
+        __members = [
+            _category,
+            _keyScopeValueMap,
+            _periodOffset,
+            _periodType,
+        ];
     }
+
+    public override Tdf CreateNew() => new GetEntityCountRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GetEntityCountRequest";
+    public override string GetFullClassName() => "Blaze::Stats::GetEntityCountRequest";
+
+    public string Category
+    {
+        get => _category.Value;
+        set => _category.Value = value;
+    }
+
+    public IDictionary<string, string> KeyScopeValueMap
+    {
+        get => _keyScopeValueMap.Value;
+        set => _keyScopeValueMap.Value = value;
+    }
+
+    public int PeriodOffset
+    {
+        get => _periodOffset.Value;
+        set => _periodOffset.Value = value;
+    }
+
+    public int PeriodType
+    {
+        get => _periodType.Value;
+        set => _periodType.Value = value;
+    }
+
 }
+

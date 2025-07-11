@@ -1,362 +1,287 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.GameReportingLegacy;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class GameReportingLegacyComponentBase
 {
-    public static class GameReportingLegacyComponentBase
-    {
-        public const ushort Id = 12;
-        public const string Name = "GameReportingLegacyComponent";
-
-        public class Server : BlazeServerComponent<GameReportingLegacyComponentCommand, GameReportingLegacyComponentNotification, Blaze3RpcError>
-        {
-            public Server() : base(GameReportingLegacyComponentBase.Id, GameReportingLegacyComponentBase.Name)
-            {
-
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitGameReport)]
-            public virtual Task<NullStruct> SubmitGameReportAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport)]
-            public virtual Task<NullStruct> SubmitOfflineGameReportAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitGameEvents)]
-            public virtual Task<NullStruct> SubmitGameEventsAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReports)]
-            public virtual Task<NullStruct> GetGameReportsAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportView)]
-            public virtual Task<NullStruct> GetGameReportViewAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo)]
-            public virtual Task<NullStruct> GetGameReportViewInfoAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<NullStruct> GetGameReportViewInfoListAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportTypes)]
-            public virtual Task<NullStruct> GetGameReportTypesAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedMidGameReportAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedEndGameReportAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-
-
-            public static Task NotifyResultNotificationAsync(BlazeServerConnection connection, ResultNotification notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(GameReportingLegacyComponentBase.Id, (ushort)GameReportingLegacyComponentNotification.ResultNotification, notification, waitUntilFree);
-            }
-
-            public override Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingLegacyComponentNotification notification) => GameReportingLegacyComponentBase.GetNotificationType(notification);
-
-        }
-
-        public class Client : BlazeClientComponent<GameReportingLegacyComponentCommand, GameReportingLegacyComponentNotification, Blaze3RpcError>
-        {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-
-            public Client(BlazeClientConnection connection) : base(GameReportingLegacyComponentBase.Id, GameReportingLegacyComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-
-
-            public NullStruct SubmitGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameReport, new NullStruct());
-            }
-
-            public NullStruct SubmitOfflineGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitOfflineGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport, new NullStruct());
-            }
-
-            public NullStruct SubmitGameEvents()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameEvents, new NullStruct());
-            }
-            public Task<NullStruct> SubmitGameEventsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameEvents, new NullStruct());
-            }
-
-            public NullStruct GetGameReports()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReports, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReports, new NullStruct());
-            }
-
-            public NullStruct GetGameReportView()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportView, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportViewAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportView, new NullStruct());
-            }
-
-            public NullStruct GetGameReportViewInfo()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportViewInfoAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo, new NullStruct());
-            }
-
-            public NullStruct GetGameReportViewInfoList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportViewInfoListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList, new NullStruct());
-            }
-
-            public NullStruct GetGameReportTypes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportTypes, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportTypesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportTypes, new NullStruct());
-            }
-
-            public NullStruct SubmitTrustedMidGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitTrustedMidGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport, new NullStruct());
-            }
-
-            public NullStruct SubmitTrustedEndGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitTrustedEndGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport, new NullStruct());
-            }
-
-
-            [BlazeNotification((ushort)GameReportingLegacyComponentNotification.ResultNotification)]
-            public virtual Task OnResultNotificationAsync(ResultNotification notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnResultNotificationAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-
-            public override Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingLegacyComponentNotification notification) => GameReportingLegacyComponentBase.GetNotificationType(notification);
-
-        }
-
-        public class Proxy : BlazeProxyComponent<GameReportingLegacyComponentCommand, GameReportingLegacyComponentNotification, Blaze3RpcError>
-        {
-            public Proxy() : base(GameReportingLegacyComponentBase.Id, GameReportingLegacyComponentBase.Name)
-            {
-
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitGameReport)]
-            public virtual Task<NullStruct> SubmitGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameReport, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport)]
-            public virtual Task<NullStruct> SubmitOfflineGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitGameEvents)]
-            public virtual Task<NullStruct> SubmitGameEventsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitGameEvents, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReports)]
-            public virtual Task<NullStruct> GetGameReportsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReports, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportView)]
-            public virtual Task<NullStruct> GetGameReportViewAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportView, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo)]
-            public virtual Task<NullStruct> GetGameReportViewInfoAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<NullStruct> GetGameReportViewInfoListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.getGameReportTypes)]
-            public virtual Task<NullStruct> GetGameReportTypesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.getGameReportTypes, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedMidGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport, request);
-            }
-
-            [BlazeCommand((ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedEndGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport, request);
-            }
-
-
-            [BlazeNotification((ushort)GameReportingLegacyComponentNotification.ResultNotification)]
-            public virtual Task<ResultNotification> OnResultNotificationAsync(ResultNotification notification)
-            {
-                return Task.FromResult(notification);
-            }
-
-            public override Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => GameReportingLegacyComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingLegacyComponentNotification notification) => GameReportingLegacyComponentBase.GetNotificationType(notification);
-
-        }
-
-        public static Type GetCommandRequestType(GameReportingLegacyComponentCommand command) => command switch
-        {
-            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetCommandResponseType(GameReportingLegacyComponentCommand command) => command switch
-        {
-            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetCommandErrorResponseType(GameReportingLegacyComponentCommand command) => command switch
-        {
-            GameReportingLegacyComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfo => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.getGameReportTypes => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingLegacyComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-
-        public static Type GetNotificationType(GameReportingLegacyComponentNotification notification) => notification switch
-        {
-            GameReportingLegacyComponentNotification.ResultNotification => typeof(ResultNotification),
-            _ => typeof(NullStruct)
-        };
-
-        public enum GameReportingLegacyComponentCommand : ushort
-        {
-            submitGameReport = 1,
-            submitOfflineGameReport = 2,
-            submitGameEvents = 3,
-            getGameReports = 4,
-            getGameReportView = 5,
-            getGameReportViewInfo = 6,
-            getGameReportViewInfoList = 7,
-            getGameReportTypes = 8,
-            submitTrustedMidGameReport = 100,
-            submitTrustedEndGameReport = 101,
-        }
-
-        public enum GameReportingLegacyComponentNotification : ushort
-        {
-            ResultNotification = 114,
-        }
-
+    public const ushort Id = 12;
+    public const string Name = "GameReportingLegacyComponent";
+    
+    public enum Error : ushort {
+        GAMEHISTORYLEGACY_ERR_INVALID_QUERY = 1,
+        GAMEHISTORYLEGACY_ERR_UNKNOWN_VIEW = 2,
+        GAMEHISTORYLEGACY_ERR_MISSING_QVARS = 3,
+        GAMEREPORTINGLEGACY_COLLATION_ERR_NO_VALID_REPORTS = 100,
+        GAMEREPORTINGLEGACY_COLLATION_ERR_NO_REPORTS = 101,
+        GAMEREPORTINGLEGACY_COLLATION_REPORTS_INCONSISTENT = 102,
+        GAMEREPORTINGLEGACY_COLLATION_ERR_MISSING_GAME_ATTRIBUTE = 103,
+        GAMEREPORTINGLEGACY_COLLATION_ERR_INVALID_GAME_ATTRIBUTE = 104,
+        GAMEREPORTINGLEGACY_CUSTOM_ERR_PROCESSING_FAILED = 200,
+        GAMEREPORTINGLEGACY_CONFIG_ERR_MISSING_PROCESSOR_ATTRIBUTE = 201,
+        GAMEREPORTINGLEGACY_CONFIG_ERR_INVALID_PROCESSOR_ATTRIBUTE = 202,
+        GAMEREPORTINGLEGACY_CONFIG_ERR_STAT_UPDATE_FAILED = 203,
+        GAMEREPORTINGLEGACY_CUSTOM_ERR_PROCESS_UPDATED_STATS_FAILED = 204,
+        GAMEREPORTINGLEGACY_OFFLINE_ERR_FIRST_PLAYER_NOT_BLAZE_USER = 301,
+        GAMEREPORTINGLEGACY_OFFLINE_ERR_INVALID_GAME_TYPE_ID = 302,
+        GAMEREPORTINGLEGACY_OFFLINE_ERR_REPORT_INVALID = 303,
+        GAMEREPORTINGLEGACY_TRUSTED_ERR_CLIENT_NOT_TRUSTED = 400,
+        GAMEREPORTINGLEGACY_TRUSTED_ERR_INVALID_GAME_TYPE_ID = 401,
+        GAMEREPORTINGLEGACY_TRUSTED_ERR_REPORT_INVALID = 402,
+        GAMEREPORTINGLEGACY_ERR_UNEXPECTED_REPORT = 500,
     }
+    
+    public enum GameReportingLegacyComponentCommand : ushort
+    {
+        submitGameReport = 1,
+        submitOfflineGameReport = 2,
+        submitGameEvents = 3,
+        getGameReports = 4,
+        getGameReportView = 5,
+        getGameReportViewInfo = 6,
+        getGameReportViewInfoList = 7,
+        getGameReportTypes = 8,
+        submitTrustedMidGameReport = 100,
+        submitTrustedEndGameReport = 101,
+    }
+    
+    public enum GameReportingLegacyComponentNotification : ushort
+    {
+        ResultNotification = 114,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => GameReportingLegacyComponentBase.Id;
+        public override string Name => GameReportingLegacyComponentBase.Name;
+        
+        public virtual bool IsCommandSupported(GameReportingLegacyComponentCommand command) => false;
+        
+        public class GameReportingLegacyException : BlazeRpcException
+        {
+            public GameReportingLegacyException(Error error) : base((ushort)error, null) { }
+            public GameReportingLegacyException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public GameReportingLegacyException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public GameReportingLegacyException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public GameReportingLegacyException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public GameReportingLegacyException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public GameReportingLegacyException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public GameReportingLegacyException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.submitGameReport,
+                Name = "submitGameReport",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.submitGameReport),
+                Func = async (req, ctx) => await SubmitGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.submitOfflineGameReport,
+                Name = "submitOfflineGameReport",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.submitOfflineGameReport),
+                Func = async (req, ctx) => await SubmitOfflineGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.submitGameEvents,
+                Name = "submitGameEvents",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.submitGameEvents),
+                Func = async (req, ctx) => await SubmitGameEventsAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.getGameReports,
+                Name = "getGameReports",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.getGameReports),
+                Func = async (req, ctx) => await GetGameReportsAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.getGameReportView,
+                Name = "getGameReportView",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.getGameReportView),
+                Func = async (req, ctx) => await GetGameReportViewAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfo,
+                Name = "getGameReportViewInfo",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.getGameReportViewInfo),
+                Func = async (req, ctx) => await GetGameReportViewInfoAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.getGameReportViewInfoList,
+                Name = "getGameReportViewInfoList",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.getGameReportViewInfoList),
+                Func = async (req, ctx) => await GetGameReportViewInfoListAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.getGameReportTypes,
+                Name = "getGameReportTypes",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.getGameReportTypes),
+                Func = async (req, ctx) => await GetGameReportTypesAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.submitTrustedMidGameReport,
+                Name = "submitTrustedMidGameReport",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.submitTrustedMidGameReport),
+                Func = async (req, ctx) => await SubmitTrustedMidGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            {
+                Id = (ushort)GameReportingLegacyComponentCommand.submitTrustedEndGameReport,
+                Name = "submitTrustedEndGameReport",
+                IsSupported = IsCommandSupported(GameReportingLegacyComponentCommand.submitTrustedEndGameReport),
+                Func = async (req, ctx) => await SubmitTrustedEndGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
+            
+        }
+        
+        public override string GetErrorName(ushort errorCode)
+        {
+            return ((Error)errorCode).ToString();
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::submitGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::submitOfflineGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitOfflineGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::submitGameEvents</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitGameEventsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::getGameReports</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::getGameReportView</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportViewAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::getGameReportViewInfo</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportViewInfoAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::getGameReportViewInfoList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportViewInfoListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::getGameReportTypes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportTypesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::submitTrustedMidGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitTrustedMidGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingLegacyComponent::submitTrustedEndGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitTrustedEndGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingLegacyException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>GameReportingLegacyComponent::ResultNotification</b> notification.<br/>
+        /// Notification type: <see cref="ResultNotification"/><br/>
+        /// </summary>
+        public static Task NotifyResultNotificationAsync(BlazeRpcConnection connection, ResultNotification notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = GameReportingLegacyComponentBase.Id;
+                frame.Command = (ushort)GameReportingLegacyComponentNotification.ResultNotification;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+    }
+    
 }
+

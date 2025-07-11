@@ -1,21 +1,46 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Util
+namespace Blaze2SDK.Blaze.Util;
+
+public class UserSettingsLoadRequest : Tdf
 {
-    [TdfStruct]
-    public struct UserSettingsLoadRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Key", "mKey", 0xAE5E4000, TdfType.String, 0, true), // KEY
+        new TdfMemberInfo("UserId", "mUserId", 0xD6990000, TdfType.UInt32, 1, true), // UID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _key = new(__typeInfos[0]);
+    private TdfUInt32 _userId = new(__typeInfos[1]);
+
+    public UserSettingsLoadRequest()
     {
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("KEY")]
-        [StringLength(32)]
-        public string mKey;
-        
-        [TdfMember("UID")]
-        public uint mUserId;
-        
+        __members = [
+            _key,
+            _userId,
+        ];
     }
+
+    public override Tdf CreateNew() => new UserSettingsLoadRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "UserSettingsLoadRequest";
+    public override string GetFullClassName() => "Blaze::Util::UserSettingsLoadRequest";
+
+    public string Key
+    {
+        get => _key.Value;
+        set => _key.Value = value;
+    }
+
+    public uint UserId
+    {
+        get => _userId.Value;
+        set => _userId.Value = value;
+    }
+
 }
+

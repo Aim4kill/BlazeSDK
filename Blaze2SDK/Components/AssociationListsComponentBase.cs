@@ -1,332 +1,268 @@
+using Blaze.Core;
 using Blaze2SDK.Blaze.Association;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class AssociationListsComponentBase
 {
-    public static class AssociationListsComponentBase
+    public const ushort Id = 25;
+    public const string Name = "AssociationListsComponent";
+    
+    public enum Error : ushort {
+        ASSOCIATIONLIST_ERR_USER_NOT_FOUND = 1,
+        ASSOCIATIONLIST_ERR_DUPLICATE_USER_FOUND = 2,
+        ASSOCIATIONLIST_ERR_USER_CAN_NOT_ADD_SELF = 3,
+        ASSOCIATIONLIST_ERR_INVALID_USER = 4,
+        ASSOCIATIONLIST_MEMBER_ALREADY_IN_THE_LIST = 5,
+        ASSOCIATIONLIST_MEMBER_NOT_FOUND_IN_THE_LIST = 6,
+        ASSOCIATIONLIST_MEMBER_DUPLICATE = 7,
+        ASSOCIATIONLIST_ERR_ALREADY_SUBSCRIBED_TO_LST = 8,
+        ASSOCIATIONLIST_ERR_NOT_SUBSCRIBED_TO_LST = 9,
+        ASSOCIATIONLIST_ERR_INVALID_LIST_NAME = 10,
+        ASSOCIATIONLIST_ERR_LIST_NOT_FOUND = 11,
+        ASSOCIATIONLIST_ERR_LIST_IS_FULL_OR_TOO_MANY_USERS = 12,
+        ASSOCIATIONLIST_ERR_LIST_IS_EMPTY = 13,
+        ASSOCIATIONLIST_ERR_LIST_ALREADY_SUBSCRIBED = 14,
+        ASSOCIATIONLIST_ERR_LIST_NOT_SUBSCRIBED = 15,
+        ASSOCIATIONLIST_ERR_LIST_DB_ERROR = 16,
+    }
+    
+    public enum AssociationListsComponentCommand : ushort
     {
-        public const ushort Id = 25;
-        public const string Name = "AssociationListsComponent";
+        addUsersToList = 1,
+        removeUsersFromList = 2,
+        clearList = 3,
+        setUsersToList = 4,
+        getListForUser = 5,
+        getLists = 6,
+        subscribeToLists = 7,
+        unsubscribeFromLists = 8,
+    }
+    
+    public enum AssociationListsComponentNotification : ushort
+    {
+        NotifyListMemberUpdated = 1,
+        NotifyListMemberRemoved = 2,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => AssociationListsComponentBase.Id;
+        public override string Name => AssociationListsComponentBase.Name;
         
-        public class Server : BlazeServerComponent<AssociationListsComponentCommand, AssociationListsComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(AssociationListsComponentCommand command) => false;
+        
+        public class AssociationListsException : BlazeRpcException
         {
-            public Server() : base(AssociationListsComponentBase.Id, AssociationListsComponentBase.Name)
+            public AssociationListsException(Error error) : base((ushort)error, null) { }
+            public AssociationListsException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public AssociationListsException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public AssociationListsException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public AssociationListsException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public AssociationListsException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public AssociationListsException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public AssociationListsException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<UpdateList, UpdateListResponse, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)AssociationListsComponentCommand.addUsersToList,
+                Name = "addUsersToList",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.addUsersToList),
+                Func = async (req, ctx) => await AddUsersToListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.addUsersToList)]
-            public virtual Task<UpdateListResponse> AddUsersToListAsync(UpdateList request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<UpdateList, UpdateListResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.removeUsersFromList,
+                Name = "removeUsersFromList",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.removeUsersFromList),
+                Func = async (req, ctx) => await RemoveUsersFromListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.removeUsersFromList)]
-            public virtual Task<UpdateListResponse> RemoveUsersFromListAsync(UpdateList request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<ClearList, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.clearList,
+                Name = "clearList",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.clearList),
+                Func = async (req, ctx) => await ClearListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.clearList)]
-            public virtual Task<NullStruct> ClearListAsync(ClearList request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<UpdateList, UpdateListResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.setUsersToList,
+                Name = "setUsersToList",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.setUsersToList),
+                Func = async (req, ctx) => await SetUsersToListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.setUsersToList)]
-            public virtual Task<UpdateListResponse> SetUsersToListAsync(UpdateList request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetListForUser, AssociationListInfo, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.getListForUser,
+                Name = "getListForUser",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.getListForUser),
+                Func = async (req, ctx) => await GetListForUserAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.getListForUser)]
-            public virtual Task<AssociationListInfo> GetListForUserAsync(GetListForUser request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetUserLists, AssociationListCollectionInfo, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.getLists,
+                Name = "getLists",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.getLists),
+                Func = async (req, ctx) => await GetListsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.getLists)]
-            public virtual Task<AssociationListCollectionInfo> GetListsAsync(GetUserLists request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<SubscriptionInfo, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)AssociationListsComponentCommand.subscribeToLists,
+                Name = "subscribeToLists",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.subscribeToLists),
+                Func = async (req, ctx) => await SubscribeToListsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)AssociationListsComponentCommand.subscribeToLists)]
-            public virtual Task<NullStruct> SubscribeToListsAsync(SubscriptionInfo request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<SubscriptionInfo, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.unsubscribeFromLists)]
-            public virtual Task<NullStruct> UnsubscribeFromListsAsync(SubscriptionInfo request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyListMemberUpdatedAsync(BlazeServerConnection connection, MemberInfo notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberUpdated, notification, waitUntilFree);
-            }
-            
-            public static Task NotifyListMemberRemovedAsync(BlazeServerConnection connection, AssociationListInfo notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(AssociationListsComponentBase.Id, (ushort)AssociationListsComponentNotification.NotifyListMemberRemoved, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AssociationListsComponentNotification notification) => AssociationListsComponentBase.GetNotificationType(notification);
+                Id = (ushort)AssociationListsComponentCommand.unsubscribeFromLists,
+                Name = "unsubscribeFromLists",
+                IsSupported = IsCommandSupported(AssociationListsComponentCommand.unsubscribeFromLists),
+                Func = async (req, ctx) => await UnsubscribeFromListsAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<AssociationListsComponentCommand, AssociationListsComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(AssociationListsComponentBase.Id, AssociationListsComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public UpdateListResponse AddUsersToList(UpdateList request)
-            {
-                return Connection.SendRequest<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.addUsersToList, request);
-            }
-            public Task<UpdateListResponse> AddUsersToListAsync(UpdateList request)
-            {
-                return Connection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.addUsersToList, request);
-            }
-            
-            public UpdateListResponse RemoveUsersFromList(UpdateList request)
-            {
-                return Connection.SendRequest<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.removeUsersFromList, request);
-            }
-            public Task<UpdateListResponse> RemoveUsersFromListAsync(UpdateList request)
-            {
-                return Connection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.removeUsersFromList, request);
-            }
-            
-            public NullStruct ClearList(ClearList request)
-            {
-                return Connection.SendRequest<ClearList, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.clearList, request);
-            }
-            public Task<NullStruct> ClearListAsync(ClearList request)
-            {
-                return Connection.SendRequestAsync<ClearList, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.clearList, request);
-            }
-            
-            public UpdateListResponse SetUsersToList(UpdateList request)
-            {
-                return Connection.SendRequest<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.setUsersToList, request);
-            }
-            public Task<UpdateListResponse> SetUsersToListAsync(UpdateList request)
-            {
-                return Connection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.setUsersToList, request);
-            }
-            
-            public AssociationListInfo GetListForUser(GetListForUser request)
-            {
-                return Connection.SendRequest<GetListForUser, AssociationListInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getListForUser, request);
-            }
-            public Task<AssociationListInfo> GetListForUserAsync(GetListForUser request)
-            {
-                return Connection.SendRequestAsync<GetListForUser, AssociationListInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getListForUser, request);
-            }
-            
-            public AssociationListCollectionInfo GetLists(GetUserLists request)
-            {
-                return Connection.SendRequest<GetUserLists, AssociationListCollectionInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getLists, request);
-            }
-            public Task<AssociationListCollectionInfo> GetListsAsync(GetUserLists request)
-            {
-                return Connection.SendRequestAsync<GetUserLists, AssociationListCollectionInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getLists, request);
-            }
-            
-            public NullStruct SubscribeToLists(SubscriptionInfo request)
-            {
-                return Connection.SendRequest<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.subscribeToLists, request);
-            }
-            public Task<NullStruct> SubscribeToListsAsync(SubscriptionInfo request)
-            {
-                return Connection.SendRequestAsync<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.subscribeToLists, request);
-            }
-            
-            public NullStruct UnsubscribeFromLists(SubscriptionInfo request)
-            {
-                return Connection.SendRequest<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.unsubscribeFromLists, request);
-            }
-            public Task<NullStruct> UnsubscribeFromListsAsync(SubscriptionInfo request)
-            {
-                return Connection.SendRequestAsync<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.unsubscribeFromLists, request);
-            }
-            
-            
-            [BlazeNotification((ushort)AssociationListsComponentNotification.NotifyListMemberUpdated)]
-            public virtual Task OnNotifyListMemberUpdatedAsync(MemberInfo notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyListMemberUpdatedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            [BlazeNotification((ushort)AssociationListsComponentNotification.NotifyListMemberRemoved)]
-            public virtual Task OnNotifyListMemberRemovedAsync(AssociationListInfo notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyListMemberRemovedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AssociationListsComponentNotification notification) => AssociationListsComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<AssociationListsComponentCommand, AssociationListsComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::addUsersToList</b> command.<br/>
+        /// Request type: <see cref="UpdateList"/><br/>
+        /// Response type: <see cref="UpdateListResponse"/><br/>
+        /// </summary>
+        public virtual Task<UpdateListResponse> AddUsersToListAsync(UpdateList request, BlazeRpcContext context)
         {
-            public Proxy() : base(AssociationListsComponentBase.Id, AssociationListsComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.addUsersToList)]
-            public virtual Task<UpdateListResponse> AddUsersToListAsync(UpdateList request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.addUsersToList, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.removeUsersFromList)]
-            public virtual Task<UpdateListResponse> RemoveUsersFromListAsync(UpdateList request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.removeUsersFromList, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.clearList)]
-            public virtual Task<NullStruct> ClearListAsync(ClearList request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ClearList, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.clearList, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.setUsersToList)]
-            public virtual Task<UpdateListResponse> SetUsersToListAsync(UpdateList request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<UpdateList, UpdateListResponse, NullStruct>(this, (ushort)AssociationListsComponentCommand.setUsersToList, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.getListForUser)]
-            public virtual Task<AssociationListInfo> GetListForUserAsync(GetListForUser request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetListForUser, AssociationListInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getListForUser, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.getLists)]
-            public virtual Task<AssociationListCollectionInfo> GetListsAsync(GetUserLists request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetUserLists, AssociationListCollectionInfo, NullStruct>(this, (ushort)AssociationListsComponentCommand.getLists, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.subscribeToLists)]
-            public virtual Task<NullStruct> SubscribeToListsAsync(SubscriptionInfo request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.subscribeToLists, request);
-            }
-            
-            [BlazeCommand((ushort)AssociationListsComponentCommand.unsubscribeFromLists)]
-            public virtual Task<NullStruct> UnsubscribeFromListsAsync(SubscriptionInfo request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<SubscriptionInfo, NullStruct, NullStruct>(this, (ushort)AssociationListsComponentCommand.unsubscribeFromLists, request);
-            }
-            
-            
-            [BlazeNotification((ushort)AssociationListsComponentNotification.NotifyListMemberUpdated)]
-            public virtual Task<MemberInfo> OnNotifyListMemberUpdatedAsync(MemberInfo notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            [BlazeNotification((ushort)AssociationListsComponentNotification.NotifyListMemberRemoved)]
-            public virtual Task<AssociationListInfo> OnNotifyListMemberRemovedAsync(AssociationListInfo notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => AssociationListsComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(AssociationListsComponentNotification notification) => AssociationListsComponentBase.GetNotificationType(notification);
-            
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(AssociationListsComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::removeUsersFromList</b> command.<br/>
+        /// Request type: <see cref="UpdateList"/><br/>
+        /// Response type: <see cref="UpdateListResponse"/><br/>
+        /// </summary>
+        public virtual Task<UpdateListResponse> RemoveUsersFromListAsync(UpdateList request, BlazeRpcContext context)
         {
-            AssociationListsComponentCommand.addUsersToList => typeof(UpdateList),
-            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateList),
-            AssociationListsComponentCommand.clearList => typeof(ClearList),
-            AssociationListsComponentCommand.setUsersToList => typeof(UpdateList),
-            AssociationListsComponentCommand.getListForUser => typeof(GetListForUser),
-            AssociationListsComponentCommand.getLists => typeof(GetUserLists),
-            AssociationListsComponentCommand.subscribeToLists => typeof(SubscriptionInfo),
-            AssociationListsComponentCommand.unsubscribeFromLists => typeof(SubscriptionInfo),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(AssociationListsComponentCommand command) => command switch
-        {
-            AssociationListsComponentCommand.addUsersToList => typeof(UpdateListResponse),
-            AssociationListsComponentCommand.removeUsersFromList => typeof(UpdateListResponse),
-            AssociationListsComponentCommand.clearList => typeof(NullStruct),
-            AssociationListsComponentCommand.setUsersToList => typeof(UpdateListResponse),
-            AssociationListsComponentCommand.getListForUser => typeof(AssociationListInfo),
-            AssociationListsComponentCommand.getLists => typeof(AssociationListCollectionInfo),
-            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
-            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(AssociationListsComponentCommand command) => command switch
-        {
-            AssociationListsComponentCommand.addUsersToList => typeof(NullStruct),
-            AssociationListsComponentCommand.removeUsersFromList => typeof(NullStruct),
-            AssociationListsComponentCommand.clearList => typeof(NullStruct),
-            AssociationListsComponentCommand.setUsersToList => typeof(NullStruct),
-            AssociationListsComponentCommand.getListForUser => typeof(NullStruct),
-            AssociationListsComponentCommand.getLists => typeof(NullStruct),
-            AssociationListsComponentCommand.subscribeToLists => typeof(NullStruct),
-            AssociationListsComponentCommand.unsubscribeFromLists => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(AssociationListsComponentNotification notification) => notification switch
-        {
-            AssociationListsComponentNotification.NotifyListMemberUpdated => typeof(MemberInfo),
-            AssociationListsComponentNotification.NotifyListMemberRemoved => typeof(AssociationListInfo),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum AssociationListsComponentCommand : ushort
-        {
-            addUsersToList = 1,
-            removeUsersFromList = 2,
-            clearList = 3,
-            setUsersToList = 4,
-            getListForUser = 5,
-            getLists = 6,
-            subscribeToLists = 7,
-            unsubscribeFromLists = 8,
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum AssociationListsComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::clearList</b> command.<br/>
+        /// Request type: <see cref="ClearList"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ClearListAsync(ClearList request, BlazeRpcContext context)
         {
-            NotifyListMemberUpdated = 1,
-            NotifyListMemberRemoved = 2,
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::setUsersToList</b> command.<br/>
+        /// Request type: <see cref="UpdateList"/><br/>
+        /// Response type: <see cref="UpdateListResponse"/><br/>
+        /// </summary>
+        public virtual Task<UpdateListResponse> SetUsersToListAsync(UpdateList request, BlazeRpcContext context)
+        {
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::getListForUser</b> command.<br/>
+        /// Request type: <see cref="GetListForUser"/><br/>
+        /// Response type: <see cref="AssociationListInfo"/><br/>
+        /// </summary>
+        public virtual Task<AssociationListInfo> GetListForUserAsync(GetListForUser request, BlazeRpcContext context)
+        {
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::getLists</b> command.<br/>
+        /// Request type: <see cref="GetUserLists"/><br/>
+        /// Response type: <see cref="AssociationListCollectionInfo"/><br/>
+        /// </summary>
+        public virtual Task<AssociationListCollectionInfo> GetListsAsync(GetUserLists request, BlazeRpcContext context)
+        {
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::subscribeToLists</b> command.<br/>
+        /// Request type: <see cref="SubscriptionInfo"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubscribeToListsAsync(SubscriptionInfo request, BlazeRpcContext context)
+        {
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>AssociationListsComponent::unsubscribeFromLists</b> command.<br/>
+        /// Request type: <see cref="SubscriptionInfo"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UnsubscribeFromListsAsync(SubscriptionInfo request, BlazeRpcContext context)
+        {
+            throw new AssociationListsException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>AssociationListsComponent::NotifyListMemberUpdated</b> notification.<br/>
+        /// Notification type: <see cref="MemberInfo"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyListMemberUpdatedAsync(BlazeRpcConnection connection, MemberInfo notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = AssociationListsComponentBase.Id;
+                frame.Command = (ushort)AssociationListsComponentNotification.NotifyListMemberUpdated;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>AssociationListsComponent::NotifyListMemberRemoved</b> notification.<br/>
+        /// Notification type: <see cref="AssociationListInfo"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyListMemberRemovedAsync(BlazeRpcConnection connection, AssociationListInfo notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = AssociationListsComponentBase.Id;
+                frame.Command = (ushort)AssociationListsComponentNotification.NotifyListMemberRemoved;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

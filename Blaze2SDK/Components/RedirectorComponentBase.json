@@ -1,63 +1,65 @@
 {
   "Usings": [
-    "Blaze2SDK.Blaze.Redirector",
-    "BlazeCommon",
-    "NLog"
+    "Blaze2SDK.Blaze.Redirector"
   ],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 5,
+  "Name": "RedirectorComponent",
+  "ShortName": "Redirector",
+  "ErrorCodes": {
+    "1": "REDIRECTOR_SERVER_NOT_FOUND",
+    "2": "REDIRECTOR_NO_SERVER_CAPACITY",
+    "3": "REDIRECTOR_NO_MATCHING_INSTANCE",
+    "4": "REDIRECTOR_SERVER_NAME_ALREADY_IN_USE",
+    "5": "REDIRECTOR_CLIENT_NOT_COMPATIBLE",
+    "6": "REDIRECTOR_CLIENT_UNKNOWN",
+    "7": "REDIRECTOR_UNKNOWN_CONNECTION_PROFILE",
+    "8": "REDIRECTOR_SERVER_SUNSET",
+    "9": "REDIRECTOR_SERVER_DOWN"
+  },
+  "Methods": [
+    {
+      "Id": 1,
+      "Name": "getServerInstance",
+      "RequestType": "ServerInstanceRequest",
+      "ResponseType": "ServerInstanceInfo",
+      "ErrorResponseType": "ServerInstanceError"
+    },
+    {
+      "Id": 2,
+      "Name": "getServerList",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "scheduleServerDowntime",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "cancelServerDowntime",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
     {
       "Id": 5,
-      "Name": "RedirectorComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "getServerInstance",
-          "RequestType": "ServerInstanceRequest",
-          "ResponseType": "ServerInstanceInfo",
-          "ErrorResponseType": "ServerInstanceError"
-        },
-        {
-          "Id": 2,
-          "Name": "getServerList",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "scheduleServerDowntime",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "cancelServerDowntime",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "getDowntimeList",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 6,
-          "Name": "getDowntimeMessageTypes",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Name": "getDowntimeList",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 6,
+      "Name": "getDowntimeMessageTypes",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

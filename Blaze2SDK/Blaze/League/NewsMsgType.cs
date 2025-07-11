@@ -1,8 +1,8 @@
-namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+public enum NewsMsgType : int
 {
-    public enum NewsMsgType : int
-    {
-        NEWS_MSG_TYPE_SERVER = 0x1,
-        NEWS_MSG_TYPE_USER = 0x2,
-    }
+    NEWS_MSG_TYPE_SERVER = 1,
+    NEWS_MSG_TYPE_USER = 2,
 }
+

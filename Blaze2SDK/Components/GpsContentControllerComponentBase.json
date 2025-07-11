@@ -1,41 +1,34 @@
 {
-  "Usings": [
-    "BlazeCommon",
-    "NLog"
-  ],
+  "Usings": [],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 27,
+  "Name": "GpsContentControllerComponent",
+  "ShortName": "GpsContentController",
+  "ErrorCodes": {
+    "1": "GPSCONTENTCONTROLLER_ERR_CONTENT_NOT_FOUND"
+  },
+  "Methods": [
     {
-      "Id": 27,
-      "Name": "GpsContentControllerComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "filePetition",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "fetchContent",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "showContent",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 1,
+      "Name": "filePetition",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "fetchContent",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "showContent",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

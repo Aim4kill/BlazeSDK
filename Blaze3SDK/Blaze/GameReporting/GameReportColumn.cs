@@ -1,40 +1,118 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.GameReporting
+namespace Blaze3SDK.Blaze.GameReporting;
+
+public class GameReportColumn : Tdf
 {
-	[TdfStruct]
-	public struct GameReportColumn
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Key", "mKey", 0x8EB97900, TdfType.Struct, 0, true), // CKEY
+        new TdfMemberInfo("Type", "mType", 0x934E7000, TdfType.Int32, 1, true), // DTYP
+        new TdfMemberInfo("EntityType", "mEntityType", 0x974E7000, TdfType.ObjectType, 2, true), // ETYP
+        new TdfMemberInfo("Format", "mFormat", 0x9B2B7400, TdfType.String, 3, true), // FRMT
+        new TdfMemberInfo("Kind", "mKind", 0xAE9BA400, TdfType.String, 4, true), // KIND
+        new TdfMemberInfo("Desc", "mDesc", 0xB24CE300, TdfType.String, 5, true), // LDSC
+        new TdfMemberInfo("Metadata", "mMetadata", 0xB65D2100, TdfType.String, 6, true), // META
+        new TdfMemberInfo("ShortDesc", "mShortDesc", 0xCE4CE300, TdfType.String, 7, true), // SDSC
+        new TdfMemberInfo("UnknownValue", "mUnknownValue", 0xD6EAF600, TdfType.String, 8, true), // UNKV
+        new TdfMemberInfo("Values", "mValues", 0xDA1B3500, TdfType.List, 9, true), // VALU
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("LDSC")]
-		public string mDesc;
+    private TdfStruct<Blaze3SDK.Blaze.GameReporting.GameReportColumnKey?> _key = new(__typeInfos[0]);
+    private TdfInt32 _type = new(__typeInfos[1]);
+    private TdfObjectType _entityType = new(__typeInfos[2]);
+    private TdfString _format = new(__typeInfos[3]);
+    private TdfString _kind = new(__typeInfos[4]);
+    private TdfString _desc = new(__typeInfos[5]);
+    private TdfString _metadata = new(__typeInfos[6]);
+    private TdfString _shortDesc = new(__typeInfos[7]);
+    private TdfString _unknownValue = new(__typeInfos[8]);
+    private TdfList<string> _values = new(__typeInfos[9]);
 
-		[TdfMember("ETYP")]
-		public BlazeObjectType mEntityType;
+    public GameReportColumn()
+    {
+        __members = [
+            _key,
+            _type,
+            _entityType,
+            _format,
+            _kind,
+            _desc,
+            _metadata,
+            _shortDesc,
+            _unknownValue,
+            _values,
+        ];
+    }
 
-		[TdfMember("FRMT")]
-		public string mFormat;
+    public override Tdf CreateNew() => new GameReportColumn();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "GameReportColumn";
+    public override string GetFullClassName() => "Blaze::GameReporting::GameReportColumn";
 
-		[TdfMember("CKEY")]
-		public GameReportColumnKey mKey;
+    public Blaze3SDK.Blaze.GameReporting.GameReportColumnKey? Key
+    {
+        get => _key.Value;
+        set => _key.Value = value;
+    }
 
-		[TdfMember("KIND")]
-		public string mKind;
+    public int Type
+    {
+        get => _type.Value;
+        set => _type.Value = value;
+    }
 
-		[TdfMember("META")]
-		public string mMetadata;
+    public ObjectType EntityType
+    {
+        get => _entityType.Value;
+        set => _entityType.Value = value;
+    }
 
-		[TdfMember("SDSC")]
-		public string mShortDesc;
+    public string Format
+    {
+        get => _format.Value;
+        set => _format.Value = value;
+    }
 
-		[TdfMember("DTYP")]
-		public int mType;
+    public string Kind
+    {
+        get => _kind.Value;
+        set => _kind.Value = value;
+    }
 
-		[TdfMember("UNKV")]
-		public string mUnknownValue;
+    public string Desc
+    {
+        get => _desc.Value;
+        set => _desc.Value = value;
+    }
 
-		[TdfMember("VALU")]
-		public List<string> mValues;
+    public string Metadata
+    {
+        get => _metadata.Value;
+        set => _metadata.Value = value;
+    }
 
-	}
+    public string ShortDesc
+    {
+        get => _shortDesc.Value;
+        set => _shortDesc.Value = value;
+    }
+
+    public string UnknownValue
+    {
+        get => _unknownValue.Value;
+        set => _unknownValue.Value = value;
+    }
+
+    public IList<string> Values
+    {
+        get => _values.Value;
+        set => _values.Value = value;
+    }
+
 }
+

@@ -1,89 +1,154 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public class AccountInfo : Tdf
 {
-    [TdfStruct]
-    public struct AccountInfo
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("AuthenticationSource", "mAuthenticationSource", 0x873CA300, TdfType.String, 0, true), // ASRC
+        new TdfMemberInfo("Country", "mCountry", 0x8EF00000, TdfType.String, 1, true), // CO
+        new TdfMemberInfo("DOB", "mDOB", 0x92F88000, TdfType.String, 2, true), // DOB
+        new TdfMemberInfo("DateCreated", "mDateCreated", 0x9348F200, TdfType.String, 3, true), // DTCR
+        new TdfMemberInfo("GlobalOptin", "mGlobalOptin", 0x9EFC3400, TdfType.UInt8, 4, true), // GOPT
+        new TdfMemberInfo("LastAuth", "mLastAuth", 0xB21D2800, TdfType.String, 5, true), // LATH
+        new TdfMemberInfo("Language", "mLanguage", 0xB2E00000, TdfType.String, 6, true), // LN
+        new TdfMemberInfo("Email", "mEmail", 0xB61A6C00, TdfType.String, 7, true), // MAIL
+        new TdfMemberInfo("ParentalEmail", "mParentalEmail", 0xC2DB0000, TdfType.String, 8, true), // PML
+        new TdfMemberInfo("ReasonCode", "mReasonCode", 0xCA300000, TdfType.Enum, 9, true), // RC
+        new TdfMemberInfo("Status", "mStatus", 0xCF487300, TdfType.Enum, 10, true), // STAS
+        new TdfMemberInfo("TosVersion", "mTosVersion", 0xD2FCF600, TdfType.String, 11, true), // TOSV
+        new TdfMemberInfo("ThirdPartyOptin", "mThirdPartyOptin", 0xD30BF400, TdfType.UInt8, 12, true), // TPOT
+        new TdfMemberInfo("UserId", "mUserId", 0xD6990000, TdfType.Int64, 13, true), // UID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfString _authenticationSource = new(__typeInfos[0]);
+    private TdfString _country = new(__typeInfos[1]);
+    private TdfString _dOB = new(__typeInfos[2]);
+    private TdfString _dateCreated = new(__typeInfos[3]);
+    private TdfUInt8 _globalOptin = new(__typeInfos[4]);
+    private TdfString _lastAuth = new(__typeInfos[5]);
+    private TdfString _language = new(__typeInfos[6]);
+    private TdfString _email = new(__typeInfos[7]);
+    private TdfString _parentalEmail = new(__typeInfos[8]);
+    private TdfEnum<Blaze2SDK.Blaze.Authentication.StatusReason> _reasonCode = new(__typeInfos[9]);
+    private TdfEnum<Blaze2SDK.Blaze.Authentication.AccountStatus> _status = new(__typeInfos[10]);
+    private TdfString _tosVersion = new(__typeInfos[11]);
+    private TdfUInt8 _thirdPartyOptin = new(__typeInfos[12]);
+    private TdfInt64 _userId = new(__typeInfos[13]);
+
+    public AccountInfo()
     {
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("ASRC")]
-        [StringLength(64)]
-        public string mAuthenticationSource;
-        
-        /// <summary>
-        /// Max String Length: 3
-        /// </summary>
-        [TdfMember("CO")]
-        [StringLength(3)]
-        public string mCountry;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("DOB")]
-        [StringLength(32)]
-        public string mDOB;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("DTCR")]
-        [StringLength(32)]
-        public string mDateCreated;
-        
-        [TdfMember("GOPT")]
-        public byte mGlobalOptin;
-        
-        /// <summary>
-        /// Max String Length: 32
-        /// </summary>
-        [TdfMember("LATH")]
-        [StringLength(32)]
-        public string mLastAuth;
-        
-        /// <summary>
-        /// Max String Length: 3
-        /// </summary>
-        [TdfMember("LN")]
-        [StringLength(3)]
-        public string mLanguage;
-        
-        /// <summary>
-        /// Max String Length: 256
-        /// </summary>
-        [TdfMember("MAIL")]
-        [StringLength(256)]
-        public string mEmail;
-        
-        /// <summary>
-        /// Max String Length: 256
-        /// </summary>
-        [TdfMember("PML")]
-        [StringLength(256)]
-        public string mParentalEmail;
-        
-        [TdfMember("RC")]
-        public StatusReason mReasonCode;
-        
-        [TdfMember("STAS")]
-        public AccountStatus mStatus;
-        
-        /// <summary>
-        /// Max String Length: 8
-        /// </summary>
-        [TdfMember("TOSV")]
-        [StringLength(8)]
-        public string mTosVersion;
-        
-        [TdfMember("TPOT")]
-        public byte mThirdPartyOptin;
-        
-        [TdfMember("UID")]
-        public long mUserId;
-        
+        __members = [
+            _authenticationSource,
+            _country,
+            _dOB,
+            _dateCreated,
+            _globalOptin,
+            _lastAuth,
+            _language,
+            _email,
+            _parentalEmail,
+            _reasonCode,
+            _status,
+            _tosVersion,
+            _thirdPartyOptin,
+            _userId,
+        ];
     }
+
+    public override Tdf CreateNew() => new AccountInfo();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "AccountInfo";
+    public override string GetFullClassName() => "Blaze::Authentication::AccountInfo";
+
+    public string AuthenticationSource
+    {
+        get => _authenticationSource.Value;
+        set => _authenticationSource.Value = value;
+    }
+
+    public string Country
+    {
+        get => _country.Value;
+        set => _country.Value = value;
+    }
+
+    public string DOB
+    {
+        get => _dOB.Value;
+        set => _dOB.Value = value;
+    }
+
+    public string DateCreated
+    {
+        get => _dateCreated.Value;
+        set => _dateCreated.Value = value;
+    }
+
+    public byte GlobalOptin
+    {
+        get => _globalOptin.Value;
+        set => _globalOptin.Value = value;
+    }
+
+    public string LastAuth
+    {
+        get => _lastAuth.Value;
+        set => _lastAuth.Value = value;
+    }
+
+    public string Language
+    {
+        get => _language.Value;
+        set => _language.Value = value;
+    }
+
+    public string Email
+    {
+        get => _email.Value;
+        set => _email.Value = value;
+    }
+
+    public string ParentalEmail
+    {
+        get => _parentalEmail.Value;
+        set => _parentalEmail.Value = value;
+    }
+
+    public Blaze2SDK.Blaze.Authentication.StatusReason ReasonCode
+    {
+        get => _reasonCode.Value;
+        set => _reasonCode.Value = value;
+    }
+
+    public Blaze2SDK.Blaze.Authentication.AccountStatus Status
+    {
+        get => _status.Value;
+        set => _status.Value = value;
+    }
+
+    public string TosVersion
+    {
+        get => _tosVersion.Value;
+        set => _tosVersion.Value = value;
+    }
+
+    public byte ThirdPartyOptin
+    {
+        get => _thirdPartyOptin.Value;
+        set => _thirdPartyOptin.Value = value;
+    }
+
+    public long UserId
+    {
+        get => _userId.Value;
+        set => _userId.Value = value;
+    }
+
 }
+

@@ -1,8 +1,8 @@
-namespace Blaze3SDK.Blaze.Clubs
+namespace Blaze3SDK.Blaze.Clubs;
+
+public enum RecordStatType : int
 {
-	public enum RecordStatType : int
-	{
-		CLUBS_RECORD_STAT_INT = 0,
-		CLUBS_RECORD_STAT_FLOAT = 1,
-	}
+    CLUBS_RECORD_STAT_INT = 0,
+    CLUBS_RECORD_STAT_FLOAT = 1,
 }
+

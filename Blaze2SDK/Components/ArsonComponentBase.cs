@@ -1,461 +1,367 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class ArsonComponentBase
 {
-    public static class ArsonComponentBase
+    public const ushort Id = 32;
+    public const string Name = "ArsonComponent";
+    
+    public enum Error : ushort {
+        ARSON_ERR_INVALID_PARAMETER = 1,
+        ARSON_ERR_KEY_NOT_FOUND = 2,
+        ARSON_ERR_DATA_NOT_FOUND = 3,
+        ARSON_ERR_TOURN_COMPONENT_NOT_FOUND = 4,
+        ARSON_ERR_REGISTRATION_GAME_INCREMENT = 5,
+        ARSON_ERR_TOURNAMENT_NOT_FOUND = 6,
+        ARSON_ERR_USER_NOT_IN_TOURNAMENT = 7,
+        ARSON_ERR_TIES_NOT_SUPPORTED = 8,
+        ARSON_ERR_INVALID_GAME_ID = 9,
+        ARSON_ERR_GAME_FULL = 10,
+        ARSON_ERR_QUEUE_FULL = 11,
+        ARSON_ERR_MEMBER_PRE_JOIN_FAILED = 12,
+        ARSON_ERR_JOIN_METHOD_NOT_SUPPORTED = 13,
+        ARSON_ERR_PLAYER_NOT_FOUND = 14,
+        ARSON_ERR_GAME_ENTRY_CRITERIA_FAILED = 15,
+        ARSON_ERR_GAME_PROTOCOL_VERSION_MISMATCH = 16,
+        ARSON_ERR_ENFORCING_SINGLE_GROUP_JOINS = 17,
+        ARSON_ERR_GAMEMANAGER_COMPONENT_NOT_FOUND = 18,
+        ARSON_ERR_TOURNAMENT_DB_ERROR = 19,
+        ARSON_ERR_ROOMS_NOT_FOUND = 20,
+        ARSON_ERR_COMMERCEINFO_WALLET_IS_INVALID = 21,
+        ARSON_ERR_COMMERCEINFO_WALLET_NOT_FOUND = 22,
+        ARSON_ERR_COMMERCEINFO_WALLET_CURRENCY_NOT_EARNABLE = 23,
+        ARSON_ERR_COMMERCEINFO_WALLET_CURRENCY_NOT_MATCH = 24,
+        ARSON_ERR_COMMERCEINFO_BILLING_SYSTEM = 25,
+    }
+    
+    public enum ArsonComponentCommand : ushort
     {
-        public const ushort Id = 32;
-        public const string Name = "ArsonComponent";
+        getUserExtendedData = 1,
+        updateUserExtendedData = 2,
+        reportTournamentResult = 3,
+        updateRegistrationGameIncrement = 4,
+        joinGameByUserList = 5,
+        reconfigure = 6,
+        getTournamentMemberStatus = 7,
+        setRoomCategoryClientMetaData = 8,
+        getRoomCategoryClientMetaData = 9,
+        setRoomAttributes = 10,
+        getRoomAttributes = 11,
+        getRoomCategory = 12,
+        setComponentState = 13,
+        addPointsToWallet = 14,
+    }
+    
+    public enum ArsonComponentNotification : ushort
+    {
+        NotifyReconfigureCompleted = 1,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => ArsonComponentBase.Id;
+        public override string Name => ArsonComponentBase.Name;
         
-        public class Server : BlazeServerComponent<ArsonComponentCommand, ArsonComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(ArsonComponentCommand command) => false;
+        
+        public class ArsonException : BlazeRpcException
         {
-            public Server() : base(ArsonComponentBase.Id, ArsonComponentBase.Name)
+            public ArsonException(Error error) : base((ushort)error, null) { }
+            public ArsonException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public ArsonException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public ArsonException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public ArsonException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public ArsonException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public ArsonException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public ArsonException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)ArsonComponentCommand.getUserExtendedData,
+                Name = "getUserExtendedData",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.getUserExtendedData),
+                Func = async (req, ctx) => await GetUserExtendedDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.getUserExtendedData)]
-            public virtual Task<NullStruct> GetUserExtendedDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.updateUserExtendedData,
+                Name = "updateUserExtendedData",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.updateUserExtendedData),
+                Func = async (req, ctx) => await UpdateUserExtendedDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.updateUserExtendedData)]
-            public virtual Task<NullStruct> UpdateUserExtendedDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.reportTournamentResult,
+                Name = "reportTournamentResult",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.reportTournamentResult),
+                Func = async (req, ctx) => await ReportTournamentResultAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.reportTournamentResult)]
-            public virtual Task<NullStruct> ReportTournamentResultAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.updateRegistrationGameIncrement,
+                Name = "updateRegistrationGameIncrement",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.updateRegistrationGameIncrement),
+                Func = async (req, ctx) => await UpdateRegistrationGameIncrementAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.updateRegistrationGameIncrement)]
-            public virtual Task<NullStruct> UpdateRegistrationGameIncrementAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.joinGameByUserList,
+                Name = "joinGameByUserList",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.joinGameByUserList),
+                Func = async (req, ctx) => await JoinGameByUserListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.joinGameByUserList)]
-            public virtual Task<NullStruct> JoinGameByUserListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.reconfigure,
+                Name = "reconfigure",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.reconfigure),
+                Func = async (req, ctx) => await ReconfigureAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.reconfigure)]
-            public virtual Task<NullStruct> ReconfigureAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.getTournamentMemberStatus,
+                Name = "getTournamentMemberStatus",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.getTournamentMemberStatus),
+                Func = async (req, ctx) => await GetTournamentMemberStatusAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.getTournamentMemberStatus)]
-            public virtual Task<NullStruct> GetTournamentMemberStatusAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.setRoomCategoryClientMetaData,
+                Name = "setRoomCategoryClientMetaData",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.setRoomCategoryClientMetaData),
+                Func = async (req, ctx) => await SetRoomCategoryClientMetaDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.setRoomCategoryClientMetaData)]
-            public virtual Task<NullStruct> SetRoomCategoryClientMetaDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.getRoomCategoryClientMetaData,
+                Name = "getRoomCategoryClientMetaData",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.getRoomCategoryClientMetaData),
+                Func = async (req, ctx) => await GetRoomCategoryClientMetaDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomCategoryClientMetaData)]
-            public virtual Task<NullStruct> GetRoomCategoryClientMetaDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.setRoomAttributes,
+                Name = "setRoomAttributes",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.setRoomAttributes),
+                Func = async (req, ctx) => await SetRoomAttributesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.setRoomAttributes)]
-            public virtual Task<NullStruct> SetRoomAttributesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.getRoomAttributes,
+                Name = "getRoomAttributes",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.getRoomAttributes),
+                Func = async (req, ctx) => await GetRoomAttributesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomAttributes)]
-            public virtual Task<NullStruct> GetRoomAttributesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.getRoomCategory,
+                Name = "getRoomCategory",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.getRoomCategory),
+                Func = async (req, ctx) => await GetRoomCategoryAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomCategory)]
-            public virtual Task<NullStruct> GetRoomCategoryAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)ArsonComponentCommand.setComponentState,
+                Name = "setComponentState",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.setComponentState),
+                Func = async (req, ctx) => await SetComponentStateAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)ArsonComponentCommand.setComponentState)]
-            public virtual Task<NullStruct> SetComponentStateAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.addPointsToWallet)]
-            public virtual Task<NullStruct> AddPointsToWalletAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyReconfigureCompletedAsync(BlazeServerConnection connection, NullStruct notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(ArsonComponentBase.Id, (ushort)ArsonComponentNotification.NotifyReconfigureCompleted, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ArsonComponentNotification notification) => ArsonComponentBase.GetNotificationType(notification);
+                Id = (ushort)ArsonComponentCommand.addPointsToWallet,
+                Name = "addPointsToWallet",
+                IsSupported = IsCommandSupported(ArsonComponentCommand.addPointsToWallet),
+                Func = async (req, ctx) => await AddPointsToWalletAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<ArsonComponentCommand, ArsonComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(ArsonComponentBase.Id, ArsonComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct GetUserExtendedData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getUserExtendedData, new NullStruct());
-            }
-            public Task<NullStruct> GetUserExtendedDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getUserExtendedData, new NullStruct());
-            }
-            
-            public NullStruct UpdateUserExtendedData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateUserExtendedData, new NullStruct());
-            }
-            public Task<NullStruct> UpdateUserExtendedDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateUserExtendedData, new NullStruct());
-            }
-            
-            public NullStruct ReportTournamentResult()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reportTournamentResult, new NullStruct());
-            }
-            public Task<NullStruct> ReportTournamentResultAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reportTournamentResult, new NullStruct());
-            }
-            
-            public NullStruct UpdateRegistrationGameIncrement()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateRegistrationGameIncrement, new NullStruct());
-            }
-            public Task<NullStruct> UpdateRegistrationGameIncrementAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateRegistrationGameIncrement, new NullStruct());
-            }
-            
-            public NullStruct JoinGameByUserList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.joinGameByUserList, new NullStruct());
-            }
-            public Task<NullStruct> JoinGameByUserListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.joinGameByUserList, new NullStruct());
-            }
-            
-            public NullStruct Reconfigure()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reconfigure, new NullStruct());
-            }
-            public Task<NullStruct> ReconfigureAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reconfigure, new NullStruct());
-            }
-            
-            public NullStruct GetTournamentMemberStatus()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getTournamentMemberStatus, new NullStruct());
-            }
-            public Task<NullStruct> GetTournamentMemberStatusAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getTournamentMemberStatus, new NullStruct());
-            }
-            
-            public NullStruct SetRoomCategoryClientMetaData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomCategoryClientMetaData, new NullStruct());
-            }
-            public Task<NullStruct> SetRoomCategoryClientMetaDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomCategoryClientMetaData, new NullStruct());
-            }
-            
-            public NullStruct GetRoomCategoryClientMetaData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategoryClientMetaData, new NullStruct());
-            }
-            public Task<NullStruct> GetRoomCategoryClientMetaDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategoryClientMetaData, new NullStruct());
-            }
-            
-            public NullStruct SetRoomAttributes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomAttributes, new NullStruct());
-            }
-            public Task<NullStruct> SetRoomAttributesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomAttributes, new NullStruct());
-            }
-            
-            public NullStruct GetRoomAttributes()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomAttributes, new NullStruct());
-            }
-            public Task<NullStruct> GetRoomAttributesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomAttributes, new NullStruct());
-            }
-            
-            public NullStruct GetRoomCategory()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategory, new NullStruct());
-            }
-            public Task<NullStruct> GetRoomCategoryAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategory, new NullStruct());
-            }
-            
-            public NullStruct SetComponentState()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setComponentState, new NullStruct());
-            }
-            public Task<NullStruct> SetComponentStateAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setComponentState, new NullStruct());
-            }
-            
-            public NullStruct AddPointsToWallet()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.addPointsToWallet, new NullStruct());
-            }
-            public Task<NullStruct> AddPointsToWalletAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.addPointsToWallet, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)ArsonComponentNotification.NotifyReconfigureCompleted)]
-            public virtual Task OnNotifyReconfigureCompletedAsync()
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyReconfigureCompletedAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ArsonComponentNotification notification) => ArsonComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<ArsonComponentCommand, ArsonComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::getUserExtendedData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetUserExtendedDataAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(ArsonComponentBase.Id, ArsonComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.getUserExtendedData)]
-            public virtual Task<NullStruct> GetUserExtendedDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getUserExtendedData, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.updateUserExtendedData)]
-            public virtual Task<NullStruct> UpdateUserExtendedDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateUserExtendedData, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.reportTournamentResult)]
-            public virtual Task<NullStruct> ReportTournamentResultAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reportTournamentResult, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.updateRegistrationGameIncrement)]
-            public virtual Task<NullStruct> UpdateRegistrationGameIncrementAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.updateRegistrationGameIncrement, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.joinGameByUserList)]
-            public virtual Task<NullStruct> JoinGameByUserListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.joinGameByUserList, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.reconfigure)]
-            public virtual Task<NullStruct> ReconfigureAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.reconfigure, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.getTournamentMemberStatus)]
-            public virtual Task<NullStruct> GetTournamentMemberStatusAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getTournamentMemberStatus, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.setRoomCategoryClientMetaData)]
-            public virtual Task<NullStruct> SetRoomCategoryClientMetaDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomCategoryClientMetaData, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomCategoryClientMetaData)]
-            public virtual Task<NullStruct> GetRoomCategoryClientMetaDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategoryClientMetaData, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.setRoomAttributes)]
-            public virtual Task<NullStruct> SetRoomAttributesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setRoomAttributes, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomAttributes)]
-            public virtual Task<NullStruct> GetRoomAttributesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomAttributes, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.getRoomCategory)]
-            public virtual Task<NullStruct> GetRoomCategoryAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.getRoomCategory, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.setComponentState)]
-            public virtual Task<NullStruct> SetComponentStateAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.setComponentState, request);
-            }
-            
-            [BlazeCommand((ushort)ArsonComponentCommand.addPointsToWallet)]
-            public virtual Task<NullStruct> AddPointsToWalletAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ArsonComponentCommand.addPointsToWallet, request);
-            }
-            
-            
-            [BlazeNotification((ushort)ArsonComponentNotification.NotifyReconfigureCompleted)]
-            public virtual Task<NullStruct> OnNotifyReconfigureCompletedAsync(NullStruct notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ArsonComponentCommand command) => ArsonComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ArsonComponentNotification notification) => ArsonComponentBase.GetNotificationType(notification);
-            
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(ArsonComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::updateUserExtendedData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateUserExtendedDataAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
-            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
-            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
-            ArsonComponentCommand.reconfigure => typeof(NullStruct),
-            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
-            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
-            ArsonComponentCommand.setComponentState => typeof(NullStruct),
-            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(ArsonComponentCommand command) => command switch
-        {
-            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
-            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
-            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
-            ArsonComponentCommand.reconfigure => typeof(NullStruct),
-            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
-            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
-            ArsonComponentCommand.setComponentState => typeof(NullStruct),
-            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(ArsonComponentCommand command) => command switch
-        {
-            ArsonComponentCommand.getUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.updateUserExtendedData => typeof(NullStruct),
-            ArsonComponentCommand.reportTournamentResult => typeof(NullStruct),
-            ArsonComponentCommand.updateRegistrationGameIncrement => typeof(NullStruct),
-            ArsonComponentCommand.joinGameByUserList => typeof(NullStruct),
-            ArsonComponentCommand.reconfigure => typeof(NullStruct),
-            ArsonComponentCommand.getTournamentMemberStatus => typeof(NullStruct),
-            ArsonComponentCommand.setRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategoryClientMetaData => typeof(NullStruct),
-            ArsonComponentCommand.setRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomAttributes => typeof(NullStruct),
-            ArsonComponentCommand.getRoomCategory => typeof(NullStruct),
-            ArsonComponentCommand.setComponentState => typeof(NullStruct),
-            ArsonComponentCommand.addPointsToWallet => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(ArsonComponentNotification notification) => notification switch
-        {
-            ArsonComponentNotification.NotifyReconfigureCompleted => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum ArsonComponentCommand : ushort
-        {
-            getUserExtendedData = 1,
-            updateUserExtendedData = 2,
-            reportTournamentResult = 3,
-            updateRegistrationGameIncrement = 4,
-            joinGameByUserList = 5,
-            reconfigure = 6,
-            getTournamentMemberStatus = 7,
-            setRoomCategoryClientMetaData = 8,
-            getRoomCategoryClientMetaData = 9,
-            setRoomAttributes = 10,
-            getRoomAttributes = 11,
-            getRoomCategory = 12,
-            setComponentState = 13,
-            addPointsToWallet = 14,
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum ArsonComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::reportTournamentResult</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ReportTournamentResultAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            NotifyReconfigureCompleted = 1,
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::updateRegistrationGameIncrement</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateRegistrationGameIncrementAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::joinGameByUserList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> JoinGameByUserListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::reconfigure</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ReconfigureAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::getTournamentMemberStatus</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetTournamentMemberStatusAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::setRoomCategoryClientMetaData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetRoomCategoryClientMetaDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::getRoomCategoryClientMetaData</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetRoomCategoryClientMetaDataAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::setRoomAttributes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetRoomAttributesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::getRoomAttributes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetRoomAttributesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::getRoomCategory</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetRoomCategoryAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::setComponentState</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetComponentStateAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>ArsonComponent::addPointsToWallet</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddPointsToWalletAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new ArsonException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>ArsonComponent::NotifyReconfigureCompleted</b> notification.<br/>
+        /// Notification type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyReconfigureCompletedAsync(BlazeRpcConnection connection, EmptyMessage notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = ArsonComponentBase.Id;
+                frame.Command = (ushort)ArsonComponentNotification.NotifyReconfigureCompleted;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

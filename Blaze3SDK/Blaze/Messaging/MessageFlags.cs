@@ -1,9 +1,9 @@
-﻿namespace Blaze3SDK.Blaze.Messaging
+namespace Blaze3SDK.Blaze.Messaging;
+
+[Flags]
+public enum MessageFlags : int
 {
-    [Flags]
-    public enum MessageFlags
-    {
-        None = 0,
-        FilterProfanity = 4,
-    }
+    None = 0,
+    FilterProfanity = 4,
 }
+

@@ -1,28 +1,34 @@
 {
   "Usings": [
-    "Blaze3SDK.Blaze.Redirector",
-    "BlazeCommon",
-    "NLog"
+    "Blaze3SDK.Blaze.Redirector"
   ],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 5,
+  "Name": "RedirectorComponent",
+  "ShortName": "Redirector",
+  "ErrorCodes": {
+    "1": "REDIRECTOR_SERVER_NOT_FOUND",
+    "2": "REDIRECTOR_NO_SERVER_CAPACITY",
+    "3": "REDIRECTOR_NO_MATCHING_INSTANCE",
+    "4": "REDIRECTOR_SERVER_NAME_ALREADY_IN_USE",
+    "5": "REDIRECTOR_CLIENT_NOT_COMPATIBLE",
+    "6": "REDIRECTOR_CLIENT_UNKNOWN",
+    "7": "REDIRECTOR_UNKNOWN_CONNECTION_PROFILE",
+    "8": "REDIRECTOR_SERVER_SUNSET",
+    "9": "REDIRECTOR_SERVER_DOWN",
+    "10": "REDIRECTOR_INVALID_PARAMETER",
+    "11": "REDIRECTOR_UNKNOWN_SERVICE_NAME",
+    "12": "REDIRECTOR_PAST_EVENT",
+    "13": "REDIRECTOR_UNKNOWN_SCHEDULE_ID"
+  },
+  "Methods": [
     {
-      "Id": 5,
-      "Name": "RedirectorComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "getServerInstance",
-          "RequestType": "ServerInstanceRequest",
-          "ResponseType": "ServerInstanceInfo",
-          "ErrorResponseType": "ServerInstanceError"
-        }
-      ],
-      "Notifications": []
+      "Id": 1,
+      "Name": "getServerInstance",
+      "RequestType": "ServerInstanceRequest",
+      "ResponseType": "ServerInstanceInfo",
+      "ErrorResponseType": "ServerInstanceError"
     }
-  ]
+  ],
+  "Notifications": []
 }

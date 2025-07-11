@@ -1,10 +1,10 @@
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public enum KeymasterCodeStatus : int
 {
-    public enum KeymasterCodeStatus : int
-    {
-        UNKNOWN = 0x0,
-        USED = 0x1,
-        UNUSED = 0x2,
-        DISABLED = 0x3,
-    }
+    UNKNOWN = 0,
+    USED = 1,
+    UNUSED = 2,
+    DISABLED = 3,
 }
+

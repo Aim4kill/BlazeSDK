@@ -1,8 +1,8 @@
-namespace Blaze3SDK.Blaze.Association
+namespace Blaze3SDK.Blaze.Association;
+
+public enum ListUpdateType : int
 {
-	public enum ListUpdateType : int
-	{
-		LISTUPDATETYPE_ADD = 1,
-		LISTUPDATETYPE_REMOVE = 2,
-	}
+    LISTUPDATETYPE_ADD = 1,
+    LISTUPDATETYPE_REMOVE = 2,
 }
+

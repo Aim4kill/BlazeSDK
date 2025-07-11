@@ -1,16 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class UnregisterDynamicDedicatedServerCreatorResponse : Tdf
 {
-    [TdfStruct]
-    public struct UnregisterDynamicDedicatedServerCreatorResponse
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("MachineIdList", "mMachineIdList", 0xB6CCF400, TdfType.List, 0, true), // MLST
+    ];
+    private ITdfMember[] __members;
+
+    private TdfList<string> _machineIdList = new(__typeInfos[0]);
+
+    public UnregisterDynamicDedicatedServerCreatorResponse()
     {
-        
-        /// <summary>
-        /// Max String Length: 36
-        /// </summary>
-        [TdfMember("MLST")]
-        public List<string> mMachineIdList;
-        
+        __members = [
+            _machineIdList,
+        ];
     }
+
+    public override Tdf CreateNew() => new UnregisterDynamicDedicatedServerCreatorResponse();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "UnregisterDynamicDedicatedServerCreatorResponse";
+    public override string GetFullClassName() => "Blaze::GameManager::UnregisterDynamicDedicatedServerCreatorResponse";
+
+    public IList<string> MachineIdList
+    {
+        get => _machineIdList.Value;
+        set => _machineIdList.Value = value;
+    }
+
 }
+

@@ -1,8 +1,8 @@
-﻿namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+[Flags]
+public enum LeagueFlags : int
 {
-    [Flags]
-    public enum LeagueFlags
-    {
-        None = 0,
-    }
+    None = 0,
 }
+

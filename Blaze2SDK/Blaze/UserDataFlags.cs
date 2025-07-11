@@ -1,9 +1,9 @@
-﻿namespace Blaze2SDK.Blaze
+namespace Blaze2SDK.Blaze;
+
+[Flags]
+public enum UserDataFlags : uint
 {
-    [Flags]
-    public enum UserDataFlags
-    {
-        None = 0,
-        Online = 1
-    }
+    None = 0,
+    Online = 1,
 }
+

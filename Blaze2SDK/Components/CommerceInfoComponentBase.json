@@ -1,69 +1,79 @@
 {
-  "Usings": [
-    "BlazeCommon",
-    "NLog"
-  ],
+  "Usings": [],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 24,
+  "Name": "CommerceInfoComponent",
+  "ShortName": "CommerceInfo",
+  "ErrorCodes": {
+    "1": "COMMERCEINFO_ERR_STORE_NOT_EXIST",
+    "2": "COMMERCEINFO_ERR_INVALID_CATALOG_NAME",
+    "3": "COMMERCEINFO_ERR_INVALID_CATEGORY_NAME",
+    "4": "COMMERCEINFO_ERR_CATALOG_NOT_FOUND",
+    "5": "COMMERCEINFO_ERR_CATEGORY_NOT_FOUND",
+    "6": "COMMERCEINFO_ERR_PAGE_SIZE_TOO_BIG",
+    "7": "COMMERCEINFO_ERR_PAGE_SIZE_IS_ZERO",
+    "8": "COMMERCEINFO_ERR_REFRESH_IS_UNDERGOING",
+    "9": "COMMERCEINFO_ERR_KEYMAST_CODE_NOT_EXIST",
+    "10": "COMMERCEINFO_ERR_WALLET_IS_INVALID",
+    "11": "COMMERCEINFO_ERR_WALLET_NOT_FOUND",
+    "12": "COMMERCEINFO_ERR_PRODUCT_NOT_FOUND",
+    "13": "COMMERCEINFO_ERR_BALANCE_INSUFFICIENT_FUND",
+    "14": "COMMERCEINFO_ERR_WALLET_CURRENCY_NOT_EARNABLE",
+    "15": "COMMERCEINFO_ERR_BILLING_SYSTEM",
+    "16": "COMMERCEINFO_ERR_FUSION_SYSTEM",
+    "17": "COMMERCEINFO_ERR_WALLET_CURRENCY_NOT_MATCH",
+    "18": "COMMERCEINFO_ERR_EMPTY_PRODUCT_LIST"
+  },
+  "Methods": [
     {
-      "Id": 24,
-      "Name": "CommerceInfoComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "getCatalogMap",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "getCategoryMap",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "getProductList",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "refreshOfbCache",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "getProductAssociation",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 6,
-          "Name": "getWalletBalance",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 7,
-          "Name": "checkoutProducts",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 1,
+      "Name": "getCatalogMap",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "getCategoryMap",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "getProductList",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "refreshOfbCache",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "getProductAssociation",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 6,
+      "Name": "getWalletBalance",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 7,
+      "Name": "checkoutProducts",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

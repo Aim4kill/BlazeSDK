@@ -1,25 +1,60 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class CreateGameStatus : Tdf
 {
-    [TdfStruct]
-    public struct CreateGameStatus
+    [Flags]
+    public enum EvaluateStatus : int
     {
-
-        [TdfMember("EVST")]
-        public EvaluateStatus mEvaluateStatus;
-
-        [TdfMember("MMSN")]
-        public uint mNumOfMatchmakingSession;
-
-        [TdfMember("NOMP")]
-        public uint mNumOfMatchedPlayers;
-
-        [Flags]
-        public enum EvaluateStatus
-        {
-
-        }
-
     }
+    
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("EvaluateStatus", "mEvaluateStatus", 0x976CF400, TdfType.Enum, 0, true), // EVST
+        new TdfMemberInfo("NumOfMatchmakingSession", "mNumOfMatchmakingSession", 0xB6DCEE00, TdfType.UInt32, 1, true), // MMSN
+        new TdfMemberInfo("NumOfMatchedPlayers", "mNumOfMatchedPlayers", 0xBAFB7000, TdfType.UInt32, 2, true), // NOMP
+    ];
+    private ITdfMember[] __members;
+
+    private TdfEnum<Blaze2SDK.Blaze.GameManager.CreateGameStatus.EvaluateStatus> _evaluateStatus = new(__typeInfos[0]);
+    private TdfUInt32 _numOfMatchmakingSession = new(__typeInfos[1]);
+    private TdfUInt32 _numOfMatchedPlayers = new(__typeInfos[2]);
+
+    public CreateGameStatus()
+    {
+        __members = [
+            _evaluateStatus,
+            _numOfMatchmakingSession,
+            _numOfMatchedPlayers,
+        ];
+    }
+
+    public override Tdf CreateNew() => new CreateGameStatus();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "CreateGameStatus";
+    public override string GetFullClassName() => "Blaze::GameManager::CreateGameStatus";
+
+    public Blaze2SDK.Blaze.GameManager.CreateGameStatus.EvaluateStatus mEvaluateStatus
+    {
+        get => _evaluateStatus.Value;
+        set => _evaluateStatus.Value = value;
+    }
+
+    public uint NumOfMatchmakingSession
+    {
+        get => _numOfMatchmakingSession.Value;
+        set => _numOfMatchmakingSession.Value = value;
+    }
+
+    public uint NumOfMatchedPlayers
+    {
+        get => _numOfMatchedPlayers.Value;
+        set => _numOfMatchedPlayers.Value = value;
+    }
+
 }
+

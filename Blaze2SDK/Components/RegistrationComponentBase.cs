@@ -1,341 +1,247 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class RegistrationComponentBase
 {
-    public static class RegistrationComponentBase
+    public const ushort Id = 22;
+    public const string Name = "RegistrationComponent";
+    
+    public enum Error : ushort {
+        REGISTRATION_ERR_UNKNOWN = 1,
+        REGISTRATION_ERR_INVALID_ARGUMENTS = 3,
+        REGISTRATION_ERR_NO_UPDATE = 4,
+        REGISTRATION_ERR_USER_NOT_EXIST = 5,
+    }
+    
+    public enum RegistrationComponentCommand : ushort
     {
-        public const ushort Id = 22;
-        public const string Name = "RegistrationComponent";
+        check = 2,
+        addrow = 3,
+        ban = 4,
+        remrow = 5,
+        returnusers = 9,
+        numusers = 10,
+        updatenote = 13,
+        wipestats = 14,
+        updateflags = 15,
+        getDbCredentials = 16,
+    }
+    
+    public enum RegistrationComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => RegistrationComponentBase.Id;
+        public override string Name => RegistrationComponentBase.Name;
         
-        public class Server : BlazeServerComponent<RegistrationComponentCommand, RegistrationComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(RegistrationComponentCommand command) => false;
+        
+        public class RegistrationException : BlazeRpcException
         {
-            public Server() : base(RegistrationComponentBase.Id, RegistrationComponentBase.Name)
+            public RegistrationException(Error error) : base((ushort)error, null) { }
+            public RegistrationException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public RegistrationException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public RegistrationException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public RegistrationException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public RegistrationException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public RegistrationException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public RegistrationException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)RegistrationComponentCommand.check,
+                Name = "check",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.check),
+                Func = async (req, ctx) => await CheckAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.check)]
-            public virtual Task<NullStruct> CheckAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.addrow,
+                Name = "addrow",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.addrow),
+                Func = async (req, ctx) => await AddrowAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.addrow)]
-            public virtual Task<NullStruct> AddrowAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.ban,
+                Name = "ban",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.ban),
+                Func = async (req, ctx) => await BanAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.ban)]
-            public virtual Task<NullStruct> BanAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.remrow,
+                Name = "remrow",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.remrow),
+                Func = async (req, ctx) => await RemrowAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.remrow)]
-            public virtual Task<NullStruct> RemrowAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.returnusers,
+                Name = "returnusers",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.returnusers),
+                Func = async (req, ctx) => await ReturnusersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.returnusers)]
-            public virtual Task<NullStruct> ReturnusersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.numusers,
+                Name = "numusers",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.numusers),
+                Func = async (req, ctx) => await NumusersAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.numusers)]
-            public virtual Task<NullStruct> NumusersAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.updatenote,
+                Name = "updatenote",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.updatenote),
+                Func = async (req, ctx) => await UpdatenoteAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.updatenote)]
-            public virtual Task<NullStruct> UpdatenoteAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.wipestats,
+                Name = "wipestats",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.wipestats),
+                Func = async (req, ctx) => await WipestatsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.wipestats)]
-            public virtual Task<NullStruct> WipestatsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)RegistrationComponentCommand.updateflags,
+                Name = "updateflags",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.updateflags),
+                Func = async (req, ctx) => await UpdateflagsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)RegistrationComponentCommand.updateflags)]
-            public virtual Task<NullStruct> UpdateflagsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.getDbCredentials)]
-            public virtual Task<NullStruct> GetDbCredentialsAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RegistrationComponentNotification notification) => RegistrationComponentBase.GetNotificationType(notification);
+                Id = (ushort)RegistrationComponentCommand.getDbCredentials,
+                Name = "getDbCredentials",
+                IsSupported = IsCommandSupported(RegistrationComponentCommand.getDbCredentials),
+                Func = async (req, ctx) => await GetDbCredentialsAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<RegistrationComponentCommand, RegistrationComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(RegistrationComponentBase.Id, RegistrationComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct Check()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.check, new NullStruct());
-            }
-            public Task<NullStruct> CheckAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.check, new NullStruct());
-            }
-            
-            public NullStruct Addrow()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.addrow, new NullStruct());
-            }
-            public Task<NullStruct> AddrowAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.addrow, new NullStruct());
-            }
-            
-            public NullStruct Ban()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.ban, new NullStruct());
-            }
-            public Task<NullStruct> BanAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.ban, new NullStruct());
-            }
-            
-            public NullStruct Remrow()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.remrow, new NullStruct());
-            }
-            public Task<NullStruct> RemrowAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.remrow, new NullStruct());
-            }
-            
-            public NullStruct Returnusers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.returnusers, new NullStruct());
-            }
-            public Task<NullStruct> ReturnusersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.returnusers, new NullStruct());
-            }
-            
-            public NullStruct Numusers()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.numusers, new NullStruct());
-            }
-            public Task<NullStruct> NumusersAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.numusers, new NullStruct());
-            }
-            
-            public NullStruct Updatenote()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updatenote, new NullStruct());
-            }
-            public Task<NullStruct> UpdatenoteAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updatenote, new NullStruct());
-            }
-            
-            public NullStruct Wipestats()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.wipestats, new NullStruct());
-            }
-            public Task<NullStruct> WipestatsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.wipestats, new NullStruct());
-            }
-            
-            public NullStruct Updateflags()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updateflags, new NullStruct());
-            }
-            public Task<NullStruct> UpdateflagsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updateflags, new NullStruct());
-            }
-            
-            public NullStruct GetDbCredentials()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.getDbCredentials, new NullStruct());
-            }
-            public Task<NullStruct> GetDbCredentialsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.getDbCredentials, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RegistrationComponentNotification notification) => RegistrationComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<RegistrationComponentCommand, RegistrationComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::check</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CheckAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(RegistrationComponentBase.Id, RegistrationComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.check)]
-            public virtual Task<NullStruct> CheckAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.check, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.addrow)]
-            public virtual Task<NullStruct> AddrowAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.addrow, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.ban)]
-            public virtual Task<NullStruct> BanAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.ban, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.remrow)]
-            public virtual Task<NullStruct> RemrowAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.remrow, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.returnusers)]
-            public virtual Task<NullStruct> ReturnusersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.returnusers, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.numusers)]
-            public virtual Task<NullStruct> NumusersAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.numusers, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.updatenote)]
-            public virtual Task<NullStruct> UpdatenoteAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updatenote, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.wipestats)]
-            public virtual Task<NullStruct> WipestatsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.wipestats, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.updateflags)]
-            public virtual Task<NullStruct> UpdateflagsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.updateflags, request);
-            }
-            
-            [BlazeCommand((ushort)RegistrationComponentCommand.getDbCredentials)]
-            public virtual Task<NullStruct> GetDbCredentialsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)RegistrationComponentCommand.getDbCredentials, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(RegistrationComponentCommand command) => RegistrationComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(RegistrationComponentNotification notification) => RegistrationComponentBase.GetNotificationType(notification);
-            
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(RegistrationComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::addrow</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> AddrowAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            RegistrationComponentCommand.check => typeof(NullStruct),
-            RegistrationComponentCommand.addrow => typeof(NullStruct),
-            RegistrationComponentCommand.ban => typeof(NullStruct),
-            RegistrationComponentCommand.remrow => typeof(NullStruct),
-            RegistrationComponentCommand.returnusers => typeof(NullStruct),
-            RegistrationComponentCommand.numusers => typeof(NullStruct),
-            RegistrationComponentCommand.updatenote => typeof(NullStruct),
-            RegistrationComponentCommand.wipestats => typeof(NullStruct),
-            RegistrationComponentCommand.updateflags => typeof(NullStruct),
-            RegistrationComponentCommand.getDbCredentials => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(RegistrationComponentCommand command) => command switch
-        {
-            RegistrationComponentCommand.check => typeof(NullStruct),
-            RegistrationComponentCommand.addrow => typeof(NullStruct),
-            RegistrationComponentCommand.ban => typeof(NullStruct),
-            RegistrationComponentCommand.remrow => typeof(NullStruct),
-            RegistrationComponentCommand.returnusers => typeof(NullStruct),
-            RegistrationComponentCommand.numusers => typeof(NullStruct),
-            RegistrationComponentCommand.updatenote => typeof(NullStruct),
-            RegistrationComponentCommand.wipestats => typeof(NullStruct),
-            RegistrationComponentCommand.updateflags => typeof(NullStruct),
-            RegistrationComponentCommand.getDbCredentials => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(RegistrationComponentCommand command) => command switch
-        {
-            RegistrationComponentCommand.check => typeof(NullStruct),
-            RegistrationComponentCommand.addrow => typeof(NullStruct),
-            RegistrationComponentCommand.ban => typeof(NullStruct),
-            RegistrationComponentCommand.remrow => typeof(NullStruct),
-            RegistrationComponentCommand.returnusers => typeof(NullStruct),
-            RegistrationComponentCommand.numusers => typeof(NullStruct),
-            RegistrationComponentCommand.updatenote => typeof(NullStruct),
-            RegistrationComponentCommand.wipestats => typeof(NullStruct),
-            RegistrationComponentCommand.updateflags => typeof(NullStruct),
-            RegistrationComponentCommand.getDbCredentials => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(RegistrationComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum RegistrationComponentCommand : ushort
-        {
-            check = 2,
-            addrow = 3,
-            ban = 4,
-            remrow = 5,
-            returnusers = 9,
-            numusers = 10,
-            updatenote = 13,
-            wipestats = 14,
-            updateflags = 15,
-            getDbCredentials = 16,
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum RegistrationComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::ban</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> BanAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::remrow</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> RemrowAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::returnusers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> ReturnusersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::numusers</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> NumusersAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::updatenote</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdatenoteAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::wipestats</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> WipestatsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::updateflags</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateflagsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>RegistrationComponent::getDbCredentials</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetDbCredentialsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new RegistrationException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

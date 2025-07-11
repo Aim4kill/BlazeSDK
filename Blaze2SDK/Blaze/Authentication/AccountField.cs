@@ -1,14 +1,14 @@
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public enum AccountField : int
 {
-    public enum AccountField : int
-    {
-        UNKNOWN = 0x0,
-        NONE = 0x1,
-        EMAIL = 0x2,
-        PASSWORD = 0x3,
-        DOB = 0x4,
-        COUNTRY = 0x5,
-        LANGUAGE = 0x6,
-        PARENTAL_EMAIL = 0x7,
-    }
+    UNKNOWN = 0,
+    NONE = 1,
+    EMAIL = 2,
+    PASSWORD = 3,
+    DOB = 4,
+    COUNTRY = 5,
+    LANGUAGE = 6,
+    PARENTAL_EMAIL = 7,
 }
+

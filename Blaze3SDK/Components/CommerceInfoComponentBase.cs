@@ -1,241 +1,185 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class CommerceInfoComponentBase
 {
-    public static class CommerceInfoComponentBase
+    public const ushort Id = 24;
+    public const string Name = "CommerceInfoComponent";
+    
+    public enum Error : ushort {
+        COMMERCEINFO_ERR_STORE_NOT_EXIST = 1,
+        COMMERCEINFO_ERR_INVALID_CATALOG_NAME = 2,
+        COMMERCEINFO_ERR_INVALID_CATEGORY_NAME = 3,
+        COMMERCEINFO_ERR_CATALOG_NOT_FOUND = 4,
+        COMMERCEINFO_ERR_CATEGORY_NOT_FOUND = 5,
+        COMMERCEINFO_ERR_PAGE_SIZE_TOO_BIG = 6,
+        COMMERCEINFO_ERR_PAGE_SIZE_IS_ZERO = 7,
+        COMMERCEINFO_ERR_REFRESH_IS_UNDERGOING = 8,
+        COMMERCEINFO_ERR_KEYMAST_CODE_NOT_EXIST = 9,
+        COMMERCEINFO_ERR_WALLET_IS_INVALID = 10,
+        COMMERCEINFO_ERR_WALLET_NOT_FOUND = 11,
+        COMMERCEINFO_ERR_PRODUCT_NOT_FOUND = 12,
+        COMMERCEINFO_ERR_BALANCE_INSUFFICIENT_FUND = 13,
+        COMMERCEINFO_ERR_WALLET_CURRENCY_NOT_EARNABLE = 14,
+        COMMERCEINFO_ERR_BILLING_SYSTEM = 15,
+        COMMERCEINFO_ERR_FUSION_SYSTEM = 16,
+        COMMERCEINFO_ERR_WALLET_CURRENCY_NOT_MATCH = 17,
+        COMMERCEINFO_ERR_EMPTY_PRODUCT_LIST = 18,
+    }
+    
+    public enum CommerceInfoComponentCommand : ushort
     {
-        public const ushort Id = 24;
-        public const string Name = "CommerceInfoComponent";
+        getCatalogMap = 1,
+        getCategoryMap = 2,
+        getProductList = 3,
+        getProductAssociation = 5,
+        getWalletBalance = 6,
+        checkoutProducts = 7,
+    }
+    
+    public enum CommerceInfoComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => CommerceInfoComponentBase.Id;
+        public override string Name => CommerceInfoComponentBase.Name;
         
-        public class Server : BlazeServerComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(CommerceInfoComponentCommand command) => false;
+        
+        public class CommerceInfoException : BlazeRpcException
         {
-            public Server() : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
+            public CommerceInfoException(Error error) : base((ushort)error, null) { }
+            public CommerceInfoException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public CommerceInfoException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public CommerceInfoException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public CommerceInfoException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public CommerceInfoException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public CommerceInfoException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public CommerceInfoException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)CommerceInfoComponentCommand.getCatalogMap,
+                Name = "getCatalogMap",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.getCatalogMap),
+                Func = async (req, ctx) => await GetCatalogMapAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCatalogMap)]
-            public virtual Task<NullStruct> GetCatalogMapAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)CommerceInfoComponentCommand.getCategoryMap,
+                Name = "getCategoryMap",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.getCategoryMap),
+                Func = async (req, ctx) => await GetCategoryMapAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCategoryMap)]
-            public virtual Task<NullStruct> GetCategoryMapAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)CommerceInfoComponentCommand.getProductList,
+                Name = "getProductList",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.getProductList),
+                Func = async (req, ctx) => await GetProductListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductList)]
-            public virtual Task<NullStruct> GetProductListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)CommerceInfoComponentCommand.getProductAssociation,
+                Name = "getProductAssociation",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.getProductAssociation),
+                Func = async (req, ctx) => await GetProductAssociationAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductAssociation)]
-            public virtual Task<NullStruct> GetProductAssociationAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)CommerceInfoComponentCommand.getWalletBalance,
+                Name = "getWalletBalance",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.getWalletBalance),
+                Func = async (req, ctx) => await GetWalletBalanceAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getWalletBalance)]
-            public virtual Task<NullStruct> GetWalletBalanceAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.checkoutProducts)]
-            public virtual Task<NullStruct> CheckoutProductsAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(CommerceInfoComponentNotification notification) => CommerceInfoComponentBase.GetNotificationType(notification);
+                Id = (ushort)CommerceInfoComponentCommand.checkoutProducts,
+                Name = "checkoutProducts",
+                IsSupported = IsCommandSupported(CommerceInfoComponentCommand.checkoutProducts),
+                Func = async (req, ctx) => await CheckoutProductsAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct GetCatalogMap()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, new NullStruct());
-            }
-            public Task<NullStruct> GetCatalogMapAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, new NullStruct());
-            }
-            
-            public NullStruct GetCategoryMap()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, new NullStruct());
-            }
-            public Task<NullStruct> GetCategoryMapAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, new NullStruct());
-            }
-            
-            public NullStruct GetProductList()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, new NullStruct());
-            }
-            public Task<NullStruct> GetProductListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, new NullStruct());
-            }
-            
-            public NullStruct GetProductAssociation()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, new NullStruct());
-            }
-            public Task<NullStruct> GetProductAssociationAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, new NullStruct());
-            }
-            
-            public NullStruct GetWalletBalance()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, new NullStruct());
-            }
-            public Task<NullStruct> GetWalletBalanceAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, new NullStruct());
-            }
-            
-            public NullStruct CheckoutProducts()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, new NullStruct());
-            }
-            public Task<NullStruct> CheckoutProductsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(CommerceInfoComponentNotification notification) => CommerceInfoComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<CommerceInfoComponentCommand, CommerceInfoComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::getCatalogMap</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetCatalogMapAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(CommerceInfoComponentBase.Id, CommerceInfoComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCatalogMap)]
-            public virtual Task<NullStruct> GetCatalogMapAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCatalogMap, request);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getCategoryMap)]
-            public virtual Task<NullStruct> GetCategoryMapAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getCategoryMap, request);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductList)]
-            public virtual Task<NullStruct> GetProductListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductList, request);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getProductAssociation)]
-            public virtual Task<NullStruct> GetProductAssociationAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getProductAssociation, request);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.getWalletBalance)]
-            public virtual Task<NullStruct> GetWalletBalanceAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.getWalletBalance, request);
-            }
-            
-            [BlazeCommand((ushort)CommerceInfoComponentCommand.checkoutProducts)]
-            public virtual Task<NullStruct> CheckoutProductsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)CommerceInfoComponentCommand.checkoutProducts, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(CommerceInfoComponentCommand command) => CommerceInfoComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(CommerceInfoComponentNotification notification) => CommerceInfoComponentBase.GetNotificationType(notification);
-            
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(CommerceInfoComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::getCategoryMap</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetCategoryMapAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            CommerceInfoComponentCommand.getCatalogMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getCategoryMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductList => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductAssociation => typeof(NullStruct),
-            CommerceInfoComponentCommand.getWalletBalance => typeof(NullStruct),
-            CommerceInfoComponentCommand.checkoutProducts => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(CommerceInfoComponentCommand command) => command switch
-        {
-            CommerceInfoComponentCommand.getCatalogMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getCategoryMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductList => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductAssociation => typeof(NullStruct),
-            CommerceInfoComponentCommand.getWalletBalance => typeof(NullStruct),
-            CommerceInfoComponentCommand.checkoutProducts => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(CommerceInfoComponentCommand command) => command switch
-        {
-            CommerceInfoComponentCommand.getCatalogMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getCategoryMap => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductList => typeof(NullStruct),
-            CommerceInfoComponentCommand.getProductAssociation => typeof(NullStruct),
-            CommerceInfoComponentCommand.getWalletBalance => typeof(NullStruct),
-            CommerceInfoComponentCommand.checkoutProducts => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(CommerceInfoComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum CommerceInfoComponentCommand : ushort
-        {
-            getCatalogMap = 1,
-            getCategoryMap = 2,
-            getProductList = 3,
-            getProductAssociation = 5,
-            getWalletBalance = 6,
-            checkoutProducts = 7,
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum CommerceInfoComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::getProductList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetProductListAsync(EmptyMessage request, BlazeRpcContext context)
         {
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::getProductAssociation</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetProductAssociationAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::getWalletBalance</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetWalletBalanceAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>CommerceInfoComponent::checkoutProducts</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> CheckoutProductsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new CommerceInfoException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

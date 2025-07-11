@@ -1,487 +1,387 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.GameReporting;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class GameReportingComponentBase
 {
-    public static class GameReportingComponentBase
+    public const ushort Id = 28;
+    public const string Name = "GameReportingComponent";
+    
+    public enum Error : ushort {
+        GAMEREPORTING_ERR_UNEXPECTED_REPORT = 1,
+        GAMEREPORTING_COLLATION_ERR_NO_VALID_REPORTS = 100,
+        GAMEREPORTING_COLLATION_ERR_NO_REPORTS = 101,
+        GAMEREPORTING_COLLATION_REPORTS_INCONSISTENT = 102,
+        GAMEREPORTING_COLLATION_ERR_MISSING_GAME_ATTRIBUTE = 103,
+        GAMEREPORTING_COLLATION_ERR_INVALID_GAME_ATTRIBUTE = 104,
+        GAMEREPORTING_CUSTOM_ERR_PROCESSING_FAILED = 200,
+        GAMEREPORTING_CONFIG_ERR_MISSING_PROCESSOR_ATTRIBUTE = 201,
+        GAMEREPORTING_CONFIG_ERR_INVALID_PROCESSOR_ATTRIBUTE = 202,
+        GAMEREPORTING_CONFIG_ERR_STAT_UPDATE_FAILED = 203,
+        GAMEREPORTING_CUSTOM_ERR_PROCESS_UPDATED_STATS_FAILED = 204,
+        GAMEREPORTING_ERR_INVALID_GAME_TYPE = 205,
+        GAMEREPORTING_OFFLINE_ERR_INVALID_GAME_TYPE = 301,
+        GAMEREPORTING_OFFLINE_ERR_REPORT_INVALID = 302,
+        GAMEREPORTING_TRUSTED_ERR_INVALID_GAME_TYPE = 401,
+        GAMEREPORTING_TRUSTED_ERR_REPORT_INVALID = 402,
+        GAMEREPORTING_TRUSTED_ERR_CLIENT_NOT_TRUSTED = 403,
+        GAMEHISTORY_ERR_UNKNOWN_QUERY = 501,
+        GAMEHISTORY_ERR_INVALID_COLUMNKEY = 502,
+        GAMEHISTORY_ERR_INVALID_FILTER = 503,
+        GAMEHISTORY_ERR_INVALID_GAMETYPE = 504,
+        GAMEHISTORY_ERR_UNKNOWN_VIEW = 505,
+        GAMEHISTORY_ERR_INVALID_QUERY = 506,
+        GAMEHISTORY_ERR_MISSING_QVARS = 507,
+        GAMEHISTORY_ERR_INVALID_QVARS = 508,
+    }
+    
+    public enum GameReportingComponentCommand : ushort
     {
-        public const ushort Id = 28;
-        public const string Name = "GameReportingComponent";
+        submitGameReport = 1,
+        submitOfflineGameReport = 2,
+        submitGameEvents = 3,
+        getGameReportQuery = 4,
+        getGameReportQueriesList = 5,
+        getGameReports = 6,
+        getGameReportView = 7,
+        getGameReportViewInfo = 8,
+        getGameReportViewInfoList = 9,
+        getGameReportTypes = 10,
+        updateMetric = 11,
+        getGameReportColumnInfo = 12,
+        getGameReportColumnValues = 13,
+        submitTrustedMidGameReport = 100,
+        submitTrustedEndGameReport = 101,
+    }
+    
+    public enum GameReportingComponentNotification : ushort
+    {
+        ResultNotification = 114,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => GameReportingComponentBase.Id;
+        public override string Name => GameReportingComponentBase.Name;
         
-        public class Server : BlazeServerComponent<GameReportingComponentCommand, GameReportingComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(GameReportingComponentCommand command) => false;
+        
+        public class GameReportingException : BlazeRpcException
         {
-            public Server() : base(GameReportingComponentBase.Id, GameReportingComponentBase.Name)
+            public GameReportingException(Error error) : base((ushort)error, null) { }
+            public GameReportingException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public GameReportingException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public GameReportingException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public GameReportingException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public GameReportingException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public GameReportingException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public GameReportingException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)GameReportingComponentCommand.submitGameReport,
+                Name = "submitGameReport",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.submitGameReport),
+                Func = async (req, ctx) => await SubmitGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitGameReport)]
-            public virtual Task<NullStruct> SubmitGameReportAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.submitOfflineGameReport,
+                Name = "submitOfflineGameReport",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.submitOfflineGameReport),
+                Func = async (req, ctx) => await SubmitOfflineGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitOfflineGameReport)]
-            public virtual Task<NullStruct> SubmitOfflineGameReportAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.submitGameEvents,
+                Name = "submitGameEvents",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.submitGameEvents),
+                Func = async (req, ctx) => await SubmitGameEventsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitGameEvents)]
-            public virtual Task<NullStruct> SubmitGameEventsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportQuery,
+                Name = "getGameReportQuery",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportQuery),
+                Func = async (req, ctx) => await GetGameReportQueryAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQuery)]
-            public virtual Task<NullStruct> GetGameReportQueryAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GameReportQueriesList, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportQueriesList,
+                Name = "getGameReportQueriesList",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportQueriesList),
+                Func = async (req, ctx) => await GetGameReportQueriesListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQueriesList)]
-            public virtual Task<GameReportQueriesList> GetGameReportQueriesListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetGameReports, GameReportsList, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReports,
+                Name = "getGameReports",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReports),
+                Func = async (req, ctx) => await GetGameReportsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReports)]
-            public virtual Task<GameReportsList> GetGameReportsAsync(GetGameReports request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetGameReportViewRequest, GetGameReportViewResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportView,
+                Name = "getGameReportView",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportView),
+                Func = async (req, ctx) => await GetGameReportViewAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportView)]
-            public virtual Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetGameReportViewInfo, GameReportViewInfo, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportViewInfo,
+                Name = "getGameReportViewInfo",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportViewInfo),
+                Func = async (req, ctx) => await GetGameReportViewInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfo)]
-            public virtual Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GameReportViewInfosList, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportViewInfoList,
+                Name = "getGameReportViewInfoList",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportViewInfoList),
+                Func = async (req, ctx) => await GetGameReportViewInfoListAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<GameReportViewInfosList> GetGameReportViewInfoListAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetGameReportTypesResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportTypes,
+                Name = "getGameReportTypes",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportTypes),
+                Func = async (req, ctx) => await GetGameReportTypesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportTypes)]
-            public virtual Task<GetGameReportTypesResponse> GetGameReportTypesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.updateMetric,
+                Name = "updateMetric",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.updateMetric),
+                Func = async (req, ctx) => await UpdateMetricAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.updateMetric)]
-            public virtual Task<NullStruct> UpdateMetricAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetGameReportColumnInfo, GameReportColumnInfoResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportColumnInfo,
+                Name = "getGameReportColumnInfo",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportColumnInfo),
+                Func = async (req, ctx) => await GetGameReportColumnInfoAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnInfo)]
-            public virtual Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetGameReportColumnValuesResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.getGameReportColumnValues,
+                Name = "getGameReportColumnValues",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.getGameReportColumnValues),
+                Func = async (req, ctx) => await GetGameReportColumnValuesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnValues)]
-            public virtual Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)GameReportingComponentCommand.submitTrustedMidGameReport,
+                Name = "submitTrustedMidGameReport",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.submitTrustedMidGameReport),
+                Func = async (req, ctx) => await SubmitTrustedMidGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitTrustedMidGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedMidGameReportAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitTrustedEndGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedEndGameReportAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyResultNotificationAsync(BlazeServerConnection connection, ResultNotification notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(GameReportingComponentBase.Id, (ushort)GameReportingComponentNotification.ResultNotification, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingComponentNotification notification) => GameReportingComponentBase.GetNotificationType(notification);
+                Id = (ushort)GameReportingComponentCommand.submitTrustedEndGameReport,
+                Name = "submitTrustedEndGameReport",
+                IsSupported = IsCommandSupported(GameReportingComponentCommand.submitTrustedEndGameReport),
+                Func = async (req, ctx) => await SubmitTrustedEndGameReportAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<GameReportingComponentCommand, GameReportingComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(GameReportingComponentBase.Id, GameReportingComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct SubmitGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameReport, new NullStruct());
-            }
-            
-            public NullStruct SubmitOfflineGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitOfflineGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitOfflineGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitOfflineGameReport, new NullStruct());
-            }
-            
-            public NullStruct SubmitGameEvents()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameEvents, new NullStruct());
-            }
-            public Task<NullStruct> SubmitGameEventsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameEvents, new NullStruct());
-            }
-            
-            public NullStruct GetGameReportQuery()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQuery, new NullStruct());
-            }
-            public Task<NullStruct> GetGameReportQueryAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQuery, new NullStruct());
-            }
-            
-            public GameReportQueriesList GetGameReportQueriesList()
-            {
-                return Connection.SendRequest<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
-            }
-            public Task<GameReportQueriesList> GetGameReportQueriesListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, new NullStruct());
-            }
-            
-            public GameReportsList GetGameReports(GetGameReports request)
-            {
-                return Connection.SendRequest<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
-            }
-            public Task<GameReportsList> GetGameReportsAsync(GetGameReports request)
-            {
-                return Connection.SendRequestAsync<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
-            }
-            
-            public GetGameReportViewResponse GetGameReportView(GetGameReportViewRequest request)
-            {
-                return Connection.SendRequest<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
-            }
-            public Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request)
-            {
-                return Connection.SendRequestAsync<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
-            }
-            
-            public GameReportViewInfo GetGameReportViewInfo(GetGameReportViewInfo request)
-            {
-                return Connection.SendRequest<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
-            }
-            public Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request)
-            {
-                return Connection.SendRequestAsync<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
-            }
-            
-            public GameReportViewInfosList GetGameReportViewInfoList()
-            {
-                return Connection.SendRequest<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
-            }
-            public Task<GameReportViewInfosList> GetGameReportViewInfoListAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, new NullStruct());
-            }
-            
-            public GetGameReportTypesResponse GetGameReportTypes()
-            {
-                return Connection.SendRequest<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
-            }
-            public Task<GetGameReportTypesResponse> GetGameReportTypesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, new NullStruct());
-            }
-            
-            public NullStruct UpdateMetric()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.updateMetric, new NullStruct());
-            }
-            public Task<NullStruct> UpdateMetricAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.updateMetric, new NullStruct());
-            }
-            
-            public GameReportColumnInfoResponse GetGameReportColumnInfo(GetGameReportColumnInfo request)
-            {
-                return Connection.SendRequest<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
-            }
-            public Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request)
-            {
-                return Connection.SendRequestAsync<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
-            }
-            
-            public GetGameReportColumnValuesResponse GetGameReportColumnValues()
-            {
-                return Connection.SendRequest<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
-            }
-            public Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, new NullStruct());
-            }
-            
-            public NullStruct SubmitTrustedMidGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedMidGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitTrustedMidGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedMidGameReport, new NullStruct());
-            }
-            
-            public NullStruct SubmitTrustedEndGameReport()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedEndGameReport, new NullStruct());
-            }
-            public Task<NullStruct> SubmitTrustedEndGameReportAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedEndGameReport, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)GameReportingComponentNotification.ResultNotification)]
-            public virtual Task OnResultNotificationAsync(ResultNotification notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnResultNotificationAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingComponentNotification notification) => GameReportingComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<GameReportingComponentCommand, GameReportingComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::submitGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitGameReportAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(GameReportingComponentBase.Id, GameReportingComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitGameReport)]
-            public virtual Task<NullStruct> SubmitGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameReport, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitOfflineGameReport)]
-            public virtual Task<NullStruct> SubmitOfflineGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitOfflineGameReport, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitGameEvents)]
-            public virtual Task<NullStruct> SubmitGameEventsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitGameEvents, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQuery)]
-            public virtual Task<NullStruct> GetGameReportQueryAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQuery, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportQueriesList)]
-            public virtual Task<GameReportQueriesList> GetGameReportQueriesListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GameReportQueriesList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportQueriesList, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReports)]
-            public virtual Task<GameReportsList> GetGameReportsAsync(GetGameReports request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetGameReports, GameReportsList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReports, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportView)]
-            public virtual Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetGameReportViewRequest, GetGameReportViewResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportView, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfo)]
-            public virtual Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetGameReportViewInfo, GameReportViewInfo, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfo, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportViewInfoList)]
-            public virtual Task<GameReportViewInfosList> GetGameReportViewInfoListAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GameReportViewInfosList, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportViewInfoList, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportTypes)]
-            public virtual Task<GetGameReportTypesResponse> GetGameReportTypesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GetGameReportTypesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportTypes, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.updateMetric)]
-            public virtual Task<NullStruct> UpdateMetricAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.updateMetric, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnInfo)]
-            public virtual Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetGameReportColumnInfo, GameReportColumnInfoResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnInfo, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.getGameReportColumnValues)]
-            public virtual Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, GetGameReportColumnValuesResponse, NullStruct>(this, (ushort)GameReportingComponentCommand.getGameReportColumnValues, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitTrustedMidGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedMidGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedMidGameReport, request);
-            }
-            
-            [BlazeCommand((ushort)GameReportingComponentCommand.submitTrustedEndGameReport)]
-            public virtual Task<NullStruct> SubmitTrustedEndGameReportAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)GameReportingComponentCommand.submitTrustedEndGameReport, request);
-            }
-            
-            
-            [BlazeNotification((ushort)GameReportingComponentNotification.ResultNotification)]
-            public virtual Task<ResultNotification> OnResultNotificationAsync(ResultNotification notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(GameReportingComponentCommand command) => GameReportingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(GameReportingComponentNotification notification) => GameReportingComponentBase.GetNotificationType(notification);
-            
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(GameReportingComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::submitOfflineGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitOfflineGameReportAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            GameReportingComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQuery => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQueriesList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReports => typeof(GetGameReports),
-            GameReportingComponentCommand.getGameReportView => typeof(GetGameReportViewRequest),
-            GameReportingComponentCommand.getGameReportViewInfo => typeof(GetGameReportViewInfo),
-            GameReportingComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportTypes => typeof(NullStruct),
-            GameReportingComponentCommand.updateMetric => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnInfo => typeof(GetGameReportColumnInfo),
-            GameReportingComponentCommand.getGameReportColumnValues => typeof(NullStruct),
-            GameReportingComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(GameReportingComponentCommand command) => command switch
-        {
-            GameReportingComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQuery => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQueriesList => typeof(GameReportQueriesList),
-            GameReportingComponentCommand.getGameReports => typeof(GameReportsList),
-            GameReportingComponentCommand.getGameReportView => typeof(GetGameReportViewResponse),
-            GameReportingComponentCommand.getGameReportViewInfo => typeof(GameReportViewInfo),
-            GameReportingComponentCommand.getGameReportViewInfoList => typeof(GameReportViewInfosList),
-            GameReportingComponentCommand.getGameReportTypes => typeof(GetGameReportTypesResponse),
-            GameReportingComponentCommand.updateMetric => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnInfo => typeof(GameReportColumnInfoResponse),
-            GameReportingComponentCommand.getGameReportColumnValues => typeof(GetGameReportColumnValuesResponse),
-            GameReportingComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(GameReportingComponentCommand command) => command switch
-        {
-            GameReportingComponentCommand.submitGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitOfflineGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitGameEvents => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQuery => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportQueriesList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReports => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportView => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportViewInfo => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportViewInfoList => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportTypes => typeof(NullStruct),
-            GameReportingComponentCommand.updateMetric => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnInfo => typeof(NullStruct),
-            GameReportingComponentCommand.getGameReportColumnValues => typeof(NullStruct),
-            GameReportingComponentCommand.submitTrustedMidGameReport => typeof(NullStruct),
-            GameReportingComponentCommand.submitTrustedEndGameReport => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(GameReportingComponentNotification notification) => notification switch
-        {
-            GameReportingComponentNotification.ResultNotification => typeof(ResultNotification),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum GameReportingComponentCommand : ushort
-        {
-            submitGameReport = 1,
-            submitOfflineGameReport = 2,
-            submitGameEvents = 3,
-            getGameReportQuery = 4,
-            getGameReportQueriesList = 5,
-            getGameReports = 6,
-            getGameReportView = 7,
-            getGameReportViewInfo = 8,
-            getGameReportViewInfoList = 9,
-            getGameReportTypes = 10,
-            updateMetric = 11,
-            getGameReportColumnInfo = 12,
-            getGameReportColumnValues = 13,
-            submitTrustedMidGameReport = 100,
-            submitTrustedEndGameReport = 101,
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum GameReportingComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::submitGameEvents</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitGameEventsAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            ResultNotification = 114,
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportQuery</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetGameReportQueryAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportQueriesList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GameReportQueriesList"/><br/>
+        /// </summary>
+        public virtual Task<GameReportQueriesList> GetGameReportQueriesListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReports</b> command.<br/>
+        /// Request type: <see cref="GetGameReports"/><br/>
+        /// Response type: <see cref="GameReportsList"/><br/>
+        /// </summary>
+        public virtual Task<GameReportsList> GetGameReportsAsync(GetGameReports request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportView</b> command.<br/>
+        /// Request type: <see cref="GetGameReportViewRequest"/><br/>
+        /// Response type: <see cref="GetGameReportViewResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetGameReportViewResponse> GetGameReportViewAsync(GetGameReportViewRequest request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportViewInfo</b> command.<br/>
+        /// Request type: <see cref="GetGameReportViewInfo"/><br/>
+        /// Response type: <see cref="GameReportViewInfo"/><br/>
+        /// </summary>
+        public virtual Task<GameReportViewInfo> GetGameReportViewInfoAsync(GetGameReportViewInfo request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportViewInfoList</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GameReportViewInfosList"/><br/>
+        /// </summary>
+        public virtual Task<GameReportViewInfosList> GetGameReportViewInfoListAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportTypes</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetGameReportTypesResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetGameReportTypesResponse> GetGameReportTypesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::updateMetric</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UpdateMetricAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportColumnInfo</b> command.<br/>
+        /// Request type: <see cref="GetGameReportColumnInfo"/><br/>
+        /// Response type: <see cref="GameReportColumnInfoResponse"/><br/>
+        /// </summary>
+        public virtual Task<GameReportColumnInfoResponse> GetGameReportColumnInfoAsync(GetGameReportColumnInfo request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::getGameReportColumnValues</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetGameReportColumnValuesResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetGameReportColumnValuesResponse> GetGameReportColumnValuesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::submitTrustedMidGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitTrustedMidGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>GameReportingComponent::submitTrustedEndGameReport</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SubmitTrustedEndGameReportAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new GameReportingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>GameReportingComponent::ResultNotification</b> notification.<br/>
+        /// Notification type: <see cref="ResultNotification"/><br/>
+        /// </summary>
+        public static Task NotifyResultNotificationAsync(BlazeRpcConnection connection, ResultNotification notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = GameReportingComponentBase.Id;
+                frame.Command = (ushort)GameReportingComponentNotification.ResultNotification;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

@@ -1,8 +1,8 @@
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public enum SkillValueOverride : int
 {
-    public enum SkillValueOverride : int
-    {
-        USE_SERVER_SKILL_VALUE = 0x0,
-        CLIENT_OVERRIDE_SKILL_VALUE = 0x1,
-    }
+    USE_SERVER_SKILL_VALUE = 0,
+    CLIENT_OVERRIDE_SKILL_VALUE = 1,
 }
+

@@ -1,13 +1,37 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GameManager
+namespace Blaze2SDK.Blaze.GameManager;
+
+public class CancelMatchmakingRequest : Tdf
 {
-    [TdfStruct]
-    public struct CancelMatchmakingRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("MatchmakingSessionId", "mMatchmakingSessionId", 0xB73A6400, TdfType.UInt32, 0, true), // MSID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt32 _matchmakingSessionId = new(__typeInfos[0]);
+
+    public CancelMatchmakingRequest()
     {
-        
-        [TdfMember("MSID")]
-        public uint mMatchmakingSessionId;
-        
+        __members = [
+            _matchmakingSessionId,
+        ];
     }
+
+    public override Tdf CreateNew() => new CancelMatchmakingRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "CancelMatchmakingRequest";
+    public override string GetFullClassName() => "Blaze::GameManager::CancelMatchmakingRequest";
+
+    public uint MatchmakingSessionId
+    {
+        get => _matchmakingSessionId.Value;
+        set => _matchmakingSessionId.Value = value;
+    }
+
 }
+

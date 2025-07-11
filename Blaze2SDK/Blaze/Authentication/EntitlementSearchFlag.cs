@@ -1,9 +1,10 @@
-﻿namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+[Flags]
+public enum EntitlementSearchFlag : int
 {
-    [Flags]
-    public enum EntitlementSearchFlag
-    {
-        None = 0,
-        IncludeUnlinked = 2,
-    }
+    None = 0,
+    IncludePersonaLink = 1,
+    IncludeUnlinked = 2,
 }
+

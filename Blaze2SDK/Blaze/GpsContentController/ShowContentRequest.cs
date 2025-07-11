@@ -1,16 +1,46 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.GpsContentController
+namespace Blaze2SDK.Blaze.GpsContentController;
+
+public class ShowContentRequest : Tdf
 {
-    [TdfStruct]
-    public struct ShowContentRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("ContentId", "mContentId", 0x8EFA6400, TdfType.UInt64, 0, true), // COID
+        new TdfMemberInfo("Show", "mShow", 0xCE8BF700, TdfType.Bool, 1, true), // SHOW
+    ];
+    private ITdfMember[] __members;
+
+    private TdfUInt64 _contentId = new(__typeInfos[0]);
+    private TdfBool _show = new(__typeInfos[1]);
+
+    public ShowContentRequest()
     {
-        
-        [TdfMember("COID")]
-        public ulong mContentId;
-        
-        [TdfMember("SHOW")]
-        public bool mShow;
-        
+        __members = [
+            _contentId,
+            _show,
+        ];
     }
+
+    public override Tdf CreateNew() => new ShowContentRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "ShowContentRequest";
+    public override string GetFullClassName() => "Blaze::GpsContentController::ShowContentRequest";
+
+    public ulong ContentId
+    {
+        get => _contentId.Value;
+        set => _contentId.Value = value;
+    }
+
+    public bool Show
+    {
+        get => _show.Value;
+        set => _show.Value = value;
+    }
+
 }
+

@@ -1,493 +1,370 @@
+using Blaze.Core;
 using Blaze2SDK.Blaze;
 using Blaze2SDK.Blaze.Util;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class UtilComponentBase
 {
-    public static class UtilComponentBase
+    public const ushort Id = 9;
+    public const string Name = "UtilComponent";
+    
+    public enum Error : ushort {
+        UTIL_CONFIG_NOT_FOUND = 100,
+        UTIL_TELEMETRY_NO_SERVERS_AVAILABLE = 150,
+        UTIL_TELEMETRY_OUT_OF_MEMORY = 151,
+        UTIL_TELEMETRY_KEY_TOO_LONG = 152,
+        UTIL_TELEMETRY_INVALID_MAC_ADDRESS = 153,
+        UTIL_TICKER_NO_SERVERS_AVAILABLE = 155,
+        UTIL_TICKER_KEY_TOO_LONG = 156,
+        UTIL_USS_RECORD_NOT_FOUND = 200,
+        UTIL_USS_TOO_MANY_KEYS = 201,
+        UTIL_USS_DB_ERROR = 202,
+        UTIL_USS_USER_NO_EXTENDED_DATA = 250,
+    }
+    
+    public enum UtilComponentCommand : ushort
     {
-        public const ushort Id = 9;
-        public const string Name = "UtilComponent";
+        fetchClientConfig = 1,
+        ping = 2,
+        setClientData = 3,
+        localizeStrings = 4,
+        getTelemetryServer = 5,
+        getTickerServer = 6,
+        preAuth = 7,
+        postAuth = 8,
+        userSettingsLoad = 10,
+        userSettingsSave = 11,
+        userSettingsLoadAll = 12,
+        userSettingsLoadAllForUserId = 13,
+        filterForProfanity = 20,
+        fetchQosConfig = 21,
+        setClientMetrics = 22,
+        setConnectionState = 23,
+    }
+    
+    public enum UtilComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => UtilComponentBase.Id;
+        public override string Name => UtilComponentBase.Name;
         
-        public class Server : BlazeServerComponent<UtilComponentCommand, UtilComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(UtilComponentCommand command) => false;
+        
+        public class UtilException : BlazeRpcException
         {
-            public Server() : base(UtilComponentBase.Id, UtilComponentBase.Name)
+            public UtilException(Error error) : base((ushort)error, null) { }
+            public UtilException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public UtilException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public UtilException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public UtilException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public UtilException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public UtilException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public UtilException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<FetchClientConfigRequest, FetchConfigResponse, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)UtilComponentCommand.fetchClientConfig,
+                Name = "fetchClientConfig",
+                IsSupported = IsCommandSupported(UtilComponentCommand.fetchClientConfig),
+                Func = async (req, ctx) => await FetchClientConfigAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.fetchClientConfig)]
-            public virtual Task<FetchConfigResponse> FetchClientConfigAsync(FetchClientConfigRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, PingResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.ping,
+                Name = "ping",
+                IsSupported = IsCommandSupported(UtilComponentCommand.ping),
+                Func = async (req, ctx) => await PingAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.ping)]
-            public virtual Task<PingResponse> PingAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<ClientData, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.setClientData,
+                Name = "setClientData",
+                IsSupported = IsCommandSupported(UtilComponentCommand.setClientData),
+                Func = async (req, ctx) => await SetClientDataAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.setClientData)]
-            public virtual Task<NullStruct> SetClientDataAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.localizeStrings,
+                Name = "localizeStrings",
+                IsSupported = IsCommandSupported(UtilComponentCommand.localizeStrings),
+                Func = async (req, ctx) => await LocalizeStringsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.localizeStrings)]
-            public virtual Task<NullStruct> LocalizeStringsAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<GetTelemetryServerRequest, GetTelemetryServerResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.getTelemetryServer,
+                Name = "getTelemetryServer",
+                IsSupported = IsCommandSupported(UtilComponentCommand.getTelemetryServer),
+                Func = async (req, ctx) => await GetTelemetryServerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.getTelemetryServer)]
-            public virtual Task<GetTelemetryServerResponse> GetTelemetryServerAsync(GetTelemetryServerRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, GetTickerServerResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.getTickerServer,
+                Name = "getTickerServer",
+                IsSupported = IsCommandSupported(UtilComponentCommand.getTickerServer),
+                Func = async (req, ctx) => await GetTickerServerAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.getTickerServer)]
-            public virtual Task<NullStruct> GetTickerServerAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<PreAuthRequest, PreAuthResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.preAuth,
+                Name = "preAuth",
+                IsSupported = IsCommandSupported(UtilComponentCommand.preAuth),
+                Func = async (req, ctx) => await PreAuthAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.preAuth)]
-            public virtual Task<PreAuthResponse> PreAuthAsync(PreAuthRequest request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, PostAuthResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.postAuth,
+                Name = "postAuth",
+                IsSupported = IsCommandSupported(UtilComponentCommand.postAuth),
+                Func = async (req, ctx) => await PostAuthAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.postAuth)]
-            public virtual Task<PostAuthResponse> PostAuthAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.userSettingsLoad,
+                Name = "userSettingsLoad",
+                IsSupported = IsCommandSupported(UtilComponentCommand.userSettingsLoad),
+                Func = async (req, ctx) => await UserSettingsLoadAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoad)]
-            public virtual Task<NullStruct> UserSettingsLoadAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.userSettingsSave,
+                Name = "userSettingsSave",
+                IsSupported = IsCommandSupported(UtilComponentCommand.userSettingsSave),
+                Func = async (req, ctx) => await UserSettingsSaveAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsSave)]
-            public virtual Task<NullStruct> UserSettingsSaveAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.userSettingsLoadAll,
+                Name = "userSettingsLoadAll",
+                IsSupported = IsCommandSupported(UtilComponentCommand.userSettingsLoadAll),
+                Func = async (req, ctx) => await UserSettingsLoadAllAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoadAll)]
-            public virtual Task<NullStruct> UserSettingsLoadAllAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.userSettingsLoadAllForUserId,
+                Name = "userSettingsLoadAllForUserId",
+                IsSupported = IsCommandSupported(UtilComponentCommand.userSettingsLoadAllForUserId),
+                Func = async (req, ctx) => await UserSettingsLoadAllForUserIdAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoadAllForUserId)]
-            public virtual Task<NullStruct> UserSettingsLoadAllForUserIdAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<FilterUserTextResponse, FilterUserTextResponse, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.filterForProfanity,
+                Name = "filterForProfanity",
+                IsSupported = IsCommandSupported(UtilComponentCommand.filterForProfanity),
+                Func = async (req, ctx) => await FilterForProfanityAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.filterForProfanity)]
-            public virtual Task<FilterUserTextResponse> FilterForProfanityAsync(FilterUserTextResponse request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, QosConfigInfo, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.fetchQosConfig,
+                Name = "fetchQosConfig",
+                IsSupported = IsCommandSupported(UtilComponentCommand.fetchQosConfig),
+                Func = async (req, ctx) => await FetchQosConfigAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.fetchQosConfig)]
-            public virtual Task<NullStruct> FetchQosConfigAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<ClientMetrics, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)UtilComponentCommand.setClientMetrics,
+                Name = "setClientMetrics",
+                IsSupported = IsCommandSupported(UtilComponentCommand.setClientMetrics),
+                Func = async (req, ctx) => await SetClientMetricsAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)UtilComponentCommand.setClientMetrics)]
-            public virtual Task<NullStruct> SetClientMetricsAsync(ClientMetrics request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.setConnectionState)]
-            public virtual Task<NullStruct> SetConnectionStateAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
+                Id = (ushort)UtilComponentCommand.setConnectionState,
+                Name = "setConnectionState",
+                IsSupported = IsCommandSupported(UtilComponentCommand.setConnectionState),
+                Func = async (req, ctx) => await SetConnectionStateAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<UtilComponentCommand, UtilComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(UtilComponentBase.Id, UtilComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public FetchConfigResponse FetchClientConfig(FetchClientConfigRequest request)
-            {
-                return Connection.SendRequest<FetchClientConfigRequest, FetchConfigResponse, NullStruct>(this, (ushort)UtilComponentCommand.fetchClientConfig, request);
-            }
-            public Task<FetchConfigResponse> FetchClientConfigAsync(FetchClientConfigRequest request)
-            {
-                return Connection.SendRequestAsync<FetchClientConfigRequest, FetchConfigResponse, NullStruct>(this, (ushort)UtilComponentCommand.fetchClientConfig, request);
-            }
-            
-            public PingResponse Ping()
-            {
-                return Connection.SendRequest<NullStruct, PingResponse, NullStruct>(this, (ushort)UtilComponentCommand.ping, new NullStruct());
-            }
-            public Task<PingResponse> PingAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, PingResponse, NullStruct>(this, (ushort)UtilComponentCommand.ping, new NullStruct());
-            }
-            
-            public NullStruct SetClientData()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientData, new NullStruct());
-            }
-            public Task<NullStruct> SetClientDataAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientData, new NullStruct());
-            }
-            
-            public NullStruct LocalizeStrings()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.localizeStrings, new NullStruct());
-            }
-            public Task<NullStruct> LocalizeStringsAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.localizeStrings, new NullStruct());
-            }
-            
-            public GetTelemetryServerResponse GetTelemetryServer(GetTelemetryServerRequest request)
-            {
-                return Connection.SendRequest<GetTelemetryServerRequest, GetTelemetryServerResponse, NullStruct>(this, (ushort)UtilComponentCommand.getTelemetryServer, request);
-            }
-            public Task<GetTelemetryServerResponse> GetTelemetryServerAsync(GetTelemetryServerRequest request)
-            {
-                return Connection.SendRequestAsync<GetTelemetryServerRequest, GetTelemetryServerResponse, NullStruct>(this, (ushort)UtilComponentCommand.getTelemetryServer, request);
-            }
-            
-            public NullStruct GetTickerServer()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.getTickerServer, new NullStruct());
-            }
-            public Task<NullStruct> GetTickerServerAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.getTickerServer, new NullStruct());
-            }
-            
-            public PreAuthResponse PreAuth(PreAuthRequest request)
-            {
-                return Connection.SendRequest<PreAuthRequest, PreAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.preAuth, request);
-            }
-            public Task<PreAuthResponse> PreAuthAsync(PreAuthRequest request)
-            {
-                return Connection.SendRequestAsync<PreAuthRequest, PreAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.preAuth, request);
-            }
-            
-            public PostAuthResponse PostAuth()
-            {
-                return Connection.SendRequest<NullStruct, PostAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.postAuth, new NullStruct());
-            }
-            public Task<PostAuthResponse> PostAuthAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, PostAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.postAuth, new NullStruct());
-            }
-            
-            public NullStruct UserSettingsLoad()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoad, new NullStruct());
-            }
-            public Task<NullStruct> UserSettingsLoadAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoad, new NullStruct());
-            }
-            
-            public NullStruct UserSettingsSave()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsSave, new NullStruct());
-            }
-            public Task<NullStruct> UserSettingsSaveAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsSave, new NullStruct());
-            }
-            
-            public NullStruct UserSettingsLoadAll()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAll, new NullStruct());
-            }
-            public Task<NullStruct> UserSettingsLoadAllAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAll, new NullStruct());
-            }
-            
-            public NullStruct UserSettingsLoadAllForUserId()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAllForUserId, new NullStruct());
-            }
-            public Task<NullStruct> UserSettingsLoadAllForUserIdAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAllForUserId, new NullStruct());
-            }
-            
-            public FilterUserTextResponse FilterForProfanity(FilterUserTextResponse request)
-            {
-                return Connection.SendRequest<FilterUserTextResponse, FilterUserTextResponse, NullStruct>(this, (ushort)UtilComponentCommand.filterForProfanity, request);
-            }
-            public Task<FilterUserTextResponse> FilterForProfanityAsync(FilterUserTextResponse request)
-            {
-                return Connection.SendRequestAsync<FilterUserTextResponse, FilterUserTextResponse, NullStruct>(this, (ushort)UtilComponentCommand.filterForProfanity, request);
-            }
-            
-            public NullStruct FetchQosConfig()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.fetchQosConfig, new NullStruct());
-            }
-            public Task<NullStruct> FetchQosConfigAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.fetchQosConfig, new NullStruct());
-            }
-            
-            public NullStruct SetClientMetrics(ClientMetrics request)
-            {
-                return Connection.SendRequest<ClientMetrics, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientMetrics, request);
-            }
-            public Task<NullStruct> SetClientMetricsAsync(ClientMetrics request)
-            {
-                return Connection.SendRequestAsync<ClientMetrics, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientMetrics, request);
-            }
-            
-            public NullStruct SetConnectionState()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setConnectionState, new NullStruct());
-            }
-            public Task<NullStruct> SetConnectionStateAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setConnectionState, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<UtilComponentCommand, UtilComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::fetchClientConfig</b> command.<br/>
+        /// Request type: <see cref="FetchClientConfigRequest"/><br/>
+        /// Response type: <see cref="FetchConfigResponse"/><br/>
+        /// </summary>
+        public virtual Task<FetchConfigResponse> FetchClientConfigAsync(FetchClientConfigRequest request, BlazeRpcContext context)
         {
-            public Proxy() : base(UtilComponentBase.Id, UtilComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.fetchClientConfig)]
-            public virtual Task<FetchConfigResponse> FetchClientConfigAsync(FetchClientConfigRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<FetchClientConfigRequest, FetchConfigResponse, NullStruct>(this, (ushort)UtilComponentCommand.fetchClientConfig, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.ping)]
-            public virtual Task<PingResponse> PingAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, PingResponse, NullStruct>(this, (ushort)UtilComponentCommand.ping, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.setClientData)]
-            public virtual Task<NullStruct> SetClientDataAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientData, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.localizeStrings)]
-            public virtual Task<NullStruct> LocalizeStringsAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.localizeStrings, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.getTelemetryServer)]
-            public virtual Task<GetTelemetryServerResponse> GetTelemetryServerAsync(GetTelemetryServerRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<GetTelemetryServerRequest, GetTelemetryServerResponse, NullStruct>(this, (ushort)UtilComponentCommand.getTelemetryServer, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.getTickerServer)]
-            public virtual Task<NullStruct> GetTickerServerAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.getTickerServer, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.preAuth)]
-            public virtual Task<PreAuthResponse> PreAuthAsync(PreAuthRequest request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<PreAuthRequest, PreAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.preAuth, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.postAuth)]
-            public virtual Task<PostAuthResponse> PostAuthAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, PostAuthResponse, NullStruct>(this, (ushort)UtilComponentCommand.postAuth, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoad)]
-            public virtual Task<NullStruct> UserSettingsLoadAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoad, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsSave)]
-            public virtual Task<NullStruct> UserSettingsSaveAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsSave, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoadAll)]
-            public virtual Task<NullStruct> UserSettingsLoadAllAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAll, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.userSettingsLoadAllForUserId)]
-            public virtual Task<NullStruct> UserSettingsLoadAllForUserIdAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.userSettingsLoadAllForUserId, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.filterForProfanity)]
-            public virtual Task<FilterUserTextResponse> FilterForProfanityAsync(FilterUserTextResponse request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<FilterUserTextResponse, FilterUserTextResponse, NullStruct>(this, (ushort)UtilComponentCommand.filterForProfanity, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.fetchQosConfig)]
-            public virtual Task<NullStruct> FetchQosConfigAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.fetchQosConfig, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.setClientMetrics)]
-            public virtual Task<NullStruct> SetClientMetricsAsync(ClientMetrics request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<ClientMetrics, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setClientMetrics, request);
-            }
-            
-            [BlazeCommand((ushort)UtilComponentCommand.setConnectionState)]
-            public virtual Task<NullStruct> SetConnectionStateAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)UtilComponentCommand.setConnectionState, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(UtilComponentCommand command) => UtilComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(UtilComponentCommand command) => UtilComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(UtilComponentNotification notification) => UtilComponentBase.GetNotificationType(notification);
-            
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(UtilComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::ping</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="PingResponse"/><br/>
+        /// </summary>
+        public virtual Task<PingResponse> PingAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            UtilComponentCommand.fetchClientConfig => typeof(FetchClientConfigRequest),
-            UtilComponentCommand.ping => typeof(NullStruct),
-            UtilComponentCommand.setClientData => typeof(NullStruct),
-            UtilComponentCommand.localizeStrings => typeof(NullStruct),
-            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerRequest),
-            UtilComponentCommand.getTickerServer => typeof(NullStruct),
-            UtilComponentCommand.preAuth => typeof(PreAuthRequest),
-            UtilComponentCommand.postAuth => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
-            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
-            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
-            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
-            UtilComponentCommand.setClientMetrics => typeof(ClientMetrics),
-            UtilComponentCommand.setConnectionState => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(UtilComponentCommand command) => command switch
-        {
-            UtilComponentCommand.fetchClientConfig => typeof(FetchConfigResponse),
-            UtilComponentCommand.ping => typeof(PingResponse),
-            UtilComponentCommand.setClientData => typeof(NullStruct),
-            UtilComponentCommand.localizeStrings => typeof(NullStruct),
-            UtilComponentCommand.getTelemetryServer => typeof(GetTelemetryServerResponse),
-            UtilComponentCommand.getTickerServer => typeof(NullStruct),
-            UtilComponentCommand.preAuth => typeof(PreAuthResponse),
-            UtilComponentCommand.postAuth => typeof(PostAuthResponse),
-            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
-            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
-            UtilComponentCommand.filterForProfanity => typeof(FilterUserTextResponse),
-            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
-            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
-            UtilComponentCommand.setConnectionState => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(UtilComponentCommand command) => command switch
-        {
-            UtilComponentCommand.fetchClientConfig => typeof(NullStruct),
-            UtilComponentCommand.ping => typeof(NullStruct),
-            UtilComponentCommand.setClientData => typeof(NullStruct),
-            UtilComponentCommand.localizeStrings => typeof(NullStruct),
-            UtilComponentCommand.getTelemetryServer => typeof(NullStruct),
-            UtilComponentCommand.getTickerServer => typeof(NullStruct),
-            UtilComponentCommand.preAuth => typeof(NullStruct),
-            UtilComponentCommand.postAuth => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoad => typeof(NullStruct),
-            UtilComponentCommand.userSettingsSave => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAll => typeof(NullStruct),
-            UtilComponentCommand.userSettingsLoadAllForUserId => typeof(NullStruct),
-            UtilComponentCommand.filterForProfanity => typeof(NullStruct),
-            UtilComponentCommand.fetchQosConfig => typeof(NullStruct),
-            UtilComponentCommand.setClientMetrics => typeof(NullStruct),
-            UtilComponentCommand.setConnectionState => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(UtilComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum UtilComponentCommand : ushort
-        {
-            fetchClientConfig = 1,
-            ping = 2,
-            setClientData = 3,
-            localizeStrings = 4,
-            getTelemetryServer = 5,
-            getTickerServer = 6,
-            preAuth = 7,
-            postAuth = 8,
-            userSettingsLoad = 10,
-            userSettingsSave = 11,
-            userSettingsLoadAll = 12,
-            userSettingsLoadAllForUserId = 13,
-            filterForProfanity = 20,
-            fetchQosConfig = 21,
-            setClientMetrics = 22,
-            setConnectionState = 23,
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum UtilComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::setClientData</b> command.<br/>
+        /// Request type: <see cref="ClientData"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetClientDataAsync(ClientData request, BlazeRpcContext context)
         {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::localizeStrings</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> LocalizeStringsAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::getTelemetryServer</b> command.<br/>
+        /// Request type: <see cref="GetTelemetryServerRequest"/><br/>
+        /// Response type: <see cref="GetTelemetryServerResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetTelemetryServerResponse> GetTelemetryServerAsync(GetTelemetryServerRequest request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::getTickerServer</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="GetTickerServerResponse"/><br/>
+        /// </summary>
+        public virtual Task<GetTickerServerResponse> GetTickerServerAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::preAuth</b> command.<br/>
+        /// Request type: <see cref="PreAuthRequest"/><br/>
+        /// Response type: <see cref="PreAuthResponse"/><br/>
+        /// </summary>
+        public virtual Task<PreAuthResponse> PreAuthAsync(PreAuthRequest request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::postAuth</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="PostAuthResponse"/><br/>
+        /// </summary>
+        public virtual Task<PostAuthResponse> PostAuthAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::userSettingsLoad</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UserSettingsLoadAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::userSettingsSave</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UserSettingsSaveAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::userSettingsLoadAll</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UserSettingsLoadAllAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::userSettingsLoadAllForUserId</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> UserSettingsLoadAllForUserIdAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::filterForProfanity</b> command.<br/>
+        /// Request type: <see cref="FilterUserTextResponse"/><br/>
+        /// Response type: <see cref="FilterUserTextResponse"/><br/>
+        /// </summary>
+        public virtual Task<FilterUserTextResponse> FilterForProfanityAsync(FilterUserTextResponse request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::fetchQosConfig</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="QosConfigInfo"/><br/>
+        /// </summary>
+        public virtual Task<QosConfigInfo> FetchQosConfigAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::setClientMetrics</b> command.<br/>
+        /// Request type: <see cref="ClientMetrics"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetClientMetricsAsync(ClientMetrics request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>UtilComponent::setConnectionState</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SetConnectionStateAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new UtilException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

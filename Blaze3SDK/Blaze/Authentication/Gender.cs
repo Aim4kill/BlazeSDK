@@ -1,9 +1,9 @@
-namespace Blaze3SDK.Blaze.Authentication
+namespace Blaze3SDK.Blaze.Authentication;
+
+public enum Gender : int
 {
-	public enum Gender : int
-	{
-		UNKNOWN = 0,
-		FEMALE = 1,
-		MALE = 2,
-	}
+    UNKNOWN = 0,
+    FEMALE = 1,
+    MALE = 2,
 }
+

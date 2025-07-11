@@ -1,41 +1,82 @@
-using System.ComponentModel.DataAnnotations;
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze2SDK.Blaze.Authentication
+namespace Blaze2SDK.Blaze.Authentication;
+
+public class ConsumecodeRequest : Tdf
 {
-    [TdfStruct]
-    public struct ConsumecodeRequest
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("IsCdKey", "mIsCdKey", 0x8E4AF900, TdfType.Bool, 0, true), // CDKY
+        new TdfMemberInfo("ConsoleId", "mConsoleId", 0x8EEA6400, TdfType.Blob, 1, true), // CNID
+        new TdfMemberInfo("GroupName", "mGroupName", 0x9EE86D00, TdfType.String, 2, true), // GNAM
+        new TdfMemberInfo("Code", "mCode", 0xAE5E4000, TdfType.String, 3, true), // KEY
+        new TdfMemberInfo("ProductId", "mProductId", 0xC2990000, TdfType.String, 4, true), // PID
+        new TdfMemberInfo("IsBindPersona", "mIsBindPersona", 0xC2EA6400, TdfType.Bool, 5, true), // PNID
+    ];
+    private ITdfMember[] __members;
+
+    private TdfBool _isCdKey = new(__typeInfos[0]);
+    private TdfBlob _consoleId = new(__typeInfos[1]);
+    private TdfString _groupName = new(__typeInfos[2]);
+    private TdfString _code = new(__typeInfos[3]);
+    private TdfString _productId = new(__typeInfos[4]);
+    private TdfBool _isBindPersona = new(__typeInfos[5]);
+
+    public ConsumecodeRequest()
     {
-        
-        [TdfMember("CDKY")]
-        public bool mIsCdKey;
-        
-        [TdfMember("CNID")]
-        public byte[] mConsoleId;
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("GNAM")]
-        [StringLength(64)]
-        public string mGroupName;
-        
-        /// <summary>
-        /// Max String Length: 128
-        /// </summary>
-        [TdfMember("KEY")]
-        [StringLength(128)]
-        public string mCode;
-        
-        /// <summary>
-        /// Max String Length: 64
-        /// </summary>
-        [TdfMember("PID")]
-        [StringLength(64)]
-        public string mProductId;
-        
-        [TdfMember("PNID")]
-        public bool mIsBindPersona;
-        
+        __members = [
+            _isCdKey,
+            _consoleId,
+            _groupName,
+            _code,
+            _productId,
+            _isBindPersona,
+        ];
     }
+
+    public override Tdf CreateNew() => new ConsumecodeRequest();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "ConsumecodeRequest";
+    public override string GetFullClassName() => "Blaze::Authentication::ConsumecodeRequest";
+
+    public bool IsCdKey
+    {
+        get => _isCdKey.Value;
+        set => _isCdKey.Value = value;
+    }
+
+    public byte[] ConsoleId
+    {
+        get => _consoleId.Value;
+        set => _consoleId.Value = value;
+    }
+
+    public string GroupName
+    {
+        get => _groupName.Value;
+        set => _groupName.Value = value;
+    }
+
+    public string Code
+    {
+        get => _code.Value;
+        set => _code.Value = value;
+    }
+
+    public string ProductId
+    {
+        get => _productId.Value;
+        set => _productId.Value = value;
+    }
+
+    public bool IsBindPersona
+    {
+        get => _isBindPersona.Value;
+        set => _isBindPersona.Value = value;
+    }
+
 }
+

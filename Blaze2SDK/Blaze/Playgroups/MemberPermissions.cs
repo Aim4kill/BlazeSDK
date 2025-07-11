@@ -1,13 +1,13 @@
-﻿namespace Blaze2SDK.Blaze.Playgroups
+namespace Blaze2SDK.Blaze.Playgroups;
+
+[Flags]
+public enum MemberPermissions : int
 {
-    [Flags]
-    public enum MemberPermissions
-    {
-        None = 0,
-        DestroyPlaygroup = 1,
-        JoinGame = 2,
-        KickPlaygroupMember = 4,
-        ModifyPlaygroupAttributes = 8,
-        ModifyPlaygroupJoinControls = 16,
-    }
+    None = 0,
+    DestroyPlaygroup = 1,
+    JoinGame = 2,
+    KickPlaygroupMember = 4,
+    ModifyPlaygroupAttributes = 8,
+    ModifyPlaygroupJoinControls = 16,
 }
+

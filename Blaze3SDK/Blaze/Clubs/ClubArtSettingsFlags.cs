@@ -1,8 +1,8 @@
-﻿namespace Blaze3SDK.Blaze.Clubs
+namespace Blaze3SDK.Blaze.Clubs;
+
+[Flags]
+public enum ClubArtSettingsFlags : int
 {
-    [Flags]
-    public enum ClubArtSettingsFlags
-    {
-        None = 0,
-    }
+    None = 0,
 }
+

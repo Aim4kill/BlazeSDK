@@ -1,8 +1,8 @@
-namespace Blaze3SDK.Blaze.Locker
+namespace Blaze3SDK.Blaze.Locker;
+
+public enum UploadStatus : int
 {
-	public enum UploadStatus : int
-	{
-		SUCCESS = 0,
-		FAILURE = 1,
-	}
+    SUCCESS = 0,
+    FAILURE = 1,
 }
+

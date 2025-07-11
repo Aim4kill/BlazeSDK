@@ -1,48 +1,45 @@
 {
-  "Usings": [
-    "BlazeCommon",
-    "NLog"
-  ],
+  "Usings": [],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 2000,
+  "Name": "DynamicInetFilterComponent",
+  "ShortName": "DynamicInetFilter",
+  "ErrorCodes": {
+    "1": "DYNAMICINETFILTER_ERR_ROW_NOT_FOUND",
+    "2": "DYNAMICINETFILTER_ERR_INVALID_GROUP",
+    "3": "DYNAMICINETFILTER_ERR_INVALID_OWNER",
+    "4": "DYNAMICINETFILTER_ERR_INVALID_SUBNET",
+    "5": "DYNAMICINETFILTER_ERR_INVALID_COMMENT"
+  },
+  "Methods": [
     {
-      "Id": 2000,
-      "Name": "DynamicInetFilterComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "add",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "update",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "remove",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "listInfo",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": []
+      "Id": 1,
+      "Name": "add",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "update",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "remove",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "listInfo",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
     }
-  ]
+  ],
+  "Notifications": []
 }

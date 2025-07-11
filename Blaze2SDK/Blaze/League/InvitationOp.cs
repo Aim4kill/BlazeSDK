@@ -1,8 +1,8 @@
-namespace Blaze2SDK.Blaze.League
+namespace Blaze2SDK.Blaze.League;
+
+public enum InvitationOp : int
 {
-    public enum InvitationOp : int
-    {
-        INVITATION_REJECT = 0x1,
-        INVITATION_REVOKE = 0x2,
-    }
+    INVITATION_REJECT = 1,
+    INVITATION_REVOKE = 2,
 }
+

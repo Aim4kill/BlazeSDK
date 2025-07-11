@@ -1,237 +1,181 @@
+using Blaze.Core;
 using Blaze3SDK.Blaze.Messaging;
-using BlazeCommon;
-using NLog;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze3SDK.Components
+namespace Blaze3SDK.Components;
+
+public static class MessagingComponentBase
 {
-    public static class MessagingComponentBase
+    public const ushort Id = 15;
+    public const string Name = "MessagingComponent";
+    
+    public enum Error : ushort {
+        MESSAGING_ERR_UNKNOWN = 1,
+        MESSAGING_ERR_MAX_ATTR_EXCEEDED = 2,
+        MESSAGING_ERR_DATABASE = 3,
+        MESSAGING_ERR_TARGET_NOT_FOUND = 4,
+        MESSAGING_ERR_TARGET_TYPE_INVALID = 5,
+        MESSAGING_ERR_TARGET_INBOX_FULL = 6,
+        MESSAGING_ERR_MATCH_NOT_FOUND = 7,
+        MESSAGING_ERR_FEATURE_DISABLED = 8,
+        MESSAGING_ERR_INVALID_PARAM = 9,
+    }
+    
+    public enum MessagingComponentCommand : ushort
     {
-        public const ushort Id = 15;
-        public const string Name = "MessagingComponent";
+        sendMessage = 1,
+        fetchMessages = 2,
+        purgeMessages = 3,
+        touchMessages = 4,
+        getMessages = 5,
+    }
+    
+    public enum MessagingComponentNotification : ushort
+    {
+        NotifyMessage = 1,
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => MessagingComponentBase.Id;
+        public override string Name => MessagingComponentBase.Name;
         
-        public class Server : BlazeServerComponent<MessagingComponentCommand, MessagingComponentNotification, Blaze3RpcError>
+        public virtual bool IsCommandSupported(MessagingComponentCommand command) => false;
+        
+        public class MessagingException : BlazeRpcException
         {
-            public Server() : base(MessagingComponentBase.Id, MessagingComponentBase.Name)
+            public MessagingException(Error error) : base((ushort)error, null) { }
+            public MessagingException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public MessagingException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public MessagingException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public MessagingException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public MessagingException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public MessagingException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public MessagingException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
+                Id = (ushort)MessagingComponentCommand.sendMessage,
+                Name = "sendMessage",
+                IsSupported = IsCommandSupported(MessagingComponentCommand.sendMessage),
+                Func = async (req, ctx) => await SendMessageAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MessagingComponentCommand.sendMessage)]
-            public virtual Task<NullStruct> SendMessageAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MessagingComponentCommand.fetchMessages,
+                Name = "fetchMessages",
+                IsSupported = IsCommandSupported(MessagingComponentCommand.fetchMessages),
+                Func = async (req, ctx) => await FetchMessagesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MessagingComponentCommand.fetchMessages)]
-            public virtual Task<NullStruct> FetchMessagesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MessagingComponentCommand.purgeMessages,
+                Name = "purgeMessages",
+                IsSupported = IsCommandSupported(MessagingComponentCommand.purgeMessages),
+                Func = async (req, ctx) => await PurgeMessagesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MessagingComponentCommand.purgeMessages)]
-            public virtual Task<NullStruct> PurgeMessagesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
+                Id = (ushort)MessagingComponentCommand.touchMessages,
+                Name = "touchMessages",
+                IsSupported = IsCommandSupported(MessagingComponentCommand.touchMessages),
+                Func = async (req, ctx) => await TouchMessagesAsync(req, ctx).ConfigureAwait(false)
+            });
             
-            [BlazeCommand((ushort)MessagingComponentCommand.touchMessages)]
-            public virtual Task<NullStruct> TouchMessagesAsync(NullStruct request, BlazeRpcContext context)
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.getMessages)]
-            public virtual Task<NullStruct> GetMessagesAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze3RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public static Task NotifyMessageAsync(BlazeServerConnection connection, ServerMessage notification, bool waitUntilFree = false)
-            {
-                return connection.NotifyAsync(MessagingComponentBase.Id, (ushort)MessagingComponentNotification.NotifyMessage, notification, waitUntilFree);
-            }
-            
-            public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MessagingComponentNotification notification) => MessagingComponentBase.GetNotificationType(notification);
+                Id = (ushort)MessagingComponentCommand.getMessages,
+                Name = "getMessages",
+                IsSupported = IsCommandSupported(MessagingComponentCommand.getMessages),
+                Func = async (req, ctx) => await GetMessagesAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<MessagingComponentCommand, MessagingComponentNotification, Blaze3RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(MessagingComponentBase.Id, MessagingComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct SendMessage()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.sendMessage, new NullStruct());
-            }
-            public Task<NullStruct> SendMessageAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.sendMessage, new NullStruct());
-            }
-            
-            public NullStruct FetchMessages()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.fetchMessages, new NullStruct());
-            }
-            public Task<NullStruct> FetchMessagesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.fetchMessages, new NullStruct());
-            }
-            
-            public NullStruct PurgeMessages()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.purgeMessages, new NullStruct());
-            }
-            public Task<NullStruct> PurgeMessagesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.purgeMessages, new NullStruct());
-            }
-            
-            public NullStruct TouchMessages()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.touchMessages, new NullStruct());
-            }
-            public Task<NullStruct> TouchMessagesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.touchMessages, new NullStruct());
-            }
-            
-            public NullStruct GetMessages()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.getMessages, new NullStruct());
-            }
-            public Task<NullStruct> GetMessagesAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.getMessages, new NullStruct());
-            }
-            
-            
-            [BlazeNotification((ushort)MessagingComponentNotification.NotifyMessage)]
-            public virtual Task OnNotifyMessageAsync(ServerMessage notification)
-            {
-                _logger.Warn($"{GetType().FullName}: OnNotifyMessageAsync NOT IMPLEMENTED!");
-                return Task.CompletedTask;
-            }
-            
-            public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MessagingComponentNotification notification) => MessagingComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<MessagingComponentCommand, MessagingComponentNotification, Blaze3RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>MessagingComponent::sendMessage</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> SendMessageAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(MessagingComponentBase.Id, MessagingComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.sendMessage)]
-            public virtual Task<NullStruct> SendMessageAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.sendMessage, request);
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.fetchMessages)]
-            public virtual Task<NullStruct> FetchMessagesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.fetchMessages, request);
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.purgeMessages)]
-            public virtual Task<NullStruct> PurgeMessagesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.purgeMessages, request);
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.touchMessages)]
-            public virtual Task<NullStruct> TouchMessagesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.touchMessages, request);
-            }
-            
-            [BlazeCommand((ushort)MessagingComponentCommand.getMessages)]
-            public virtual Task<NullStruct> GetMessagesAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)MessagingComponentCommand.getMessages, request);
-            }
-            
-            
-            [BlazeNotification((ushort)MessagingComponentNotification.NotifyMessage)]
-            public virtual Task<ServerMessage> OnNotifyMessageAsync(ServerMessage notification)
-            {
-                return Task.FromResult(notification);
-            }
-            
-            public override Type GetCommandRequestType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(MessagingComponentCommand command) => MessagingComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(MessagingComponentNotification notification) => MessagingComponentBase.GetNotificationType(notification);
-            
+            throw new MessagingException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public static Type GetCommandRequestType(MessagingComponentCommand command) => command switch
+        /// <summary>
+        /// This method is called when server receives a <b>MessagingComponent::fetchMessages</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> FetchMessagesAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            MessagingComponentCommand.sendMessage => typeof(NullStruct),
-            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
-            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
-            MessagingComponentCommand.touchMessages => typeof(NullStruct),
-            MessagingComponentCommand.getMessages => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(MessagingComponentCommand command) => command switch
-        {
-            MessagingComponentCommand.sendMessage => typeof(NullStruct),
-            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
-            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
-            MessagingComponentCommand.touchMessages => typeof(NullStruct),
-            MessagingComponentCommand.getMessages => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(MessagingComponentCommand command) => command switch
-        {
-            MessagingComponentCommand.sendMessage => typeof(NullStruct),
-            MessagingComponentCommand.fetchMessages => typeof(NullStruct),
-            MessagingComponentCommand.purgeMessages => typeof(NullStruct),
-            MessagingComponentCommand.touchMessages => typeof(NullStruct),
-            MessagingComponentCommand.getMessages => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(MessagingComponentNotification notification) => notification switch
-        {
-            MessagingComponentNotification.NotifyMessage => typeof(ServerMessage),
-            _ => typeof(NullStruct)
-        };
-        
-        public enum MessagingComponentCommand : ushort
-        {
-            sendMessage = 1,
-            fetchMessages = 2,
-            purgeMessages = 3,
-            touchMessages = 4,
-            getMessages = 5,
+            throw new MessagingException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
-        public enum MessagingComponentNotification : ushort
+        /// <summary>
+        /// This method is called when server receives a <b>MessagingComponent::purgeMessages</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> PurgeMessagesAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            NotifyMessage = 1,
+            throw new MessagingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>MessagingComponent::touchMessages</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> TouchMessagesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new MessagingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// This method is called when server receives a <b>MessagingComponent::getMessages</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> GetMessagesAsync(EmptyMessage request, BlazeRpcContext context)
+        {
+            throw new MessagingException(ServerError.ERR_COMMAND_NOT_FOUND);
+        }
+        
+        /// <summary>
+        /// Call this method when you want to send to client a <b>MessagingComponent::NotifyMessage</b> notification.<br/>
+        /// Notification type: <see cref="ServerMessage"/><br/>
+        /// </summary>
+        public static Task NotifyNotifyMessageAsync(BlazeRpcConnection connection, ServerMessage notification, bool sendNow = false)
+        {
+            Action<BlazePacket> configurer = (packet) =>
+            {
+                ProtoFire.Frames.IFireFrame frame = packet.Frame;
+                frame.Component = MessagingComponentBase.Id;
+                frame.Command = (ushort)MessagingComponentNotification.NotifyMessage;
+                frame.MessageType = ProtoFire.Frames.MessageType.Notification;
+                packet.Data = notification;
+            };
+            
+            if(sendNow)
+                return connection.SendAsync(configurer);
+            
+            connection.EnqequeSend(configurer);
+            return Task.CompletedTask;
         }
         
     }
+    
 }
+

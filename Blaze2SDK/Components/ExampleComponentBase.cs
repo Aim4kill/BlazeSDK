@@ -1,116 +1,73 @@
-using BlazeCommon;
-using NLog;
+using Blaze.Core;
+using EATDF;
+using EATDF.Types;
 
-namespace Blaze2SDK.Components
+namespace Blaze2SDK.Components;
+
+public static class ExampleComponentBase
 {
-    public static class ExampleComponentBase
+    public const ushort Id = 3;
+    public const string Name = "ExampleComponent";
+    
+    public enum Error : ushort {
+        EXAMPLE_ERR_UNKNOWN = 1,
+    }
+    
+    public enum ExampleComponentCommand : ushort
     {
-        public const ushort Id = 3;
-        public const string Name = "ExampleComponent";
+        poke = 1,
+    }
+    
+    public enum ExampleComponentNotification : ushort
+    {
+    }
+    
+    public class Server : BlazeComponent {
+        public override ushort Id => ExampleComponentBase.Id;
+        public override string Name => ExampleComponentBase.Name;
         
-        public class Server : BlazeServerComponent<ExampleComponentCommand, ExampleComponentNotification, Blaze2RpcError>
+        public virtual bool IsCommandSupported(ExampleComponentCommand command) => false;
+        
+        public class ExampleException : BlazeRpcException
         {
-            public Server() : base(ExampleComponentBase.Id, ExampleComponentBase.Name)
+            public ExampleException(Error error) : base((ushort)error, null) { }
+            public ExampleException(ServerError error) : base(error.WithErrorPrefix(), null) { }
+            public ExampleException(Error error, Tdf? errorResponse) : base((ushort)error, errorResponse) { }
+            public ExampleException(ServerError error, Tdf? errorResponse) : base(error.WithErrorPrefix(), errorResponse) { }
+            public ExampleException(Error error, Tdf? errorResponse, string? message) : base((ushort)error, errorResponse, message) { }
+            public ExampleException(ServerError error, Tdf? errorResponse, string? message) : base(error.WithErrorPrefix(), errorResponse, message) { }
+            public ExampleException(Error error, Tdf? errorResponse, string? message, Exception? innerException) : base((ushort)error, errorResponse, message, innerException) { }
+            public ExampleException(ServerError error, Tdf? errorResponse, string? message, Exception? innerException) : base(error.WithErrorPrefix(), errorResponse, message, innerException) { }
+        }
+        
+        public Server()
+        {
+            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
             {
-                
-            }
-            
-            [BlazeCommand((ushort)ExampleComponentCommand.poke)]
-            public virtual Task<NullStruct> PokeAsync(NullStruct request, BlazeRpcContext context)
-            {
-                throw new BlazeRpcException(Blaze2RpcError.ERR_COMMAND_NOT_FOUND);
-            }
-            
-            
-            public override Type GetCommandRequestType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ExampleComponentNotification notification) => ExampleComponentBase.GetNotificationType(notification);
+                Id = (ushort)ExampleComponentCommand.poke,
+                Name = "poke",
+                IsSupported = IsCommandSupported(ExampleComponentCommand.poke),
+                Func = async (req, ctx) => await PokeAsync(req, ctx).ConfigureAwait(false)
+            });
             
         }
         
-        public class Client : BlazeClientComponent<ExampleComponentCommand, ExampleComponentNotification, Blaze2RpcError>
+        public override string GetErrorName(ushort errorCode)
         {
-            BlazeClientConnection Connection { get; }
-            private static Logger _logger = LogManager.GetCurrentClassLogger();
-            
-            public Client(BlazeClientConnection connection) : base(ExampleComponentBase.Id, ExampleComponentBase.Name)
-            {
-                Connection = connection;
-                if (!Connection.Config.AddComponent(this))
-                    throw new InvalidOperationException($"A component with Id({Id}) has already been created for the connection.");
-            }
-            
-            
-            public NullStruct Poke()
-            {
-                return Connection.SendRequest<NullStruct, NullStruct, NullStruct>(this, (ushort)ExampleComponentCommand.poke, new NullStruct());
-            }
-            public Task<NullStruct> PokeAsync()
-            {
-                return Connection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ExampleComponentCommand.poke, new NullStruct());
-            }
-            
-            
-            public override Type GetCommandRequestType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ExampleComponentNotification notification) => ExampleComponentBase.GetNotificationType(notification);
-            
+            return ((Error)errorCode).ToString();
         }
         
-        public class Proxy : BlazeProxyComponent<ExampleComponentCommand, ExampleComponentNotification, Blaze2RpcError>
+        /// <summary>
+        /// This method is called when server receives a <b>ExampleComponent::poke</b> command.<br/>
+        /// Request type: <see cref="EmptyMessage"/><br/>
+        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// </summary>
+        public virtual Task<EmptyMessage> PokeAsync(EmptyMessage request, BlazeRpcContext context)
         {
-            public Proxy() : base(ExampleComponentBase.Id, ExampleComponentBase.Name)
-            {
-                
-            }
-            
-            [BlazeCommand((ushort)ExampleComponentCommand.poke)]
-            public virtual Task<NullStruct> PokeAsync(NullStruct request, BlazeProxyContext context)
-            {
-                return context.ClientConnection.SendRequestAsync<NullStruct, NullStruct, NullStruct>(this, (ushort)ExampleComponentCommand.poke, request);
-            }
-            
-            
-            public override Type GetCommandRequestType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandRequestType(command);
-            public override Type GetCommandResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandResponseType(command);
-            public override Type GetCommandErrorResponseType(ExampleComponentCommand command) => ExampleComponentBase.GetCommandErrorResponseType(command);
-            public override Type GetNotificationType(ExampleComponentNotification notification) => ExampleComponentBase.GetNotificationType(notification);
-            
-        }
-        
-        public static Type GetCommandRequestType(ExampleComponentCommand command) => command switch
-        {
-            ExampleComponentCommand.poke => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandResponseType(ExampleComponentCommand command) => command switch
-        {
-            ExampleComponentCommand.poke => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetCommandErrorResponseType(ExampleComponentCommand command) => command switch
-        {
-            ExampleComponentCommand.poke => typeof(NullStruct),
-            _ => typeof(NullStruct)
-        };
-        
-        public static Type GetNotificationType(ExampleComponentNotification notification) => notification switch
-        {
-            _ => typeof(NullStruct)
-        };
-        
-        public enum ExampleComponentCommand : ushort
-        {
-            poke = 1,
-        }
-        
-        public enum ExampleComponentNotification : ushort
-        {
+            throw new ExampleException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
         
     }
+    
 }
+

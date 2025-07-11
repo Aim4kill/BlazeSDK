@@ -1,55 +1,50 @@
 {
   "Usings": [
-    "Blaze3SDK.Blaze.CensusData",
-    "BlazeCommon",
-    "NLog"
+    "Blaze3SDK.Blaze.CensusData"
   ],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 10,
+  "Name": "CensusDataComponent",
+  "ShortName": "CensusData",
+  "ErrorCodes": {
+    "1": "CENSUSDATA_ERR_PLAYER_ALREADY_SUBSCRIBED",
+    "2": "CENSUSDATA_ERR_PLAYER_NOT_SUBSCRIBED"
+  },
+  "Methods": [
     {
-      "Id": 10,
-      "Name": "CensusDataComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "subscribeToCensusData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "unsubscribeFromCensusData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "getRegionCounts",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "getLatestCensusData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 1,
-          "Name": "NotifyServerCensusData",
-          "Type": "NotifyServerCensusData"
-        }
-      ]
+      "Id": 1,
+      "Name": "subscribeToCensusData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "unsubscribeFromCensusData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "getRegionCounts",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "getLatestCensusData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 1,
+      "Name": "NotifyServerCensusData",
+      "Type": "NotifyServerCensusData"
     }
   ]
 }

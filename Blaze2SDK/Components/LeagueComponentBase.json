@@ -1,237 +1,268 @@
 {
   "Usings": [
-    "Blaze2SDK.Blaze.League",
-    "BlazeCommon",
-    "NLog"
+    "Blaze2SDK.Blaze.League"
   ],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 13,
+  "Name": "LeagueComponent",
+  "ShortName": "League",
+  "ErrorCodes": {
+    "1": "LEAGUE_ERR_INVALID_LEAGUEID",
+    "2": "LEAGUE_ERR_INVALID_PLAYERID",
+    "3": "LEAGUE_ERR_INVALID_TRADEID",
+    "4": "LEAGUE_ERR_INVALID_ROSTERID",
+    "5": "LEAGUE_ERR_INVALID_GAMEID",
+    "6": "LEAGUE_ERR_INVALID_BLAZEID",
+    "7": "LEAGUE_ERR_INVALID_ARGUMENT",
+    "8": "LEAGUE_ERR_MAX_LEAGUES",
+    "9": "LEAGUE_ERR_INCORRECT_PASSWORD",
+    "10": "LEAGUE_ERR_LEAGUE_FULL",
+    "11": "LEAGUE_ERR_REQUESTER_NOT_AUTHORIZED",
+    "12": "LEAGUE_ERR_REQUESTER_NOT_A_MEMBER",
+    "13": "LEAGUE_ERR_USER_NOT_A_MEMBER",
+    "14": "LEAGUE_ERR_JOINS_DISABLED",
+    "15": "LEAGUE_ERR_INVALID_OP_FOR_LEAGUE_STATE",
+    "16": "LEAGUE_ERR_ALREADY_A_GM",
+    "17": "LEAGUE_ERR_ALREADY_A_MEMBER",
+    "18": "LEAGUE_ERR_LEAGUE_NAME_IN_USE",
+    "19": "LEAGUE_ERR_PROFANITY_FILTER",
+    "20": "LEAGUE_ERR_LAST_GM",
+    "21": "LEAGUE_ERR_INVALID_TRADE_PROPOSAL",
+    "22": "LEAGUE_ERR_TRADES_DISABLED",
+    "23": "LEAGUE_ERR_REP_TOO_LOW",
+    "24": "LEAGUE_ERR_DNF_TOO_HIGH",
+    "25": "LEAGUE_ERR_DATABASE_ERROR",
+    "26": "LEAGUE_ERR_REQUESTER_NOT_A_GM",
+    "27": "LEAGUE_ERR_LEAGUE_NOT_EMPTY",
+    "28": "LEAGUE_ERR_REQUESTER_IS_BANNED",
+    "29": "LEAGUE_ERR_INVALID_INVITATION",
+    "30": "LEAGUE_ERR_SERVER_ERROR",
+    "31": "LEAGUE_ERR_NOT_ENOUGH_MEMBERS_TO_RUN_DRAFT",
+    "32": "LEAGUE_ERR_DRAFT_DISABLED",
+    "33": "LEAGUE_ERR_LEAGUES_SERVER_UNAVAILABLE",
+    "34": "LEAGUE_ERR_TEAM_IN_USE",
+    "35": "LEAGUE_ERR_ROSTER_CRC_MISMATCH",
+    "36": "LEAGUE_ERR_INVALID_INVITEE",
+    "37": "LEAGUE_ERR_INVITEE_IS_BANNED",
+    "38": "LEAGUE_ERR_REQUESTER_IS_TEMP_BANNED"
+  },
+  "Methods": [
+    {
+      "Id": 1,
+      "Name": "createLeague",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "joinLeague",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "getLeague",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "getLeaguesByUser",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "deleteLeague",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 7,
+      "Name": "promoteToGM",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 8,
+      "Name": "findLeagues",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 9,
+      "Name": "findLeaguesAsync",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 10,
+      "Name": "removeMember",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 11,
+      "Name": "resetLeague",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 12,
+      "Name": "updateLeagueSettings",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
     {
       "Id": 13,
-      "Name": "LeagueComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "createLeague",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "joinLeague",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "getLeague",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "getLeaguesByUser",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "deleteLeague",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 7,
-          "Name": "promoteToGM",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 8,
-          "Name": "findLeagues",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 9,
-          "Name": "findLeaguesAsync",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 10,
-          "Name": "removeMember",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 11,
-          "Name": "resetLeague",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 12,
-          "Name": "updateLeagueSettings",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 13,
-          "Name": "setMetadata",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 15,
-          "Name": "postNews",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 16,
-          "Name": "getNews",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 20,
-          "Name": "setRoster",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 22,
-          "Name": "sendInvitation",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 23,
-          "Name": "getInvitations",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 24,
-          "Name": "processInvitation",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 26,
-          "Name": "proposeTrade",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 27,
-          "Name": "processTrade",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 29,
-          "Name": "getTrades",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 31,
-          "Name": "getMembers",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 103,
-          "Name": "submitStatistics",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 104,
-          "Name": "getRecentGames",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 105,
-          "Name": "submitScores",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 107,
-          "Name": "getRoster",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 109,
-          "Name": "runDraft",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 112,
-          "Name": "getDraftProfile",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 113,
-          "Name": "setDraftProfile",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 116,
-          "Name": "getPlayoffSeries",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 118,
-          "Name": "FindLeaguesAsyncNotification",
-          "Type": "FindLeaguesAsyncNotification"
-        }
-      ]
+      "Name": "setMetadata",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 15,
+      "Name": "postNews",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 16,
+      "Name": "getNews",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 20,
+      "Name": "setRoster",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 22,
+      "Name": "sendInvitation",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 23,
+      "Name": "getInvitations",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 24,
+      "Name": "processInvitation",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 26,
+      "Name": "proposeTrade",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 27,
+      "Name": "processTrade",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 29,
+      "Name": "getTrades",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 31,
+      "Name": "getMembers",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 103,
+      "Name": "submitStatistics",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 104,
+      "Name": "getRecentGames",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 105,
+      "Name": "submitScores",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 107,
+      "Name": "getRoster",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 109,
+      "Name": "runDraft",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 112,
+      "Name": "getDraftProfile",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 113,
+      "Name": "setDraftProfile",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 116,
+      "Name": "getPlayoffSeries",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 118,
+      "Name": "FindLeaguesAsyncNotification",
+      "Type": "FindLeaguesAsyncNotification"
     }
   ]
 }

@@ -1,11 +1,11 @@
-namespace Blaze2SDK.Blaze.Locker
+namespace Blaze2SDK.Blaze.Locker;
+
+public enum PermissionFlag : int
 {
-    public enum PermissionFlag : int
-    {
-        NOFLAG = 0x0,
-        PUBLICFLAG = 0x1,
-        PRIVATEFLAG = 0x2,
-        FRIENDSONLYFLAG = 0x3,
-        PUBLICFRIENDSFLAG = 0x4,
-    }
+    NOFLAG = 0,
+    PUBLICFLAG = 1,
+    PRIVATEFLAG = 2,
+    FRIENDSONLYFLAG = 3,
+    PUBLICFRIENDSFLAG = 4,
 }
+

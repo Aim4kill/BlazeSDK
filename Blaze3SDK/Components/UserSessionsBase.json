@@ -1,159 +1,174 @@
 {
   "Usings": [
-    "Blaze3SDK.Blaze",
-    "BlazeCommon",
-    "NLog"
+    "Blaze3SDK.Blaze"
   ],
   "Namespace": "Blaze3SDK.Components",
-  "Components": [
+  "Id": 30722,
+  "Name": "UserSessions",
+  "ShortName": "UserSessions",
+  "ErrorCodes": {
+    "1": "USER_ERR_USER_NOT_FOUND",
+    "2": "USER_ERR_SESSION_NOT_FOUND",
+    "3": "USER_ERR_DUPLICATE_SESSION",
+    "4": "USER_ERR_NO_EXTENDED_DATA",
+    "5": "USER_ERR_MAX_DATA_REACHED",
+    "6": "USER_ERR_KEY_NOT_FOUND",
+    "7": "USER_ERR_INVALID_SESSION_INSTANCE",
+    "8": "USER_ERR_INVALID_PARAM",
+    "9": "USER_ERR_MINIMUM_CHARACTERS",
+    "10": "ACCESS_GROUP_ERR_INVALID_GROUP",
+    "11": "ACCESS_GROUP_ERR_DEFAULT_GROUP",
+    "12": "ACCESS_GROUP_ERR_NOT_CURRENT_GROUP",
+    "13": "ACCESS_GROUP_ERR_CURRENT_GROUP",
+    "14": "ACCESS_GROUP_ERR_NO_GROUP_FOUND",
+    "15": "GEOIP_INCOMPLETE_PARAMETERS",
+    "16": "GEOIP_UNABLE_TO_RESOLVE",
+    "17": "ERR_ENTITY_TYPE_NOT_FOUND",
+    "18": "ERR_ENTITY_NOT_FOUND",
+    "19": "ERR_NOT_SUPPORTED",
+    "20": "USER_ERR_EXISTS",
+    "21": "USER_ERR_RESUMABLE_SESSION_CONNECTION_INVALID",
+    "22": "USER_ERR_RESUMABLE_SESSION_NOT_FOUND"
+  },
+  "Methods": [
     {
-      "Id": 30722,
-      "Name": "UserSessions",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze3RpcError",
-      "Methods": [
-        {
-          "Id": 3,
-          "Name": "fetchExtendedData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "updateExtendedDataAttribute",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 8,
-          "Name": "updateHardwareFlags",
-          "RequestType": "UpdateHardwareFlagsRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 12,
-          "Name": "lookupUser",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 13,
-          "Name": "lookupUsers",
-          "RequestType": "LookupUsersRequest",
-          "ResponseType": "UserDataResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 14,
-          "Name": "lookupUsersByPrefix",
-          "RequestType": "LookupUsersByPrefixRequest",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 20,
-          "Name": "updateNetworkInfo",
-          "RequestType": "NetworkInfo",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 23,
-          "Name": "lookupUserGeoIPData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 24,
-          "Name": "overrideUserGeoIPData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 25,
-          "Name": "updateUserSessionClientData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 26,
-          "Name": "setUserInfoAttribute",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 27,
-          "Name": "resetUserGeoIPData",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 32,
-          "Name": "lookupUserSessionId",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 33,
-          "Name": "fetchLastLocaleUsedAndAuthError",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 34,
-          "Name": "fetchUserFirstLastAuthTime",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 35,
-          "Name": "resumeSession",
-          "RequestType": "NullStruct",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 1,
-          "Name": "UserSessionExtendedDataUpdate",
-          "Type": "UserSessionExtendedDataUpdate"
-        },
-        {
-          "Id": 2,
-          "Name": "UserAdded",
-          "Type": "NotifyUserAdded"
-        },
-        {
-          "Id": 3,
-          "Name": "UserRemoved",
-          "Type": "NotifyUserRemoved"
-        },
-        {
-          "Id": 4,
-          "Name": "UserSessionDisconnected",
-          "Type": "UserSessionDisconnectReason"
-        },
-        {
-          "Id": 5,
-          "Name": "UserUpdated",
-          "Type": "UserStatus"
-        }
-      ]
+      "Id": 3,
+      "Name": "fetchExtendedData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "updateExtendedDataAttribute",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 8,
+      "Name": "updateHardwareFlags",
+      "RequestType": "UpdateHardwareFlagsRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 12,
+      "Name": "lookupUser",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 13,
+      "Name": "lookupUsers",
+      "RequestType": "LookupUsersRequest",
+      "ResponseType": "UserDataResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 14,
+      "Name": "lookupUsersByPrefix",
+      "RequestType": "LookupUsersByPrefixRequest",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 20,
+      "Name": "updateNetworkInfo",
+      "RequestType": "NetworkInfo",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 23,
+      "Name": "lookupUserGeoIPData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 24,
+      "Name": "overrideUserGeoIPData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 25,
+      "Name": "updateUserSessionClientData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 26,
+      "Name": "setUserInfoAttribute",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 27,
+      "Name": "resetUserGeoIPData",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 32,
+      "Name": "lookupUserSessionId",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 33,
+      "Name": "fetchLastLocaleUsedAndAuthError",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 34,
+      "Name": "fetchUserFirstLastAuthTime",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 35,
+      "Name": "resumeSession",
+      "RequestType": null,
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 1,
+      "Name": "UserSessionExtendedDataUpdate",
+      "Type": "UserSessionExtendedDataUpdate"
+    },
+    {
+      "Id": 2,
+      "Name": "UserAdded",
+      "Type": "NotifyUserAdded"
+    },
+    {
+      "Id": 3,
+      "Name": "UserRemoved",
+      "Type": "NotifyUserRemoved"
+    },
+    {
+      "Id": 4,
+      "Name": "UserSessionDisconnected",
+      "Type": "UserSessionDisconnectReason"
+    },
+    {
+      "Id": 5,
+      "Name": "UserUpdated",
+      "Type": "UserStatus"
     }
   ]
 }

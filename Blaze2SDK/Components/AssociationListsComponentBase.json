@@ -1,88 +1,97 @@
 {
   "Usings": [
-    "Blaze2SDK.Blaze.Association",
-    "BlazeCommon",
-    "NLog"
+    "Blaze2SDK.Blaze.Association"
   ],
   "Namespace": "Blaze2SDK.Components",
-  "Components": [
+  "Id": 25,
+  "Name": "AssociationListsComponent",
+  "ShortName": "AssociationLists",
+  "ErrorCodes": {
+    "1": "ASSOCIATIONLIST_ERR_USER_NOT_FOUND",
+    "2": "ASSOCIATIONLIST_ERR_DUPLICATE_USER_FOUND",
+    "3": "ASSOCIATIONLIST_ERR_USER_CAN_NOT_ADD_SELF",
+    "4": "ASSOCIATIONLIST_ERR_INVALID_USER",
+    "5": "ASSOCIATIONLIST_MEMBER_ALREADY_IN_THE_LIST",
+    "6": "ASSOCIATIONLIST_MEMBER_NOT_FOUND_IN_THE_LIST",
+    "7": "ASSOCIATIONLIST_MEMBER_DUPLICATE",
+    "8": "ASSOCIATIONLIST_ERR_ALREADY_SUBSCRIBED_TO_LST",
+    "9": "ASSOCIATIONLIST_ERR_NOT_SUBSCRIBED_TO_LST",
+    "10": "ASSOCIATIONLIST_ERR_INVALID_LIST_NAME",
+    "11": "ASSOCIATIONLIST_ERR_LIST_NOT_FOUND",
+    "12": "ASSOCIATIONLIST_ERR_LIST_IS_FULL_OR_TOO_MANY_USERS",
+    "13": "ASSOCIATIONLIST_ERR_LIST_IS_EMPTY",
+    "14": "ASSOCIATIONLIST_ERR_LIST_ALREADY_SUBSCRIBED",
+    "15": "ASSOCIATIONLIST_ERR_LIST_NOT_SUBSCRIBED",
+    "16": "ASSOCIATIONLIST_ERR_LIST_DB_ERROR"
+  },
+  "Methods": [
     {
-      "Id": 25,
-      "Name": "AssociationListsComponent",
-      "DefaultRequestType": "NullStruct",
-      "DefaultResponseType": "NullStruct",
-      "DefaultErrorType": "NullStruct",
-      "ErrorEnum": "Blaze2RpcError",
-      "Methods": [
-        {
-          "Id": 1,
-          "Name": "addUsersToList",
-          "RequestType": "UpdateList",
-          "ResponseType": "UpdateListResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 2,
-          "Name": "removeUsersFromList",
-          "RequestType": "UpdateList",
-          "ResponseType": "UpdateListResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 3,
-          "Name": "clearList",
-          "RequestType": "ClearList",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 4,
-          "Name": "setUsersToList",
-          "RequestType": "UpdateList",
-          "ResponseType": "UpdateListResponse",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 5,
-          "Name": "getListForUser",
-          "RequestType": "GetListForUser",
-          "ResponseType": "AssociationListInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 6,
-          "Name": "getLists",
-          "RequestType": "GetUserLists",
-          "ResponseType": "AssociationListCollectionInfo",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 7,
-          "Name": "subscribeToLists",
-          "RequestType": "SubscriptionInfo",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        },
-        {
-          "Id": 8,
-          "Name": "unsubscribeFromLists",
-          "RequestType": "SubscriptionInfo",
-          "ResponseType": "NullStruct",
-          "ErrorResponseType": "NullStruct"
-        }
-      ],
-      "Notifications": [
-        {
-          "Id": 1,
-          "Name": "NotifyListMemberUpdated",
-          "Type": "MemberInfo"
-        },
-        {
-          "Id": 2,
-          "Name": "NotifyListMemberRemoved",
-          "Type": "AssociationListInfo"
-        }
-      ]
+      "Id": 1,
+      "Name": "addUsersToList",
+      "RequestType": "UpdateList",
+      "ResponseType": "UpdateListResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 2,
+      "Name": "removeUsersFromList",
+      "RequestType": "UpdateList",
+      "ResponseType": "UpdateListResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 3,
+      "Name": "clearList",
+      "RequestType": "ClearList",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 4,
+      "Name": "setUsersToList",
+      "RequestType": "UpdateList",
+      "ResponseType": "UpdateListResponse",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 5,
+      "Name": "getListForUser",
+      "RequestType": "GetListForUser",
+      "ResponseType": "AssociationListInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 6,
+      "Name": "getLists",
+      "RequestType": "GetUserLists",
+      "ResponseType": "AssociationListCollectionInfo",
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 7,
+      "Name": "subscribeToLists",
+      "RequestType": "SubscriptionInfo",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    },
+    {
+      "Id": 8,
+      "Name": "unsubscribeFromLists",
+      "RequestType": "SubscriptionInfo",
+      "ResponseType": null,
+      "ErrorResponseType": null
+    }
+  ],
+  "Notifications": [
+    {
+      "Id": 1,
+      "Name": "NotifyListMemberUpdated",
+      "Type": "MemberInfo"
+    },
+    {
+      "Id": 2,
+      "Name": "NotifyListMemberRemoved",
+      "Type": "AssociationListInfo"
     }
   ]
 }

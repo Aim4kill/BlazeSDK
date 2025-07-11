@@ -1,8 +1,9 @@
-﻿namespace Blaze2SDK.Blaze.Messaging
+namespace Blaze2SDK.Blaze.Messaging;
+
+[Flags]
+public enum ServerFlags : uint
 {
-    [Flags]
-    public enum ServerFlags
-    {
-        None = 0,
-    }
+    None = 0,
+    Fetched = 1
 }
+

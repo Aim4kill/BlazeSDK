@@ -1,22 +1,64 @@
-using Tdf;
+using EATDF;
+using EATDF.Members;
+using EATDF.Types;
 
-namespace Blaze3SDK.Blaze.Stats
+namespace Blaze3SDK.Blaze.Stats;
+
+public class StatGroupSummary : Tdf
 {
-	[TdfStruct]
-	public struct StatGroupSummary
-	{
+    static readonly TdfMemberInfo[] __typeInfos = [
+        new TdfMemberInfo("Desc", "mDesc", 0x925CE300, TdfType.String, 0, true), // DESC
+        new TdfMemberInfo("KeyScopeNameValueMap", "mKeyScopeNameValueMap", 0xAF3D6D00, TdfType.Map, 1, true), // KSUM
+        new TdfMemberInfo("Metadata", "mMetadata", 0xB65D2100, TdfType.String, 2, true), // META
+        new TdfMemberInfo("Name", "mName", 0xBA1B6500, TdfType.String, 3, true), // NAME
+    ];
+    private ITdfMember[] __members;
 
-		[TdfMember("DESC")]
-		public string mDesc;
+    private TdfString _desc = new(__typeInfos[0]);
+    private TdfMap<string, long> _keyScopeNameValueMap = new(__typeInfos[1]);
+    private TdfString _metadata = new(__typeInfos[2]);
+    private TdfString _name = new(__typeInfos[3]);
 
-		[TdfMember("KSUM")]
-		public SortedDictionary<string, long> mKeyScopeNameValueMap;
+    public StatGroupSummary()
+    {
+        __members = [
+            _desc,
+            _keyScopeNameValueMap,
+            _metadata,
+            _name,
+        ];
+    }
 
-		[TdfMember("META")]
-		public string mMetadata;
+    public override Tdf CreateNew() => new StatGroupSummary();
+    public override ITdfMember[] GetMembers() => __members;
+    public override TdfMemberInfo[] GetMemberInfos() => __typeInfos;
+    public static TdfMemberInfo[] GetTdfMemberInfos() => __typeInfos;
+    public override string GetClassName() => "StatGroupSummary";
+    public override string GetFullClassName() => "Blaze::Stats::StatGroupSummary";
 
-		[TdfMember("NAME")]
-		public string mName;
+    public string Desc
+    {
+        get => _desc.Value;
+        set => _desc.Value = value;
+    }
 
-	}
+    public IDictionary<string, long> KeyScopeNameValueMap
+    {
+        get => _keyScopeNameValueMap.Value;
+        set => _keyScopeNameValueMap.Value = value;
+    }
+
+    public string Metadata
+    {
+        get => _metadata.Value;
+        set => _metadata.Value = value;
+    }
+
+    public string Name
+    {
+        get => _name.Value;
+        set => _name.Value = value;
+    }
+
 }
+
