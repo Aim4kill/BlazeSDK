@@ -78,6 +78,7 @@ namespace Blaze.Core.Internal
         public async Task OnPacketReceivedAsync(ProtoFireConnection connection, ProtoFirePacket packet)
         {
             BlazeRpcConnection rpcConnection = getBlazeRpcConnection(connection);
+            rpcConnection.LastActivityTime = DateTime.UtcNow;
 
             await rpcConnection.BusyLock.EnterAsync();
 

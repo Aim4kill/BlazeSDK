@@ -1,6 +1,7 @@
 ﻿using ProtoFire.Internal;
 using ProtoFire.Tls;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
@@ -72,9 +73,9 @@ public class ProtoFireServer
             throw;
         }
 
-        try
+        while (!cancelToken.IsCancellationRequested)
         {
-            while (!cancelToken.IsCancellationRequested)
+            try
             {
                 Socket clientSocket = await _listenSocket.AcceptAsync(cancelToken).ConfigureAwait(false);
                 ProtoFireConnection connection = new ProtoFireConnection(clientSocket, ConnectionHandler, FrameType);
@@ -82,8 +83,9 @@ public class ProtoFireServer
                 // processing the connection in the background
                 _ = connection.ProcessAsync(true, Secure);
             }
+            catch { }
         }
-        catch (OperationCanceledException) { /* ignore */ }
+
 
         Started = false;
 
@@ -93,7 +95,6 @@ public class ProtoFireServer
         _connections.Clear();
         _listenSocket.Close();
     }
-
 
     internal void OnDisconnected(ProtoFireConnection connection)
     {

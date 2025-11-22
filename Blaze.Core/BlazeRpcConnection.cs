@@ -23,6 +23,7 @@ public class BlazeRpcConnection(ProtoFireConnection baseConnection, ITdfSerializ
     public bool Connected => _baseConnection.Connected;
     public Guid Id => _baseConnection.Id;
     public object? State { get; set; }
+    public DateTime LastActivityTime { get; set; } = DateTime.UtcNow;
 
 
     public void EnqequeSend(Action<BlazePacket> configure)

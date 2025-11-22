@@ -391,7 +391,7 @@ public static class AuthenticationComponentBase
                 Func = async (req, ctx) => await XboxCreateAccountAsync(req, ctx).ConfigureAwait(false)
             });
             
-            RegisterCommand(new RpcCommandFunc<EmptyMessage, EmptyMessage, EmptyMessage>()
+            RegisterCommand(new RpcCommandFunc<ConsoleAssociateAccountRequest, SessionInfo, EmptyMessage>()
             {
                 Id = (ushort)AuthenticationComponentCommand.xboxAssociateAccount,
                 Name = "xboxAssociateAccount",
@@ -775,13 +775,13 @@ public static class AuthenticationComponentBase
         {
             throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
         }
-        
+
         /// <summary>
         /// This method is called when server receives a <b>AuthenticationComponent::xboxAssociateAccount</b> command.<br/>
-        /// Request type: <see cref="EmptyMessage"/><br/>
-        /// Response type: <see cref="EmptyMessage"/><br/>
+        /// Request type: <see cref="ConsoleAssociateAccountRequest"/><br/>
+        /// Response type: <see cref="SessionInfo"/><br/>
         /// </summary>
-        public virtual Task<EmptyMessage> XboxAssociateAccountAsync(EmptyMessage request, BlazeRpcContext context)
+        public virtual Task<SessionInfo> XboxAssociateAccountAsync(ConsoleAssociateAccountRequest request, BlazeRpcContext context)
         {
             throw new AuthenticationException(ServerError.ERR_COMMAND_NOT_FOUND);
         }

@@ -62,34 +62,20 @@ public class ProtoFireConnection
         Disconnect();
     }
 
-    Task Start(bool isServer, bool secure)
+    async Task Start(bool isServer, bool secure)
     {
-        if (isServer)
+        if(secure)
         {
-            if(secure)
+            Stream? secureStream = await AuthenticateConnectionAsync(_stream, isServer).ConfigureAwait(false);
+            if(secureStream == null)
             {
-                ProtoSSLCertificate? certificate = EventHandler.SelectCertificate(this);
-                if (certificate == null)
-                {
-                    Disconnect();
-                    return Task.CompletedTask;
-                }
-
-                _stream = new ProtoSslServerProtocol(certificate, _stream).Stream;
+                Disconnect();
+                return;
             }
-        }
-        else
-        {
-            if (secure)
-            {
-                var client = new ProtoFireTlsClient();
-                TlsClientProtocol protocol = new TlsClientProtocol(_stream);
-                protocol.Connect(client);
 
-                _stream = protocol.Stream;
-            }
+            _stream = secureStream;
         }
-
+            
         // Notify the event handler that the connection has been authenticated
         Task authenticatedTask = EventHandler.OnAuthenticatedAsync(this, secure);
 
@@ -99,9 +85,65 @@ public class ProtoFireConnection
         // (Consumer): Processes packets from the channel
         Task processPacketsTask = ProcessPacketsAsync();
 
-        return Task.WhenAll(authenticatedTask, readPacketsTask, processPacketsTask);
+        await Task.WhenAll(authenticatedTask, readPacketsTask, processPacketsTask).ConfigureAwait(false);
     }
 
+
+    Task<Stream?> AuthenticateConnectionAsync(Stream baseStream, bool isServer)
+    {
+        TaskCompletionSource<Stream?> tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        CancellationTokenSource timeoutCts = new CancellationTokenSource(15000); // 15 seconds timeout
+
+        timeoutCts.Token.Register(() => {
+            if(tcs.TrySetResult(null))
+            {
+                try { baseStream.Close(); } catch { }
+            }
+        });
+
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                if (isServer)
+                {
+                    ProtoSSLCertificate? certificate = EventHandler.SelectCertificate(this);
+                    if (certificate == null)
+                    {
+                        if (tcs.TrySetResult(null))
+                        {
+                            try { baseStream.Close(); } catch { }
+                        }
+                        return;
+                    }
+
+                    var protocol = new ProtoSslServerProtocol(certificate, baseStream);
+                    tcs.TrySetResult(protocol.Stream);
+                }
+                else
+                {
+                    var client = new ProtoFireTlsClient();
+                    TlsClientProtocol protocol = new TlsClientProtocol(baseStream);
+
+                    protocol.Connect(client);
+                    tcs.TrySetResult(protocol.Stream);
+                }
+            }
+            catch (Exception)
+            {
+                if (tcs.TrySetResult(null))
+                {
+                    try { baseStream.Close(); } catch { }
+                }
+            }
+            finally
+            {
+                timeoutCts.Dispose();
+            }
+        });
+
+        return tcs.Task;
+    }
 
     async Task ReadPacketsAsync()
     {
@@ -190,6 +232,11 @@ public class ProtoFireConnection
             await Task.WhenAll(t1, t2).ConfigureAwait(false);
             return true;
         }
+        catch(IOException ioex)
+        {
+            Disconnect();
+            return false;
+        }
         catch(Exception ex)
         {
             await EventHandler.OnErrorAsync(this, ex);
@@ -208,6 +255,16 @@ public class ProtoFireConnection
             return;
         Connected = false;
 
+        try
+        {
+            _stream.Close();
+        }
+        catch { }
+        finally
+        {
+            _stream = Stream.Null;
+        }
+            
         try { Socket.Close(); }
         catch { }
 

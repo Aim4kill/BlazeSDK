@@ -292,8 +292,8 @@
     {
       "Id": 160,
       "Name": "xboxAssociateAccount",
-      "RequestType": null,
-      "ResponseType": null,
+      "RequestType": "ConsoleAssociateAccountRequest",
+      "ResponseType": "SessionInfo",
       "ErrorResponseType": null
     },
     {
