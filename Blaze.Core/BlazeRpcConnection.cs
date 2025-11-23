@@ -12,18 +12,29 @@ using System.Threading.Tasks;
 
 namespace Blaze.Core;
 
-public class BlazeRpcConnection(ProtoFireConnection baseConnection, ITdfSerializer serializer)
+public class BlazeRpcConnection
 {
-    private ProtoFireConnection _baseConnection { get; } = baseConnection;
-    private ITdfSerializer _serializer { get; } = serializer;
+    private ProtoFireConnection _baseConnection { get; }
+    private ITdfSerializer _serializer { get; }
     internal QueuedLock BusyLock { get; } = new QueuedLock();
 
-    public EndPoint? RemoteEndPoint => _baseConnection.Socket.RemoteEndPoint;
-    public EndPoint? LocalEndPoint => _baseConnection.Socket.LocalEndPoint;
+    public EndPoint? RemoteEndPoint { get; }
+    public EndPoint? LocalEndPoint { get; }
     public bool Connected => _baseConnection.Connected;
     public Guid Id => _baseConnection.Id;
     public object? State { get; set; }
     public DateTime LastActivityTime { get; set; } = DateTime.UtcNow;
+
+
+    public BlazeRpcConnection(ProtoFireConnection baseConnection, ITdfSerializer serializer)
+    {
+        _baseConnection = baseConnection;
+        _serializer = serializer;
+
+        // if socket is disposed, we will still be able to get the endpoints
+        RemoteEndPoint = _baseConnection.Socket.RemoteEndPoint;
+        LocalEndPoint = _baseConnection.Socket.LocalEndPoint;
+    }
 
 
     public void EnqequeSend(Action<BlazePacket> configure)
