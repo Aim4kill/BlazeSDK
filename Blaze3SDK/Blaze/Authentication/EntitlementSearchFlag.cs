@@ -4,5 +4,7 @@ namespace Blaze3SDK.Blaze.Authentication;
 public enum EntitlementSearchFlag : int
 {
     None = 0,
+    IncludePersonaLink = 1,
+    IncludeUnlinked = 2
 }
 
